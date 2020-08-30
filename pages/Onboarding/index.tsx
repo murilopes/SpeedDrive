@@ -11,7 +11,7 @@ const OnboardingX = () => {
     navigation.goBack();
   }
 
-  function handleNavigateToOnboarding() {
+  function handleNavigateToLogin() {
     navigation.navigate('Login');
   }
 
@@ -19,8 +19,8 @@ const OnboardingX = () => {
       <Onboarding
         nextLabel = 'Próximo'
         skipLabel = 'Pular'
-        onDone = {handleNavigateToOnboarding}
-        onSkip = {handleNavigateToOnboarding}
+        onDone = {handleNavigateToLogin}
+        onSkip = {handleNavigateToLogin}
         pages={[
           {
             backgroundColor: '#FC515B', 

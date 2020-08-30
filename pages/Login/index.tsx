@@ -1,11 +1,12 @@
 import 'react-native-gesture-handler';
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Image, ImageBackground, KeyboardAvoidingView, Platform } from 'react-native';
 import { Input, Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { RectButton } from 'react-native-gesture-handler';
 import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { useFonts, Roboto_400Regular, Roboto_500Medium, Roboto_900Black_Italic } from '@expo-google-fonts/roboto';
 
 const  Login = () => {
 
@@ -13,6 +14,23 @@ const  Login = () => {
 
   function handleNavigateToOnboarding() {
     navigation.navigate('Onboarding');
+  }
+
+  function handleNavigateToDashboard() {
+    navigation.navigate('AlunoDashboard');
+  }
+
+  let [fontsLoaded] = useFonts({
+    Roboto_400Regular,
+    Roboto_500Medium,
+    Roboto_900Black_Italic
+  });
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  while (!fontsLoaded) {
+    return <View />;
   }
 
   return (
@@ -36,8 +54,11 @@ const  Login = () => {
             placeholder="e-mail"
             placeholderTextColor = "#797D7F"
             textContentType = "username"
-            selectionColor= "red"
-            />
+            selectionColor = "red"
+            autoCompleteType = "email"
+            onChangeText = {email => setEmail(email)}
+            value = {email}
+            />            
           </View>
           <View style={styles.TextInput_Container}>
             <Icon name="key" size={25} color="white" style={{marginRight:10, width: '7%'}} />
@@ -47,11 +68,14 @@ const  Login = () => {
             textContentType="password"
             secureTextEntry={true}
             selectionColor= "red"
+            autoCompleteType = "password"
+            onChangeText={password => setPassword(password)}
+            value = {password}
             />
           </View>       
         </View>
         <View >
-          <RectButton style={styles.button}>
+          <RectButton style={styles.button} onPress={handleNavigateToDashboard}>
               <View style={styles.buttonIcon}>
                 <Feather name="play" color="#fff" size={24} />
               </View>
@@ -144,6 +168,7 @@ const styles = StyleSheet.create({
     paddingStart: 20,
     color: '#FFF',
     fontSize: 16,
+    fontFamily: 'Roboto_500Medium'
   },
   buttonSemFundo: {
     height: 40,

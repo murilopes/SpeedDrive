@@ -5,6 +5,10 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import Onboarding from './pages/Onboarding';
 import Login from './pages/Login';
+import AlunoDashboard from './pages/Aluno';
+import AlunoRealizadas from './pages/Aluno/realizadas';
+import AlunoProximas from './pages/Aluno/proximas';
+import AulaDetalheInstrutor from './pages/Aula/detalheInstrutor';
 
 const AppStack = createStackNavigator();
 
@@ -21,6 +25,10 @@ const Routes = () => {
       >
         <AppStack.Screen name="Onboarding" component={Onboarding} />
         <AppStack.Screen name="Login" component={Login} />
+        <AppStack.Screen name="AlunoDashboard" component={AlunoDashboard} />
+        <AppStack.Screen name="AlunoRealizadas" component={AlunoRealizadas} />
+        <AppStack.Screen name="AlunoProximas" component={AlunoProximas} />
+        <AppStack.Screen name="AulaDetalheInstrutor" component={AulaDetalheInstrutor} />
       </AppStack.Navigator>
     </NavigationContainer>
   );
