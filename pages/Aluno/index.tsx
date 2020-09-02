@@ -11,7 +11,7 @@ const  AlunoDashboard = () => {
   const _goBack = () => console.log('Went back');
   const _handleSearch = () => console.log('Searching');
   const _handleMore = () => console.log('Shown more');
-  const _handleAulasRealizadas = () => {
+  const _handleAulasRealizadas = () => { 
     navigation.navigate('AlunoRealizadas');
   }
   const _handleProximasAulas = () => {
