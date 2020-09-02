@@ -8,6 +8,7 @@ import Login from './pages/Login';
 import AlunoDashboard from './pages/Aluno';
 import AlunoRealizadas from './pages/Aluno/realizadas';
 import AlunoProximas from './pages/Aluno/proximas';
+import AlunoAgendar from './pages/Aluno/agendar';
 import AulaDetalheInstrutor from './pages/Aula/detalheInstrutor';
 
 const AppStack = createStackNavigator();
@@ -28,6 +29,7 @@ const Routes = () => {
         <AppStack.Screen name="AlunoDashboard" component={AlunoDashboard} />
         <AppStack.Screen name="AlunoRealizadas" component={AlunoRealizadas} />
         <AppStack.Screen name="AlunoProximas" component={AlunoProximas} />
+        <AppStack.Screen name="AlunoAgendar" component={AlunoAgendar} />
         <AppStack.Screen name="AulaDetalheInstrutor" component={AulaDetalheInstrutor} />
       </AppStack.Navigator>
     </NavigationContainer>
