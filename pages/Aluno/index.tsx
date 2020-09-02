@@ -17,6 +17,9 @@ const  AlunoDashboard = () => {
   const _handleProximasAulas = () => {
     navigation.navigate('AlunoProximas');
   }
+  const _handleAgendar = () => {
+    navigation.navigate('AlunoAgendar');
+  }
 
   const [checked, setChecked] = React.useState(false);
 
@@ -83,7 +86,7 @@ const  AlunoDashboard = () => {
             </View>
           </View>
           <View style={styles.item_dash_exterior}>
-            <View style={styles.item_dash_interior_4}>
+            <View style={styles.item_dash_interior_4} onTouchEnd={_handleAgendar}>
               <View style={styles.item_dash_view_agendar}>
                 <Text style={styles.item_dash_texto_agendar}>Agendar</Text>
               </View>
