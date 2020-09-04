@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { Button, Overlay } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
-import { StyleSheet, Text, View, TextInput, Image, ImageBackground, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Image, ImageBackground, KeyboardAvoidingView, Platform, ScrollView, RefreshControl } from 'react-native';
 import { Appbar, Avatar } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { RectButton } from 'react-native-gesture-handler';
@@ -14,11 +14,21 @@ const  AlunoAgendar = () => {
     navigation.goBack()
   }
 
-  const [visible, setVisible] = useState(false);
+  const [overlayVisibility, setoverlayVisibility] = useState(false);
+  const [count, setcount] = useState(0);
+  const [listAulas, setListAulas] = useState([]) ;
   
-  const toggleOverlay = () => {
-    setVisible(!visible);
+  const toggleOverlayVisibility = () => {
+    setoverlayVisibility(!overlayVisibility);
   };
+
+  const addAula = () => {    
+    setListAulas(listAulas.concat({title: count}));
+    toggleOverlayVisibility();
+    setcount(count+1)
+  };
+
+
 
   return (
     <KeyboardAvoidingView style={styles.container_principal} 
@@ -54,15 +64,28 @@ const  AlunoAgendar = () => {
 
       <View style={styles.view_aulas}>
         <ScrollView>
-          <Icon name='plus-circle' size={60} color='green' onPress={toggleOverlay}/>
-          <Overlay isVisible={visible} onBackdropPress={toggleOverlay} overlayStyle={styles.overlay_add}>
-            <Text style={{textAlign: 'center', fontSize: 18}} >Aula</Text>
-            <View style={styles.overlay_data}></View>
-            <View style={styles.overlay_hora}></View>
-            <View style={styles.overlay_button}>
-              <Text style={{textAlign: 'center', fontSize: 25}}>Adicionar</Text>
+          <View style={{flex:1}}> 
+
+            {
+              listAulas.map((item, i) => (
+                <View style={{height: 40, backgroundColor: 'yellow', margin: 5, width: '100%'}}>
+                  <Text>{item.title}</Text>
+                </View>
+              ))
+            }
+            
+            <View style={{alignItems: 'center', margin: 5}}>
+              <Icon name='plus-circle' size={60} color='green' onPress={toggleOverlayVisibility}/>
+              <Overlay isVisible={overlayVisibility} onBackdropPress={toggleOverlayVisibility} overlayStyle={styles.overlay_add}>
+                <Text style={{textAlign: 'center', fontSize: 18}} >Aula</Text>
+                <View style={styles.overlay_data}></View>
+                <View style={styles.overlay_hora}></View>
+                <View style={styles.overlay_button} onTouchEnd={addAula}>
+                  <Text style={{textAlign: 'center', fontSize: 25}}>Adicionar</Text>
+                </View>
+              </Overlay>
             </View>
-          </Overlay>
+          </View> 
         </ScrollView>
       </View>
 
@@ -110,7 +133,6 @@ const styles = StyleSheet.create({
   view_infos: {
     flex: 4,
     margin: 10,
-    marginBottom: 30,
     borderRadius: 8,
     borderColor: '#212F3C',
     borderWidth: 2,
@@ -121,7 +143,6 @@ const styles = StyleSheet.create({
     flex: 18,
     marginHorizontal: 10,
     marginBottom: 10,
-    alignItems: 'center'
   },
 
   view_confirmar_button: {
