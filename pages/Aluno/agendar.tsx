@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { Button, Overlay } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, Text, View, TextInput, Image, ImageBackground, KeyboardAvoidingView, Platform, ScrollView, RefreshControl } from 'react-native';
@@ -23,11 +23,18 @@ const  AlunoAgendar = () => {
   };
 
   const addAula = () => {    
-    setListAulas(listAulas.concat({title: count}));
+    setListAulas(listAulas.concat({id: count, data: '', horario: ''}));
     toggleOverlayVisibility();
     setcount(count+1)
   };
 
+  const removeAula = (id: number) => {
+    var index = listAulas.findIndex(aula => aula.id == id)
+    listAulas.splice(index, 1)    
+    console.log('removendo aula', id)
+    setListAulas(listAulas)
+   
+  }
 
 
   return (
@@ -68,12 +75,16 @@ const  AlunoAgendar = () => {
 
             {
               listAulas.map((item, i) => (
-                <View style={{height: 40, backgroundColor: 'yellow', margin: 5, width: '100%'}}>
-                  <Text>{item.title}</Text>
+                <View key={item.id} onTouchEnd={()=> {removeAula(item.id)}} style={{height: 40, backgroundColor: 'yellow', margin: 5, width: '100%'}}>
+                  <Text>
+                    <Text>{item.id}</Text>
+                    <Text>{item.data}</Text>
+                    <Text>{item.horario}</Text>                    
+                  </Text>
                 </View>
               ))
-            }
-            
+            } 
+
             <View style={{alignItems: 'center', margin: 5}}>
               <Icon name='plus-circle' size={60} color='green' onPress={toggleOverlayVisibility}/>
               <Overlay isVisible={overlayVisibility} onBackdropPress={toggleOverlayVisibility} overlayStyle={styles.overlay_add}>
@@ -81,7 +92,7 @@ const  AlunoAgendar = () => {
                 <View style={styles.overlay_data}></View>
                 <View style={styles.overlay_hora}></View>
                 <View style={styles.overlay_button} onTouchEnd={addAula}>
-                  <Text style={{textAlign: 'center', fontSize: 25}}>Adicionar</Text>
+                <Text style={{textAlign: 'center', fontSize: 25}}>Adicionar</Text>
                 </View>
               </Overlay>
             </View>
