@@ -36,6 +36,18 @@ const  AlunoAgendar = () => {
    
   }
 
+  const renderAulas = function(){
+    listAulas.map((item, i) => (
+      <View key={item.id} onTouchEnd={()=> {removeAula(item.id)}} style={{height: 40, backgroundColor: 'yellow', margin: 5, width: '100%'}}>
+        <Text>
+          <Text>{item.id}</Text>
+          <Text>{item.data}</Text>
+          <Text>{item.horario}</Text>                    
+        </Text>
+      </View>
+    ))
+  }
+
 
   return (
     <KeyboardAvoidingView style={styles.container_principal} 
@@ -74,15 +86,7 @@ const  AlunoAgendar = () => {
           <View style={{flex:1}}> 
 
             {
-              listAulas.map((item, i) => (
-                <View key={item.id} onTouchEnd={()=> {removeAula(item.id)}} style={{height: 40, backgroundColor: 'yellow', margin: 5, width: '100%'}}>
-                  <Text>
-                    <Text>{item.id}</Text>
-                    <Text>{item.data}</Text>
-                    <Text>{item.horario}</Text>                    
-                  </Text>
-                </View>
-              ))
+              renderAulas()
             } 
 
             <View style={{alignItems: 'center', margin: 5}}>
