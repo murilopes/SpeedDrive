@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, Text, View, TextInput, Image, ImageBackground, KeyboardAvoidingView, Platform } from 'react-native';
 import { Appbar, Avatar } from 'react-native-paper';
@@ -11,17 +11,24 @@ const  AlunoDashboard = () => {
   const _goBack = () => console.log('Went back');
   const _handleSearch = () => console.log('Searching');
   const _handleMore = () => console.log('Shown more');
+
   const _handleAulasRealizadas = () => { 
     navigation.navigate('AlunoRealizadas');
+    setQtdProximasAulas(2)
   }
   const _handleProximasAulas = () => {
     navigation.navigate('AlunoProximas');
   }
   const _handleAgendar = () => {
     navigation.navigate('AlunoAgendar');
+    setTimeout(() => {
+      setQtdProximasAulas(5)
+    }, 1000);
   }
 
   const [checked, setChecked] = React.useState(false);
+
+  const[qtdProximasAulas, setQtdProximasAulas] = useState(2)
 
   return (
     <KeyboardAvoidingView style={styles.container_principal} 
@@ -51,7 +58,7 @@ const  AlunoDashboard = () => {
                 <Text style={styles.item_dash_texto_2}>Realizadas</Text>
               </View>
               <View style={styles.item_dash_view_numero}>
-                <Text style={styles.item_dash_texto_3}>3</Text>
+                <Text style={styles.item_dash_texto_3}>2</Text>
               </View>
             </View>
           </View>
@@ -81,7 +88,7 @@ const  AlunoDashboard = () => {
                 <Text style={styles.item_dash_texto_2}>Aulas</Text>
               </View>
               <View style={styles.item_dash_view_numero}>
-                <Text style={styles.item_dash_texto_3}>12</Text>
+                <Text style={styles.item_dash_texto_3}>{qtdProximasAulas}</Text>
               </View>
             </View>
           </View>

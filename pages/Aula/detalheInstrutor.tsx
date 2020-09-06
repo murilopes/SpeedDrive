@@ -99,10 +99,10 @@ const  AulaDetalheInstrutor = () => {
         </View>
 
           <View style={styles.item_action}>
-              <RectButton style={styles.button} onPress={_handleAulaDetalheInstrutor}>
-                <Text style={styles.buttonText}>Cancelar Aula</Text>
-              </RectButton>
-            </View >
+            {/* <RectButton style={styles.button} onPress={_handleAulaDetalheInstrutor}>
+              <Text style={styles.buttonText}>Cancelar Aula</Text>
+            </RectButton> */}
+          </View >
         
       </View>
     </KeyboardAvoidingView>

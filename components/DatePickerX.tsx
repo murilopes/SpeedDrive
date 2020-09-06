@@ -6,7 +6,7 @@ const Container = styled.TouchableOpacity`
   background-color: ${Platform.OS === 'ios' ? '#00000066' : 'transparent'};
   position: absolute;
   justify-content: flex-end;
-  width: 100%;
+  width: 120%;
   height: 100%; 
 `;
 const Header = styled.View`
@@ -44,7 +44,7 @@ export default class DatePickerX extends React.Component {
           display="default"
           onChange={(e, d) => {
             if (Platform.OS === 'ios') {
-              //this.setState({ date: d });
+              this.setState({ date: d });
               onChange(d);
             } else {
               onClose(d);

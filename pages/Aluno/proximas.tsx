@@ -56,64 +56,6 @@ const  AlunoProximas = () => {
 
           <View style={styles.item}>
             <View style={styles.item_status}>
-              <Icon name='circle' size={20} color='#F7C700'/>
-            </View >
-            <View style={styles.item_detalhes}>
-              <Text style={styles.item_text_line}>
-                <Text style={styles.item_text_title}>Status: </Text>
-                <Text>Pend. Confirmação</Text>
-              </Text>
-              <Text style={styles.item_text_line}>
-                <Text style={styles.item_text_title}>Data: </Text>
-                <Text >25/06/2020</Text>
-              </Text>
-              <Text style={styles.item_text_line}>
-                <Text style={styles.item_text_title}>Horário: </Text>
-                <Text >19:00</Text>
-              </Text>
-              <Text style={styles.item_text_line}>
-                <Text style={styles.item_text_title}>Instrutor: </Text>
-                <Text >João Bonifácio</Text>
-              </Text>
-            </View>
-            <View style={styles.item_action}>
-              <RectButton style={styles.button}>
-                <Text style={styles.buttonText}>Detalhe</Text>
-              </RectButton>
-            </View >
-          </View>
-
-          <View style={styles.item}>
-            <View style={styles.item_status}>
-              <Icon name='circle' size={20} color='#F7C700'/>
-            </View >
-            <View style={styles.item_detalhes}>
-              <Text style={styles.item_text_line}>
-                <Text style={styles.item_text_title}>Status: </Text>
-                <Text>Pend. Confirmação</Text>
-              </Text>
-              <Text style={styles.item_text_line}>
-                <Text style={styles.item_text_title}>Data: </Text>
-                <Text >26/06/2020</Text>
-              </Text>
-              <Text style={styles.item_text_line}>
-                <Text style={styles.item_text_title}>Horário: </Text>
-                <Text >19:00</Text>
-              </Text>
-              <Text style={styles.item_text_line}>
-                <Text style={styles.item_text_title}>Instrutor: </Text>
-                <Text >João Bonifácio</Text>
-              </Text>
-            </View>
-            <View style={styles.item_action}>
-              <RectButton style={styles.button}>
-                <Text style={styles.buttonText}>Detalhe</Text>
-              </RectButton>
-            </View >
-          </View>
-
-          <View style={styles.item}>
-            <View style={styles.item_status}>
               <Icon name='circle' size={20} color='#C80000'/>
             </View >
             <View style={styles.item_detalhes}>
@@ -123,11 +65,11 @@ const  AlunoProximas = () => {
               </Text>
               <Text style={styles.item_text_line}>
                 <Text style={styles.item_text_title}>Data: </Text>
-                <Text >27/06/2020</Text>
+                <Text >28/06/2020</Text>
               </Text>
               <Text style={styles.item_text_line}>
                 <Text style={styles.item_text_title}>Horário: </Text>
-                <Text >19:00</Text>
+                <Text >14:00</Text>
               </Text>
               <Text style={styles.item_text_line}>
                 <Text style={styles.item_text_title}>Instrutor: </Text>
@@ -140,6 +82,95 @@ const  AlunoProximas = () => {
               </RectButton>
             </View >
           </View>
+
+          <View style={styles.item}>
+            <View style={styles.item_status}>
+              <Icon name='circle' size={20} color='#F7C700'/>
+            </View >
+            <View style={styles.item_detalhes}>
+              <Text style={styles.item_text_line}>
+                <Text style={styles.item_text_title}>Status: </Text>
+                <Text>Pend. Confirmação</Text>
+              </Text>
+              <Text style={styles.item_text_line}>
+                <Text style={styles.item_text_title}>Data: </Text>
+                <Text >07/09/2020</Text>
+              </Text>
+              <Text style={styles.item_text_line}>
+                <Text style={styles.item_text_title}>Horário: </Text>
+                <Text >18:00</Text>
+              </Text>
+              <Text style={styles.item_text_line}>
+                <Text style={styles.item_text_title}>Instrutor: </Text>
+                <Text >À definir</Text>
+              </Text>
+            </View>
+            <View style={styles.item_action}>
+              <RectButton style={styles.button}>
+                <Text style={styles.buttonText}>Detalhe</Text>
+              </RectButton>
+            </View >
+          </View>
+
+          <View style={styles.item}>
+            <View style={styles.item_status}>
+              <Icon name='circle' size={20} color='#F7C700'/>
+            </View >
+            <View style={styles.item_detalhes}>
+              <Text style={styles.item_text_line}>
+                <Text style={styles.item_text_title}>Status: </Text>
+                <Text>Pend. Confirmação</Text>
+              </Text>
+              <Text style={styles.item_text_line}>
+                <Text style={styles.item_text_title}>Data: </Text>
+                <Text >08/09/2020</Text>
+              </Text>
+              <Text style={styles.item_text_line}>
+                <Text style={styles.item_text_title}>Horário: </Text>
+                <Text >19:00</Text>
+              </Text>
+              <Text style={styles.item_text_line}>
+                <Text style={styles.item_text_title}>Instrutor: </Text>
+                <Text >À definir</Text>
+              </Text>
+            </View>
+            <View style={styles.item_action}>
+              <RectButton style={styles.button}>
+                <Text style={styles.buttonText}>Detalhe</Text>
+              </RectButton>
+            </View >
+          </View>
+
+          <View style={styles.item}>
+            <View style={styles.item_status}>
+              <Icon name='circle' size={20} color='#F7C700'/>
+            </View >
+            <View style={styles.item_detalhes}>
+              <Text style={styles.item_text_line}>
+                <Text style={styles.item_text_title}>Status: </Text>
+                <Text>Pend. Confirmação</Text>
+              </Text>
+              <Text style={styles.item_text_line}>
+                <Text style={styles.item_text_title}>Data: </Text>
+                <Text >13/09/2020</Text>
+              </Text>
+              <Text style={styles.item_text_line}>
+                <Text style={styles.item_text_title}>Horário: </Text>
+                <Text >19:00</Text>
+              </Text>
+              <Text style={styles.item_text_line}>
+                <Text style={styles.item_text_title}>Instrutor: </Text>
+                <Text >À definir</Text>
+              </Text>
+            </View>
+            <View style={styles.item_action}>
+              <RectButton style={styles.button}>
+                <Text style={styles.buttonText}>Detalhe</Text>
+              </RectButton>
+            </View >
+          </View>
+
+          
 
         </View>
       </ScrollView>

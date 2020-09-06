@@ -39,17 +39,18 @@ export default class TimePickerX extends React.Component {
           </Header>
         )}
         <DateTimePicker
-          value='2020-08-01T10.00.00.000Z'
+          value={date}
           mode="time"
           display="default"
           onChange={(e, d) => {
             if (Platform.OS === 'ios') {
-              //this.setState({ date: d });
-              //onChange(d);
+              this.setState({ date: d });
+              onChange(d);
             } else {
-              //onClose(d);
+              onClose(d);
             }
          }}
+         
          style={{ backgroundColor: 'white'}}
        />
      </Container>
