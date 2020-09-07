@@ -14,16 +14,12 @@ const  AlunoDashboard = () => {
 
   const _handleAulasRealizadas = () => { 
     navigation.navigate('AlunoRealizadas');
-    setQtdProximasAulas(2)
   }
   const _handleProximasAulas = () => {
     navigation.navigate('AlunoProximas');
   }
   const _handleAgendar = () => {
     navigation.navigate('AlunoAgendar');
-    setTimeout(() => {
-      setQtdProximasAulas(5)
-    }, 1000);
   }
 
   const [checked, setChecked] = React.useState(false);
