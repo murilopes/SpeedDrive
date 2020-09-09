@@ -21,6 +21,9 @@ const  AlunoDashboard = () => {
   const _handleAgendar = () => {
     navigation.navigate('AlunoAgendar');
   }
+  const _handleAlunoCadastro = () => {
+    navigation.navigate('AlunoCadastro');
+  }
 
   const [checked, setChecked] = React.useState(false);
 
