@@ -62,7 +62,7 @@ const  AlunoDashboard = () => {
             </View>
           </View>
           <View style={styles.item_dash_exterior}>
-            <View style={styles.item_dash_interior_2}>
+            <View style={styles.item_dash_interior_2} onTouchEnd={_handleAlunoCadastro}>
               <View style={styles.item_dash_view_texto}>
                 <Text style={styles.item_dash_texto_1}>Cadastro</Text>
               </View>
