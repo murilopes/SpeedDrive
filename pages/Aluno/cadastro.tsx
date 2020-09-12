@@ -21,14 +21,7 @@ const  AlunoCadastro = () => {
           <Appbar.Content title="Cadastro" />
         </Appbar.Header>
 
-        <View style={{flex: 1}}>
-          <View style={{flex: 1,}}>
-            <ProgressBar progress={0.4} color={Colors.red800} /> 
-          </View>
-          <View style={{flex: 1,}}>
-            <ProgressBar progress={0.4} color={Colors.white} />
-          </View>
-        </View>
+      
     </KeyboardAvoidingView>
     )
 }
