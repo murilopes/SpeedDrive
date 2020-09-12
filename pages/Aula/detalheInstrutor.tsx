@@ -1,27 +1,30 @@
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { StyleSheet, Text, View, TextInput, Image, ImageBackground, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import {
+  StyleSheet, Text, View, TextInput, Image, ImageBackground, KeyboardAvoidingView, Platform, ScrollView,
+} from 'react-native';
 import { Appbar, Avatar } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IconMaterial from 'react-native-vector-icons/MaterialCommunityIcons';
 import { RectButton } from 'react-native-gesture-handler';
 
-const  AulaDetalheInstrutor = () => {
-
+const AulaDetalheInstrutor = () => {
   const navigation = useNavigation();
 
   const _goBack = () => {
-    navigation.goBack()
-  }
+    navigation.goBack();
+  };
   const _handleAulaDetalheInstrutor = () => {
     navigation.navigate('AulaDetalheInstrutor');
-  }
+  };
 
   return (
-    <KeyboardAvoidingView style={styles.container_principal} 
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <KeyboardAvoidingView
+      style={styles.container_principal}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
 
-      <Appbar.Header statusBarHeight={-15} style={{height: 45, backgroundColor: '#212F3C'}}>
+      <Appbar.Header statusBarHeight={-15} style={{ height: 45, backgroundColor: '#212F3C' }}>
         <Appbar.Action icon="arrow-left-circle" size={30} onPress={_goBack} />
         <Appbar.Content title="Detalhe Aula" />
       </Appbar.Header>
@@ -30,10 +33,10 @@ const  AulaDetalheInstrutor = () => {
         <View style={styles.view_instrutor}>
 
           <View style={styles.view_intrutor_foto}>
-            <Avatar.Image 
-              size={150} 
-              source={{uri:'https://img.ibxk.com.br/2019/02/17/17124052466014.jpg?w=704'}}
-              style={{marginTop: 15, marginBottom: 15}}          
+            <Avatar.Image
+              size={150}
+              source={{ uri: 'https://img.ibxk.com.br/2019/02/17/17124052466014.jpg?w=704' }}
+              style={{ marginTop: 15, marginBottom: 15 }}
             />
           </View>
           <View style={styles.view_intrutor_detalhe}>
@@ -46,71 +49,70 @@ const  AulaDetalheInstrutor = () => {
           </View>
         </View>
 
-        <View style={styles.view_items} >
+        <View style={styles.view_items}>
 
           <View style={styles.item}>
             <View style={styles.item_interno}>
               <View style={styles.item_status}>
-                <Icon name='calendar' size={20} />
-              </View >
+                <Icon name="calendar" size={20} />
+              </View>
               <View style={styles.item_detalhes}>
                 <View style={styles.item_text_superior}>
-                  <Text style={styles.item_text_value} >23/06/2020</Text>
+                  <Text style={styles.item_text_value}>23/06/2020</Text>
                 </View>
                 <View style={styles.item_text_inferior}>
                   <Text style={styles.item_text_title}>Data</Text>
-                </View>              
-              </View>  
-            </View>            
+                </View>
+              </View>
+            </View>
           </View>
 
           <View style={styles.item}>
             <View style={styles.item_interno}>
               <View style={styles.item_status}>
-                <IconMaterial name='timer' size={20} />
-              </View >
+                <IconMaterial name="timer" size={20} />
+              </View>
               <View style={styles.item_detalhes}>
                 <View style={styles.item_text_superior}>
-                  <Text style={styles.item_text_value} >19:00</Text>
+                  <Text style={styles.item_text_value}>19:00</Text>
                 </View>
                 <View style={styles.item_text_inferior}>
                   <Text style={styles.item_text_title}>Horário</Text>
-                </View>              
-              </View>  
-            </View>            
+                </View>
+              </View>
+            </View>
           </View>
 
           <View style={styles.item}>
             <View style={styles.item_interno}>
               <View style={styles.item_status}>
-                <Icon name='rocket' size={20} />
-              </View >
+                <Icon name="rocket" size={20} />
+              </View>
               <View style={styles.item_detalhes}>
                 <View style={styles.item_text_superior}>
-                  <Text style={styles.item_text_value} >Realizada</Text>
+                  <Text style={styles.item_text_value}>Realizada</Text>
                 </View>
                 <View style={styles.item_text_inferior}>
                   <Text style={styles.item_text_title}>Status</Text>
-                </View>              
-              </View>  
-            </View>            
+                </View>
+              </View>
+            </View>
           </View>
 
         </View>
 
-          <View style={styles.item_action}>
-            {/* <RectButton style={styles.button} onPress={_handleAulaDetalheInstrutor}>
+        <View style={styles.item_action}>
+          {/* <RectButton style={styles.button} onPress={_handleAulaDetalheInstrutor}>
               <Text style={styles.buttonText}>Cancelar Aula</Text>
             </RectButton> */}
-          </View >
-        
+        </View>
+
       </View>
     </KeyboardAvoidingView>
   );
-}
+};
 
 export default AulaDetalheInstrutor;
-
 
 const styles = StyleSheet.create({
   container_principal: {
@@ -119,127 +121,127 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     paddingTop: 40,
   },
-  view_principal:{
+  view_principal: {
     flex: 1,
     alignItems: 'center',
   },
 
-  view_instrutor:{
+  view_instrutor: {
     flex: 3,
     flexDirection: 'row',
     width: '95%',
-    marginTop: 15,    
+    marginTop: 15,
     alignItems: 'center',
   },
 
-  view_intrutor_foto:{
-    flex: 9,   
+  view_intrutor_foto: {
+    flex: 9,
     alignItems: 'center',
   },
 
-  view_intrutor_detalhe:{
+  view_intrutor_detalhe: {
     flex: 11,
     justifyContent: 'center',
-    marginLeft: 20
+    marginLeft: 20,
   },
-  
-  view_instrutor_detalhe_interno:{
+
+  view_instrutor_detalhe_interno: {
     height: '55%',
   },
 
-  instrutor_titulo:{
+  instrutor_titulo: {
     flex: 1,
     color: '#738396',
     fontSize: 20,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
 
-  instrutor_info_principal:{
+  instrutor_info_principal: {
     flex: 1,
     color: 'white',
     fontSize: 20,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
 
-  instrutor_info_secundaria:{
+  instrutor_info_secundaria: {
     flex: 1,
     color: 'white',
     fontSize: 16,
   },
 
-  view_items:{
+  view_items: {
     flex: 5,
     maxHeight: '40%',
     alignItems: 'center',
-    width: '100%'
+    width: '100%',
   },
 
-  item:{
+  item: {
     flex: 1,
     flexDirection: 'row',
     width: '90%',
-    alignItems: 'center'
+    alignItems: 'center',
   },
 
-  item_interno:{
+  item_interno: {
     flex: 1,
     flexDirection: 'row',
     backgroundColor: '#F1F1F1',
     height: '90%',
   },
 
-  item_status:{
+  item_status: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
 
-  item_detalhes:{
+  item_detalhes: {
     flex: 5,
   },
 
-  item_text_superior:{
+  item_text_superior: {
     flex: 1,
-    paddingTop: 20 
-    
+    paddingTop: 20,
+
   },
 
-  item_text_inferior:{
-    flex: 1,    
-    paddingBottom: 20
-  },
-
-  item_text_title:{
+  item_text_inferior: {
     flex: 1,
-    fontSize: 14
+    paddingBottom: 20,
   },
 
-  item_text_value:{
+  item_text_title: {
+    flex: 1,
+    fontSize: 14,
+  },
+
+  item_text_value: {
     flex: 1,
     fontWeight: 'bold',
-    fontSize: 16
+    fontSize: 16,
   },
 
-  item_action:{
+  item_action: {
     flex: 3,
-    width: '100%',    
+    width: '100%',
     alignItems: 'center',
   },
 
-  button: {    
+  button: {
     backgroundColor: '#0081DA',
     height: '30%',
     width: '50%',
     borderRadius: 8,
     overflow: 'hidden',
     alignItems: 'center',
-    marginTop: 20
+    marginTop: 20,
   },
 
   buttonText: {
     flex: 1,
     color: '#FFF',
     fontSize: 16,
-    marginTop: '8%'
+    marginTop: '8%',
   },
-})
+});
