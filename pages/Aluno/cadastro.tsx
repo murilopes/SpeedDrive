@@ -3,10 +3,11 @@ import { useNavigation } from '@react-navigation/native';
 import {
   Dimensions, Text, StyleSheet, View, KeyboardAvoidingView, Platform, 
 } from 'react-native';
-import { Appbar } from 'react-native-paper';
+import { Appbar, Avatar } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IconMaterial from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconEntypo from 'react-native-vector-icons/Entypo';
+import useStateWithCallback from 'use-state-with-callback';
 
 const AlunoCadastro = () => {
   const navigation = useNavigation();
@@ -14,6 +15,71 @@ const AlunoCadastro = () => {
   const _goBack = () => {
     navigation.goBack();
   };
+
+  const [iconeDadosPessoais, setIconeDadosPessoais] = React.useState('')
+  const [iconeEndereco, setIconeEndereco] = React.useState('')
+  const [iconeDocumentos, setIconeDocumentos] = React.useState('')
+  const [corIconeDadosPessoais, setCorIconeDadosPessoais] = React.useState('')
+  const [corIconeEndereco, setCorIconeEndereco] = React.useState('')
+  const [corIconeDocumentos, setCorIconeDocumentos] = React.useState('')
+
+  const [percentDadosPessoais, setPercentDadosPessoais] = useStateWithCallback(0, 
+    () => {
+      setIconeDadosPessoais(defineIconeDeProgresso(percentDadosPessoais))
+      setCorIconeDadosPessoais(defineCorIconeDeProgresso(percentDadosPessoais))
+    }
+  )
+  const [percentEndereco, setPercentEndereco] = useStateWithCallback(0,     
+    () => {
+      setIconeEndereco(defineIconeDeProgresso(percentEndereco))
+      setCorIconeEndereco(defineCorIconeDeProgresso(percentEndereco))
+    }
+  )
+
+  const [percentDocumentos, setPercentDocumentos] = useStateWithCallback(0,     
+    () => {
+      setIconeDocumentos(defineIconeDeProgresso(percentDocumentos))
+      setCorIconeDocumentos(defineCorIconeDeProgresso(percentDocumentos))
+    }
+  )
+
+  const defineIconeDeProgresso = (percent: number):string => {
+    if(percent == 0){
+      return 'progress-empty'
+    }
+    else if (percent <= 40){
+      return 'progress-one'
+    }
+    else if (percent <= 99){
+      return 'progress-two'
+    }
+    else{
+      return 'progress-full'
+    }
+  }
+
+  const defineCorIconeDeProgresso = (percent: number):string => {
+    if(percent == 0){
+      return 'red'
+    }
+    else if (percent <= 40){
+      return 'yellow'
+    }
+    else if (percent <= 99){
+      return 'orange'
+    }
+    else{
+      return 'green'
+    }
+  }
+
+  React.useEffect(() => {
+
+    setPercentDadosPessoais(35)
+    setPercentEndereco(100)
+    setPercentDocumentos(0)
+
+  }, [])
 
   return (
     <KeyboardAvoidingView
@@ -25,6 +91,20 @@ const AlunoCadastro = () => {
         <Appbar.Content title="Cadastro" />
       </Appbar.Header>
 
+      <View style={{alignItems: 'center', marginTop: 15, marginBottom: 20}}>
+        <Avatar.Image 
+          size={170} 
+          source={{uri:'https://s2.glbimg.com/jsaPuF7nO23vRxQkuJ_V3WgouKA=/e.glbimg.com/og/ed/f/original/2014/06/10/461777879.jpg'}}
+          style={{}}          
+        />
+        <View style={{alignItems: 'center', marginTop: -30}}>
+          <Avatar.Icon 
+            size={50} 
+            icon='camera'                   
+          />
+        </View>
+      </View>
+
       <View style={styles.view_items}>
 
         <View style={styles.divider} />
@@ -32,8 +112,8 @@ const AlunoCadastro = () => {
         <View style={styles.item}>
           <View style={styles.item_interno}>
             <View style={styles.item_status}>
-              <IconEntypo name="progress-full" color='green' size={30} style={{flex: 1}} />
-              <Text style={styles.item_text_status_preenchimento}>100%</Text>
+              <IconEntypo name={iconeDadosPessoais} color={corIconeDadosPessoais} size={30} style={{flex: 1}} />
+              <Text style={styles.item_text_status_preenchimento}>{percentDadosPessoais}%</Text>
             </View>
             <View style={styles.item_detalhes}>
               <View style={styles.item_text_superior}>
@@ -52,8 +132,8 @@ const AlunoCadastro = () => {
         <View style={styles.item}>
           <View style={styles.item_interno}>
             <View style={styles.item_status}>
-              <IconEntypo name="progress-one" color='yellow' size={30} style={{flex: 1}} />
-              <Text style={styles.item_text_status_preenchimento}>20%</Text>
+              <IconEntypo name={iconeEndereco} color={corIconeEndereco} size={30} style={{flex: 1}} />
+              <Text style={styles.item_text_status_preenchimento}>{percentEndereco}%</Text>
             </View>
             <View style={styles.item_detalhes}>
               <View style={styles.item_text_superior}>
@@ -71,8 +151,8 @@ const AlunoCadastro = () => {
         <View style={styles.item}>
           <View style={styles.item_interno}>
             <View style={styles.item_status}>
-              <IconEntypo name="progress-empty" color='red' size={30} style={{flex: 1}} />
-              <Text style={styles.item_text_status_preenchimento}>0%</Text>
+              <IconEntypo name={iconeDocumentos} color={corIconeDocumentos} size={30} style={{flex: 1}} />
+              <Text style={styles.item_text_status_preenchimento}>{percentDocumentos}%</Text>
             </View>
             <View style={styles.item_detalhes}>
               <View style={styles.item_text_superior}>
@@ -86,9 +166,6 @@ const AlunoCadastro = () => {
         </View>
 
         <View style={styles.divider} />
-
-
-       
 
       </View>
 
@@ -162,8 +239,8 @@ const styles = StyleSheet.create({
 
   item_text_value: {
     flex: 1,
-    fontSize: 24,
-    color: 'white'
+    fontSize: 22,
+    color: 'white',
   },
 
   item_action: {
