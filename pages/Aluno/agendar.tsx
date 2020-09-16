@@ -18,6 +18,8 @@ const  AlunoAgendar = () => {
     navigation.goBack()
   }
 
+  
+  type AulaType = { id: number, data: Date, horario: Date};  
   const aulaInitialValue:Array<AulaType> = []
   const dateInitialValue:Date = moment().toDate();
   const timeInitialValue:string = moment().toDate().getHours().toString().padStart(2, '0') + ':' + moment().toDate().getMinutes().toString().padStart(2, '0');
@@ -37,7 +39,7 @@ const  AlunoAgendar = () => {
     setoverlayVisibility(!overlayVisibility);
   };
 
-  function prettyDate2(time) {    
+  function dataBonita(time: Date) {    
     return time.toLocaleTimeString(navigator.language, {
       hour: '2-digit',
       minute:'2-digit'
@@ -52,35 +54,19 @@ const  AlunoAgendar = () => {
     setcount(count+1);
   };
 
-  type AulaType = { id: number, data: Date, horario: Date};  
+  const [aulaSelecionadaRemocao, setAulaSelecionadaRemocao] = useState(0);
+  const [overlayRemoverAulaVisibility, setOverlayRemoverAulaVisibility] = useState(false);
 
-  class Agendamentos {
-    agenda = new Array<AulaType>();
-    
-    addAula(aula: AulaType)
-    {
-      this.agenda.push(aula)
-    }
+  const handleDelete = (id: number) => {
+    setOverlayRemoverAulaVisibility(true)
+    setAulaSelecionadaRemocao(id)
   }
-
-  const agendamentos = new Agendamentos()
 
   const removeAula = (id: number) => {
     var index = listAulas.findIndex(aula => aula.id == id)
-    listAulas.splice(index, 1)    
-    console.log('removendo aula', id)    
-  }
-
-  const renderAulas = function(x: Array<any>){
-    x.map((item, i) => (
-      <View key={item.id} onTouchEnd={()=> {removeAula(item.id)}} style={{height: 40, backgroundColor: 'yellow', margin: 5, width: '100%'}}>
-        <Text>
-          <Text>{item.id}</Text>
-          <Text>{item.data}</Text>
-          <Text>{item.horario}</Text>                    
-        </Text>
-      </View>
-    ))
+    listAulas.splice(index, 1)
+    console.log('removendo aula', id)  
+    setOverlayRemoverAulaVisibility(false)  
   }
 
   //Configurações para o DatePicker do Overlay
@@ -137,11 +123,11 @@ const  AlunoAgendar = () => {
                     </Text>
                     <Text style={styles.aula_item_text_line}>
                       <Text style={styles.aula_item_text_title}>Horário: </Text>
-                      <Text >{prettyDate2(item.horario)}</Text>
+                      <Text >{dataBonita(item.horario)}</Text>
                     </Text>              
                   </View>
                   <View style={styles.item_action}>
-                    <Icon name='trash-alt' size={30} color='red' onPress={()=> {removeAula(item.id)}}/>
+                    <Icon name='trash-alt' size={30} color='red' onPress={()=> {handleDelete(item.id)}}/>
                   </View >
                 </View>
 
@@ -189,7 +175,7 @@ const  AlunoAgendar = () => {
                   
                 <View style={styles.overlay_hora}>
                   <Text style={{ fontSize: 18}}>Horário de início</Text>
-                  <Button onPressOut={()=>setShowTimePicker(true)} title={prettyDate2(actualTimeExactOverlay)} />  
+                  <Button onPressOut={()=>setShowTimePicker(true)} title={dataBonita(actualTimeExactOverlay)} />  
                     {showTimePicker && (
                       <TimePicker
                         date={actualTimeExactOverlay}
@@ -244,7 +230,7 @@ const  AlunoAgendar = () => {
 
       <Overlay isVisible={overlayAgendarVisibility} overlayStyle={styles.overlay_agendar}>
         <View style={{flex: 1, alignItems: 'center'}}>
-          <Text style={{fontSize: 20, fontWeight: 'bold'}}>Confirma os</Text>
+          <Text style={{fontSize: 20, fontWeight: 'bold'}}>Confirma efetuar os</Text>
           <Text style={{fontSize: 20, fontWeight: 'bold'}}>agendamentos?</Text>
         </View>
         <View style={{flex: 1, flexDirection:'row', alignItems: 'center'}}>
@@ -255,6 +241,25 @@ const  AlunoAgendar = () => {
           </View>
           <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', }}>
             <RectButton style={styles.buttonSim} onPress={()=> _goBack()}>
+              <Text style={styles.buttonSimText}>Sim</Text>
+            </RectButton>
+          </View>
+        </View>
+      </Overlay>
+
+      <Overlay isVisible={overlayRemoverAulaVisibility} overlayStyle={styles.overlay_agendar}>
+        <View style={{flex: 1, alignItems: 'center'}}>
+          <Text style={{fontSize: 20, fontWeight: 'bold'}}>Confirma remover</Text>
+          <Text style={{fontSize: 20, fontWeight: 'bold'}}>a aula?</Text>
+        </View>
+        <View style={{flex: 1, flexDirection:'row', alignItems: 'center'}}>
+          <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', }}>
+            <RectButton style={styles.buttonNao} onPress={()=> setOverlayRemoverAulaVisibility(false)} >
+              <Text style={styles.buttonNaoText}>Não</Text>
+            </RectButton>
+          </View>
+          <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', }}>
+            <RectButton style={styles.buttonSimDelete} onPress={()=> removeAula(aulaSelecionadaRemocao)}>
               <Text style={styles.buttonSimText}>Sim</Text>
             </RectButton>
           </View>
@@ -367,6 +372,16 @@ const styles = StyleSheet.create({
 
   buttonSim: {
     backgroundColor: 'green',
+    height: 50,
+    width: '80%',
+    borderRadius: 8,
+    overflow: 'hidden',
+    alignItems: 'center',
+    marginStart: '15%',
+  },
+
+  buttonSimDelete: {
+    backgroundColor: 'red',
     height: 50,
     width: '80%',
     borderRadius: 8,
