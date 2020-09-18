@@ -1,7 +1,8 @@
 import React from 'react';
-import { TouchableOpacity, Platform, Text } from 'react-native';
+import { StyleSheet, TouchableOpacity, Platform, Text, View } from 'react-native';
 import styled from 'styled-components';
 import DateTimePicker from '@react-native-community/datetimepicker';
+/* 
 const Container = styled.TouchableOpacity`
   background-color: ${Platform.OS === 'ios' ? '#00000066' : 'transparent'};
   position: absolute;
@@ -16,7 +17,7 @@ const Header = styled.View`
   align-items: flex-end;
   background-color: white;
   border-bottom-width: 1px;
-`;
+`; */
 export default class DatePickerX extends React.Component {
   constructor(props) {
     super(props);
@@ -30,13 +31,13 @@ export default class DatePickerX extends React.Component {
     const { onClose, onChange } = this.props;
     const { date } = this.state;
     return (
-      <Container onPress={onClose} >
+      <TouchableOpacity onPress={onClose} style={styles.touchable_style} >
         {Platform.OS === 'ios' && (
-          <Header>
+          <View style={styles.view_style}>
             <TouchableOpacity onPress={onClose}>
               <Text>Done</Text>
             </TouchableOpacity>
-          </Header>
+          </View>
         )}
         <DateTimePicker
           value={date}
@@ -52,7 +53,27 @@ export default class DatePickerX extends React.Component {
          }}
          style={{ backgroundColor: 'white'}}
        />
-     </Container>
+     </TouchableOpacity>
    );
   }
 }
+
+const styles = StyleSheet.create({
+  touchable_style: {
+  backgroundColor: Platform.OS === 'ios' ? '#00000066' : 'transparent',
+  position: 'absolute',
+  justifyContent: 'flex-end',
+  width: '120%',
+  height: '100%',
+  },
+
+  view_style: {
+    width: '100%',
+    padding: '16',
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+    backgroundColor: 'white',
+    borderBottomWidth: 1
+  }
+
+});

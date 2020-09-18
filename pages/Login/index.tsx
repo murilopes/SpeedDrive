@@ -120,7 +120,8 @@ const styles = StyleSheet.create({
   Titulo: {
     fontSize: 35,
     fontWeight: '800',
-    fontFamily: 'Verdana',
+    /* fontFamily: 'Verdana', */
+    fontFamily: 'Roboto_500Medium',
     color: "#C80000",
     textAlign: 'right',
     marginRight: 20,
@@ -129,7 +130,8 @@ const styles = StyleSheet.create({
   DescricaoMaior: {
     fontSize: 17,
     fontWeight: '400',
-    fontFamily: 'Verdana',
+    /* fontFamily: 'Verdana', */
+    fontFamily: 'Roboto_500Medium',
     /* color: "#C80000", */
     color: '#F7C700',
     textAlign: 'right',
@@ -139,7 +141,8 @@ const styles = StyleSheet.create({
   DescricaoMenor: {
     fontSize: 15,
     fontWeight: '200',
-    fontFamily: 'Verdana',
+    /* fontFamily: 'Verdana', */
+    fontFamily: 'Roboto_500Medium',
     color: '#797D7F',
     textAlign: 'right',
     marginRight: 20
