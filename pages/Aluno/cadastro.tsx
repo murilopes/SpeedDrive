@@ -20,6 +20,10 @@ const AlunoCadastro = () => {
     navigation.navigate('CadastroDadosPessoais');
   };
 
+  const _handleCadastroEndereco = () => {
+    navigation.navigate('CadastroEndereco');
+  };
+
   const [iconeDadosPessoais, setIconeDadosPessoais] = React.useState('')
   const [iconeEndereco, setIconeEndereco] = React.useState('')
   const [iconeDocumentos, setIconeDocumentos] = React.useState('')
@@ -133,7 +137,7 @@ const AlunoCadastro = () => {
         <View style={styles.divider} />
 
 
-        <View style={styles.item}>
+        <View style={styles.item} onTouchEnd={_handleCadastroEndereco}>
           <View style={styles.item_interno}>
             <View style={styles.item_status}>
               <IconEntypo name={iconeEndereco} color={corIconeEndereco} size={30} style={{flex: 1}} />
