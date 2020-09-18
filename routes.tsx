@@ -11,6 +11,7 @@ import AlunoProximas from './pages/Aluno/proximas';
 import AlunoAgendar from './pages/Aluno/agendar';
 import AlunoCadastro from './pages/Aluno/cadastro';
 import CadastroDadosPessoais from './pages/Comum/cadastroDadosPessoais';
+import CadastroEndereco from './pages/Comum/cadastroEndereco';
 import AulaDetalheInstrutor from './pages/Aula/detalheInstrutor';
 
 
@@ -34,8 +35,9 @@ const Routes = () => {
         <AppStack.Screen name="AlunoProximas" component={AlunoProximas} />
         <AppStack.Screen name="AlunoAgendar" component={AlunoAgendar} />
         <AppStack.Screen name="AlunoCadastro" component={AlunoCadastro} />
-        <AppStack.Screen name="AulaDetalheInstrutor" component={AulaDetalheInstrutor} />
         <AppStack.Screen name="CadastroDadosPessoais" component={CadastroDadosPessoais} />
+        <AppStack.Screen name="CadastroEndereco" component={CadastroEndereco} />
+        <AppStack.Screen name="AulaDetalheInstrutor" component={AulaDetalheInstrutor} />
       </AppStack.Navigator>
     </NavigationContainer>
   );
