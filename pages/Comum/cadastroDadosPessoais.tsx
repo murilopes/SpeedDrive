@@ -5,6 +5,8 @@ import {
 } from 'react-native';
 import { Appbar, TextInput, DefaultTheme, Chip, Text } from 'react-native-paper';
 import { TextInputMask } from 'react-native-masked-text'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { RectButton } from 'react-native-gesture-handler';
 
 /* 
 ToDos:
@@ -118,56 +120,60 @@ const cadastroDadosPessoais = () => {
   };
 
   return (
-    <KeyboardAvoidingView
+    <KeyboardAwareScrollView
       style={styles.container_principal}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <Appbar.Header statusBarHeight={-15} style={{ height: 45, backgroundColor: '#212F3C' }}>
         <Appbar.Action icon="arrow-left-circle" size={30} onPress={_goBack} />
         <Appbar.Content title="Dados Pessoais" />
       </Appbar.Header>
 
-      <TextInput theme={theme} label="Nome" value={nome} onChangeText={text => setNome(text)}/>
-      <TextInput theme={theme} label="Sobrenome" value={sobrenome} onChangeText={text => setSobrenome(text)}/>
-      <Text  style={{color: '#A79898', marginStart: 12, marginTop: 10, marginBottom: 10, fontSize: tamanhoFonteGenero}}>Gênero</Text>
-      <View style={{flexDirection: 'row'}}>
-        <Chip selected={genMascSelecionado} selectedColor={colorGenMasc} onPress={() => {handleSelecaoGenero('Masculino')}} style={{width: 110, marginStart: 10, marginEnd: 10}}>Masculino</Chip>
-        <Chip selected={genFemSelecionado} selectedColor={colorGenFem} onPress={() => {handleSelecaoGenero('Feminino')}} style={{width: 100, marginEnd: 10}}>Feminino</Chip>
-        <Chip selected={genOutrosSelecionado} selectedColor={colorGenOutros} onPress={() => {handleSelecaoGenero('Outros')}} style={{width: 100}}>Outros</Chip>
-      </View> 
-      <TextInput theme={theme} label="CPF" value={CPF}
-        render={props =><TextInputMask
-          {...props}
-          type={'cpf'}
-          value={CPF}
-          onChangeText={text => setCPF(text)}
-        />}
-      />
-      <TextInput theme={theme} label="WhatsApp/Celular" value={whatsapp}
-        render={props =><TextInputMask
-          {...props}
-          type={'cel-phone'}
-          options={{
-            maskType: 'BRL',
-            withDDD: true,
-            dddMask: '(99) '
-          }}
-          value={whatsapp}
-          onChangeText={text => setWhatsapp(text)}
-        />}
-      />
-      <TextInput theme={theme} label="Data de Nascimento" value={dataNascimento}
-        render={props =><TextInputMask
-          {...props}
-          type={'datetime'}
-          options={{format: 'DD/MM/YYYY'}}
-          value={dataNascimento}
-          onChangeText={text => setDataNascimento(text)}
-        />}
-      />
-      <TextInput theme={theme} label="Email" value={email} onChangeText={text => setEmail(text)}/>
-      
-    </KeyboardAvoidingView>
+        <TextInput theme={theme} label="Nome" value={nome} onChangeText={text => setNome(text)}/>
+        <TextInput theme={theme} label="Sobrenome" value={sobrenome} onChangeText={text => setSobrenome(text)}/>
+        <Text  style={{color: '#A79898', marginStart: 12, marginTop: 10, marginBottom: 10, fontSize: tamanhoFonteGenero}}>Gênero</Text>
+        <View style={{flexDirection: 'row'}}>
+          <Chip selected={genMascSelecionado} selectedColor={colorGenMasc} onPress={() => {handleSelecaoGenero('Masculino')}} style={{width: 110, marginStart: 10, marginEnd: 10}}>Masculino</Chip>
+          <Chip selected={genFemSelecionado} selectedColor={colorGenFem} onPress={() => {handleSelecaoGenero('Feminino')}} style={{width: 100, marginEnd: 10}}>Feminino</Chip>
+          <Chip selected={genOutrosSelecionado} selectedColor={colorGenOutros} onPress={() => {handleSelecaoGenero('Outros')}} style={{width: 100}}>Outros</Chip>
+        </View> 
+        <TextInput theme={theme} label="CPF" value={CPF}
+          render={props =><TextInputMask
+            {...props}
+            type={'cpf'}
+            value={CPF}
+            onChangeText={text => setCPF(text)}
+          />}
+        />
+        <TextInput theme={theme} label="WhatsApp/Celular" value={whatsapp}
+          render={props =><TextInputMask
+            {...props}
+            type={'cel-phone'}
+            options={{
+              maskType: 'BRL',
+              withDDD: true,
+              dddMask: '(99) '
+            }}
+            value={whatsapp}
+            onChangeText={text => setWhatsapp(text)}
+          />}
+        />
+        <TextInput theme={theme} label="Data de Nascimento" value={dataNascimento}
+          render={props =><TextInputMask
+            {...props}
+            type={'datetime'}
+            options={{format: 'DD/MM/YYYY'}}
+            value={dataNascimento}
+            onChangeText={text => setDataNascimento(text)}
+          />}
+        />
+        <TextInput theme={theme} label="Email" value={email} onChangeText={text => setEmail(text)}/>
+        <View style={styles.buttonView}>
+          <RectButton style={styles.button} onPress={()=>{}}>
+            <Text style={styles.buttonText}>Salvar</Text>
+          </RectButton>
+        </View>
+        
+    </KeyboardAwareScrollView>
   );
 };
 
@@ -180,5 +186,26 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     paddingTop: 40,
   },
-  
+
+  buttonView: {
+    margin: 20,
+    alignItems: 'center'
+  },
+
+  button: {
+    backgroundColor: '#0081DA',
+    height: 45,
+    width: '50%',
+    borderRadius: 8,
+    overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: 10,
+  },
+
+  buttonText: {
+    flex: 1,
+    color: '#FFF',
+    fontSize: 20,
+  },
 });
