@@ -3,17 +3,14 @@ import { useNavigation } from '@react-navigation/native';
 import {
   StyleSheet, View, KeyboardAvoidingView, Platform,  
 } from 'react-native';
-import { Appbar, TextInput, DefaultTheme, Chip, Text } from 'react-native-paper';
+import { Appbar, TextInput, DefaultTheme, Chip, Text, Snackbar } from 'react-native-paper';
 import { TextInputMask } from 'react-native-masked-text'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { RectButton } from 'react-native-gesture-handler';
 
 /* 
 ToDos:
-- Botão Salvar
 - Trazer dados reais/consistir
-- Campos numéricos nao tem botão 'fechar' no teclado
-- Quando está nos campos de baixo o teclado fica por cima
 */
 
 const cadastroDadosPessoais = () => {
@@ -30,6 +27,7 @@ const cadastroDadosPessoais = () => {
   const [whatsapp, setWhatsapp] = React.useState('');
   const [dataNascimento, setDataNascimento] = React.useState('');
   const [email, setEmail] = React.useState('');
+  const [observacoes, setObservacoes] = React.useState('');
 
   const [tamanhoFonteGenero, setTamanhoFonteGenero] = React.useState(0);
   const [genMascSelecionado, setGenMascSelecionado] = React.useState(false);
@@ -38,6 +36,9 @@ const cadastroDadosPessoais = () => {
   const [colorGenMasc, setColorGenMasc] = React.useState('black');
   const [colorGenFem, setColorGenFem] = React.useState('black');
   const [colorGenOutros, setColorGenOutros] = React.useState('black');
+
+  const [snackSalvarVisible, setSnackSalvarVisible] = React.useState(false);
+  const onToggleSnackSalvar = () => setSnackSalvarVisible(!snackSalvarVisible);
 
   const handleSelecaoGenero = (genero: string) => {
     if(genero.includes('Masculino'))
@@ -102,6 +103,9 @@ const cadastroDadosPessoais = () => {
 
   React.useEffect(() => {
     setTamanhoFonteGenero(16)
+    setNome('Jonatas')
+    setSobrenome('Vasconcellos')
+    setEmail('teste15@gmail.com')
   }, [])
 
   const theme = {
@@ -128,50 +132,67 @@ const cadastroDadosPessoais = () => {
         <Appbar.Content title="Dados Pessoais" />
       </Appbar.Header>
 
-        <TextInput theme={theme} label="Nome" value={nome} onChangeText={text => setNome(text)}/>
-        <TextInput theme={theme} label="Sobrenome" value={sobrenome} onChangeText={text => setSobrenome(text)}/>
-        <Text  style={{color: '#A79898', marginStart: 12, marginTop: 10, marginBottom: 10, fontSize: tamanhoFonteGenero}}>Gênero</Text>
-        <View style={{flexDirection: 'row'}}>
-          <Chip selected={genMascSelecionado} selectedColor={colorGenMasc} onPress={() => {handleSelecaoGenero('Masculino')}} style={{width: 110, marginStart: 10, marginEnd: 10}}>Masculino</Chip>
-          <Chip selected={genFemSelecionado} selectedColor={colorGenFem} onPress={() => {handleSelecaoGenero('Feminino')}} style={{width: 100, marginEnd: 10}}>Feminino</Chip>
-          <Chip selected={genOutrosSelecionado} selectedColor={colorGenOutros} onPress={() => {handleSelecaoGenero('Outros')}} style={{width: 100}}>Outros</Chip>
-        </View> 
-        <TextInput theme={theme} label="CPF" value={CPF}
-          render={props =><TextInputMask
-            {...props}
-            type={'cpf'}
-            value={CPF}
-            onChangeText={text => setCPF(text)}
-          />}
-        />
-        <TextInput theme={theme} label="WhatsApp/Celular" value={whatsapp}
-          render={props =><TextInputMask
-            {...props}
-            type={'cel-phone'}
-            options={{
-              maskType: 'BRL',
-              withDDD: true,
-              dddMask: '(99) '
-            }}
-            value={whatsapp}
-            onChangeText={text => setWhatsapp(text)}
-          />}
-        />
-        <TextInput theme={theme} label="Data de Nascimento" value={dataNascimento}
-          render={props =><TextInputMask
-            {...props}
-            type={'datetime'}
-            options={{format: 'DD/MM/YYYY'}}
-            value={dataNascimento}
-            onChangeText={text => setDataNascimento(text)}
-          />}
-        />
-        <TextInput theme={theme} label="Email" value={email} onChangeText={text => setEmail(text)}/>
-        <View style={styles.buttonView}>
-          <RectButton style={styles.button} onPress={()=>{}}>
-            <Text style={styles.buttonText}>Salvar</Text>
-          </RectButton>
-        </View>
+      <TextInput theme={theme} label="Nome" value={nome} onChangeText={text => setNome(text)}/>
+      <TextInput theme={theme} label="Sobrenome" value={sobrenome} onChangeText={text => setSobrenome(text)}/>
+      <Text  style={{color: '#A79898', marginStart: 12, marginTop: 10, marginBottom: 10, fontSize: tamanhoFonteGenero}}>Gênero</Text>
+      <View style={{flexDirection: 'row'}}>
+        <Chip selected={genMascSelecionado} selectedColor={colorGenMasc} onPress={() => {handleSelecaoGenero('Masculino')}} style={{width: 110, marginStart: 10, marginEnd: 10}}>Masculino</Chip>
+        <Chip selected={genFemSelecionado} selectedColor={colorGenFem} onPress={() => {handleSelecaoGenero('Feminino')}} style={{width: 100, marginEnd: 10}}>Feminino</Chip>
+        <Chip selected={genOutrosSelecionado} selectedColor={colorGenOutros} onPress={() => {handleSelecaoGenero('Outros')}} style={{width: 100}}>Outros</Chip>
+      </View> 
+      <TextInput theme={theme} label="CPF" value={CPF} returnKeyType={ 'done' }
+        render={props =><TextInputMask
+          {...props}
+          type={'cpf'}
+          value={CPF}
+          onChangeText={text => setCPF(text)}
+        />}
+      />
+      <TextInput theme={theme} label="WhatsApp/Celular" value={whatsapp} returnKeyType={ 'done' }
+        render={props =><TextInputMask
+          {...props}
+          type={'cel-phone'}
+          options={{
+            maskType: 'BRL',
+            withDDD: true,
+            dddMask: '(99) '
+          }}
+          value={whatsapp}
+          onChangeText={text => setWhatsapp(text)}
+        />}
+      />
+      <TextInput theme={theme} label="Data de Nascimento" value={dataNascimento} returnKeyType={ 'done' }
+        render={props =><TextInputMask
+          {...props}
+          type={'datetime'}
+          options={{format: 'DD/MM/YYYY'}}
+          value={dataNascimento}
+          onChangeText={text => setDataNascimento(text)}
+        />}
+      />
+      <TextInput theme={theme} label="Email" value={email} onChangeText={text => setEmail(text)}/>
+      <TextInput  theme={theme} 
+                  label="Observações" 
+                  value={observacoes} 
+                  placeholder='Ex: tenho preferência de aula com instrutora' 
+                  onChangeText={text => setObservacoes(text)}/
+      >
+
+      <View style={styles.buttonView}>
+        <RectButton style={styles.button} onPress={onToggleSnackSalvar}>
+          <Text style={styles.buttonText}>Salvar</Text>
+        </RectButton>
+      </View>
+
+      <Snackbar
+        visible={snackSalvarVisible}
+        onDismiss={onToggleSnackSalvar}
+        action={{
+          label: 'Ok',
+          onPress: _goBack,
+        }}>
+        Dados salvos com sucesso!
+      </Snackbar>
         
     </KeyboardAwareScrollView>
   );
@@ -188,7 +209,7 @@ const styles = StyleSheet.create({
   },
 
   buttonView: {
-    margin: 20,
+    margin: 15,
     alignItems: 'center'
   },
 

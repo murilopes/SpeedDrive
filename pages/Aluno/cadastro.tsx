@@ -83,9 +83,9 @@ const AlunoCadastro = () => {
 
   React.useEffect(() => {
 
-    setPercentDadosPessoais(35)
+    setPercentDadosPessoais(42)
     setPercentEndereco(100)
-    setPercentDocumentos(0)
+    setPercentDocumentos(100)
 
   }, [])
 
