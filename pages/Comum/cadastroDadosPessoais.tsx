@@ -102,10 +102,10 @@ const cadastroDadosPessoais = () => {
   }
 
   React.useEffect(() => {
-    setTamanhoFonteGenero(16)
-    setNome('Jonatas')
-    setSobrenome('Vasconcellos')
-    setEmail('teste15@gmail.com')
+    //setTamanhoFonteGenero(16)
+    //setNome('Jonatas')
+    //setSobrenome('Vasconcellos')
+    //setEmail('teste15@gmail.com')
   }, [])
 
   const theme = {
