@@ -12,7 +12,10 @@ import AlunoAgendar from './pages/Aluno/agendar';
 import AlunoCadastro from './pages/Aluno/cadastro';
 import CadastroDadosPessoais from './pages/Comum/cadastroDadosPessoais';
 import CadastroEndereco from './pages/Comum/cadastroEndereco';
+import CadastroDocumentosAluno from './pages/Aluno/cadastroDocumentos';
 import AulaDetalheInstrutor from './pages/Aula/detalheInstrutor';
+import UploadDocumento from './pages/Comum/UploadDocumento';
+
 
 
 const AppStack = createStackNavigator();
@@ -37,7 +40,8 @@ const Routes = () => {
         <AppStack.Screen name="AlunoCadastro" component={AlunoCadastro} />
         <AppStack.Screen name="CadastroDadosPessoais" component={CadastroDadosPessoais} />
         <AppStack.Screen name="CadastroEndereco" component={CadastroEndereco} />
-        <AppStack.Screen name="AulaDetalheInstrutor" component={AulaDetalheInstrutor} />
+        <AppStack.Screen name="CadastroDocumentosAluno" component={CadastroDocumentosAluno} />
+        <AppStack.Screen name="UploadDocumento" component={UploadDocumento} />
       </AppStack.Navigator>
     </NavigationContainer>
   );

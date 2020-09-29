@@ -25,6 +25,10 @@ const AlunoCadastro = () => {
     navigation.navigate('CadastroEndereco');
   };
 
+  const _handleCadastroDocumentos = () => {
+    navigation.navigate('CadastroDocumentosAluno');
+  };
+
   const [fotoPerfil, setFotoPerfil] = React.useState('');
   const [iconeDadosPessoais, setIconeDadosPessoais] = React.useState('')
   const [iconeEndereco, setIconeEndereco] = React.useState('')
@@ -166,7 +170,6 @@ const AlunoCadastro = () => {
 
         <View style={styles.divider} />
 
-
         <View style={styles.item} onTouchEnd={_handleCadastroEndereco}>
           <View style={styles.item_interno}>
             <View style={styles.item_status}>
@@ -186,7 +189,7 @@ const AlunoCadastro = () => {
 
         <View style={styles.divider} />
 
-        <View style={styles.item}>
+        <View style={styles.item}  onTouchEnd={_handleCadastroDocumentos}>
           <View style={styles.item_interno}>
             <View style={styles.item_status}>
               <IconEntypo name={iconeDocumentos} color={corIconeDocumentos} size={30} style={{flex: 1}} />
@@ -244,6 +247,7 @@ const styles = StyleSheet.create({
     paddingTop: 5,
     alignItems: 'center',
   },
+
   item_seta: {
     flex: 1,
     paddingTop: 15,
