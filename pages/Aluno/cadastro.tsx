@@ -8,6 +8,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import IconMaterial from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconEntypo from 'react-native-vector-icons/Entypo';
 import useStateWithCallback from 'use-state-with-callback';
+import * as ImagePicker from 'expo-image-picker';
 
 const AlunoCadastro = () => {
   const navigation = useNavigation();
@@ -24,6 +25,7 @@ const AlunoCadastro = () => {
     navigation.navigate('CadastroEndereco');
   };
 
+  const [fotoPerfil, setFotoPerfil] = React.useState('');
   const [iconeDadosPessoais, setIconeDadosPessoais] = React.useState('')
   const [iconeEndereco, setIconeEndereco] = React.useState('')
   const [iconeDocumentos, setIconeDocumentos] = React.useState('')
@@ -31,6 +33,8 @@ const AlunoCadastro = () => {
   const [corIconeEndereco, setCorIconeEndereco] = React.useState('')
   const [corIconeDocumentos, setCorIconeDocumentos] = React.useState('')
 
+  const [cameraPermission, setCameraPermission] = React.useState(false)
+  
   const [percentDadosPessoais, setPercentDadosPessoais] = useStateWithCallback(0, 
     () => {
       setIconeDadosPessoais(defineIconeDeProgresso(percentDadosPessoais))
@@ -50,6 +54,30 @@ const AlunoCadastro = () => {
       setCorIconeDocumentos(defineCorIconeDeProgresso(percentDocumentos))
     }
   )
+
+  const pickImage = async () => {
+
+    if (Platform.OS !== 'web') {
+      const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
+      if (status !== 'granted') {
+        alert('Desculpa, nós precisamos de acesso ao rolo de foto para isso!');
+      }
+      else {
+        let result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.All,
+          allowsEditing: true,
+          aspect: [4, 3],
+          quality: 1,
+        });
+    
+        console.log(result);
+    
+        if (!result.cancelled) {
+          setFotoPerfil(result.uri);
+        }
+      }
+    }
+  };
 
   const defineIconeDeProgresso = (percent: number):string => {
     if(percent == 0){
@@ -86,6 +114,7 @@ const AlunoCadastro = () => {
     setPercentDadosPessoais(42)
     setPercentEndereco(100)
     setPercentDocumentos(100)
+    setFotoPerfil('https://s2.glbimg.com/jsaPuF7nO23vRxQkuJ_V3WgouKA=/e.glbimg.com/og/ed/f/original/2014/06/10/461777879.jpg')
 
   }, [])
 
@@ -102,13 +131,14 @@ const AlunoCadastro = () => {
       <View style={{alignItems: 'center', marginTop: 15, marginBottom: 20}}>
         <Avatar.Image 
           size={170} 
-          source={{uri:'https://s2.glbimg.com/jsaPuF7nO23vRxQkuJ_V3WgouKA=/e.glbimg.com/og/ed/f/original/2014/06/10/461777879.jpg'}}
-          style={{}}          
+          source={{uri: fotoPerfil}}
+          style={{}}
         />
         <View style={{alignItems: 'center', marginTop: -30}}>
           <Avatar.Icon 
             size={50} 
-            icon='camera'                   
+            icon='camera'
+            onTouchEnd={pickImage}
           />
         </View>
       </View>
