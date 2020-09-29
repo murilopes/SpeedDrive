@@ -16,6 +16,10 @@ const cadastroDocumentosAluno = () => {
     navigation.goBack();
   };
 
+  const _handleUploadDocumento = () => {
+    navigation.navigate('UploadDocumento', {nomeDocumento: 'Carteira de Habilitação'});
+  };
+
   const [qtdDoctosOk, setQtdDoctosOk] = React.useState(0)
   const [statusDoctoCNH, setStatusDoctoCNH] = React.useState(false)
 
@@ -50,7 +54,7 @@ const cadastroDocumentosAluno = () => {
 
         <View style={styles.divider} />
 
-        <View style={styles.item} onTouchEnd={() => {}}>
+        <View style={styles.item} onTouchEnd={_handleUploadDocumento}>
           <View style={styles.item_interno}>
             <View style={styles.item_status}>
               <Icon name= 'check-circle' color= {statusDoctoCNH ? 'green' : 'grey'} size={30} style={{flex: 1}} />

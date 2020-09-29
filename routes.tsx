@@ -14,9 +14,7 @@ import CadastroDadosPessoais from './pages/Comum/cadastroDadosPessoais';
 import CadastroEndereco from './pages/Comum/cadastroEndereco';
 import CadastroDocumentosAluno from './pages/Aluno/cadastroDocumentos';
 import AulaDetalheInstrutor from './pages/Aula/detalheInstrutor';
-import UploadDocumento from './pages/Comum/UploadDocumento';
-
-
+import UploadDocumento from './pages/Comum/uploadDocumento';
 
 const AppStack = createStackNavigator();
 
