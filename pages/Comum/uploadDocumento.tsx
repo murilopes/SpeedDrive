@@ -17,7 +17,9 @@ export default class uploadDocumento extends React.Component {
 
     this.state = {
       nomeDocumento: props.route.params.nomeDocumento,
-      uriImagem: '',
+      imagemUri: '',
+      imagemHeight: 300,
+      imagemWidth:300,
       snackSalvarVisible: false,      
     };
     
@@ -43,13 +45,18 @@ export default class uploadDocumento extends React.Component {
         else {
           let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
-            allowsEditing: true,
+            allowsEditing: false,
             aspect: [4, 3],
             quality: 1,
           });
             
           if (!result.cancelled) {
-            this.setState({uriImagem: result.uri})
+            this.setState({imagemUri: result.uri})
+            if (result.height > result.width) {
+              this.setState({imagemHeight: 300, imagemWidth: 300 * result.width / result.height})
+            } else {
+              this.setState({imagemHeight: 300 * result.height / result.width, imagemWidth: 300})
+            }
           }
         }
       }
@@ -66,9 +73,9 @@ export default class uploadDocumento extends React.Component {
 
         <View style={styles.view_documento} >
           <Image
-            style={{ width: 300, height: 300, borderColor: 'white', borderWidth: 1, }}
+            style={{ height: this.state.imagemHeight, width: this.state.imagemWidth, borderColor: 'white', borderWidth: 1, }}
             source={{
-              uri: this.state.uriImagem
+              uri: this.state.imagemUri
             }}
           />
         </View>
