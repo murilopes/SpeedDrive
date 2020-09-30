@@ -35,16 +35,43 @@ export default class uploadDocumento extends React.Component {
 
     const onToggleSnackSalvar = () => this.setState({snackSalvarVisible: !this.state.snackSalvarVisible})
 
-    const pickImage = async () => {
+    const ipickImageFromLibrary = async () => {
 
       if (Platform.OS !== 'web') {
         const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
         if (status !== 'granted') {
-          alert('Desculpa, nós precisamos de acesso ao rolo de foto para isso!');
+          alert('Desculpa, nós precisamos de acesso ao rolo de foto para essa funcionalidade! \n Caso mude de ideia, altere via ajustes de configurações de suas aplicações');
         }
         else {
           let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: false,
+            aspect: [4, 3],
+            quality: 1,
+          });
+            
+          if (!result.cancelled) {
+            this.setState({imagemUri: result.uri})
+            if (result.height > result.width) {
+              this.setState({imagemHeight: 300, imagemWidth: 300 * result.width / result.height})
+            } else {
+              this.setState({imagemHeight: 300 * result.height / result.width, imagemWidth: 300})
+            }
+          }
+        }
+      }
+    };
+
+    const ipickImageFromCamera = async () => {
+
+      if (Platform.OS !== 'web') {
+        const { status } = await ImagePicker.requestCameraPermissionsAsync();
+        if (status !== 'granted') {
+          alert('Desculpa, nós precisamos de acesso à câmera para essa funcionalidade! \n Caso mude de ideia, altere via ajustes de configurações de suas aplicações');
+        }
+        else {
+          let result = await ImagePicker.launchCameraAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: false,
             aspect: [4, 3],
             quality: 1,
@@ -73,7 +100,7 @@ export default class uploadDocumento extends React.Component {
 
         <View style={styles.view_documento} >
           <Image
-            style={{ height: this.state.imagemHeight, width: this.state.imagemWidth, borderColor: 'white', borderWidth: 1, }}
+            style={{ height: this.state.imagemHeight, width: this.state.imagemWidth, borderColor: 'white', borderWidth: 0.5, }}
             source={{
               uri: this.state.imagemUri
             }}
@@ -81,13 +108,13 @@ export default class uploadDocumento extends React.Component {
         </View>
 
         <View style={styles.buttonView}>
-          <RectButton style={styles.button} onPress={pickImage}>
+          <RectButton style={styles.button} onPress={ipickImageFromLibrary}>
             <Text style={styles.buttonText}>Escolher imagem do álbum</Text>
           </RectButton>
         </View>
 
         <View style={styles.buttonView}>
-          <RectButton style={styles.button} onPress={() => {}}>
+          <RectButton style={styles.button} onPress={ipickImageFromCamera}>
             <Text style={styles.buttonText}>Usar câmera</Text>
           </RectButton>
         </View>
