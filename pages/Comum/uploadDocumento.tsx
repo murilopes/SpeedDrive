@@ -40,7 +40,7 @@ export default class uploadDocumento extends React.Component {
       if (Platform.OS !== 'web') {
         const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
         if (status !== 'granted') {
-          alert('Desculpa, nós precisamos de acesso ao rolo de foto para essa funcionalidade! \n Caso mude de ideia, altere via ajustes de configurações de suas aplicações');
+          alert('Desculpa, precisamos de acesso ao rolo de foto para essa funcionalidade! \n Caso mude de ideia, altere via ajustes de configurações de suas aplicações');
         }
         else {
           let result = await ImagePicker.launchImageLibraryAsync({
@@ -67,7 +67,7 @@ export default class uploadDocumento extends React.Component {
       if (Platform.OS !== 'web') {
         const { status } = await ImagePicker.requestCameraPermissionsAsync();
         if (status !== 'granted') {
-          alert('Desculpa, nós precisamos de acesso à câmera para essa funcionalidade! \n Caso mude de ideia, altere via ajustes de configurações de suas aplicações');
+          alert('Desculpa, precisamos de acesso à câmera para essa funcionalidade! \n Caso mude de ideia, altere via ajustes de configurações de suas aplicações');
         }
         else {
           let result = await ImagePicker.launchCameraAsync({
