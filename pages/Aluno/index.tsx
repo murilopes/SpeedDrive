@@ -1,17 +1,18 @@
 import React, {useState} from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { StyleSheet, Text, View, TextInput, Image, ImageBackground, KeyboardAvoidingView, Platform } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Image, ImageBackground, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native';
 import { Appbar, Avatar } from 'react-native-paper';
+import MenuDrawer from 'react-native-side-drawer'
+import Icon from 'react-native-vector-icons/FontAwesome';
+import IconEntypo from 'react-native-vector-icons/Entypo';
 
-
-const  AlunoDashboard = () => {
-
+const AlunoDashboard = (props: any) => {
+  
   const navigation = useNavigation();
-
-  const _goBack = () => console.log('Went back');
-  const _handleSearch = () => console.log('Searching');
-  const _handleMore = () => console.log('Shown more');
-
+  
+  const _handleSair = () => { 
+    navigation.navigate('Login');
+  }
   const _handleAulasRealizadas = () => { 
     navigation.navigate('AlunoRealizadas');
   }
@@ -26,17 +27,151 @@ const  AlunoDashboard = () => {
   }
 
   const [checked, setChecked] = React.useState(false);
+  const [menuOpened, setMenuOpened] = React.useState(false);
 
   const[qtdProximasAulas, setQtdProximasAulas] = useState(2)
+
+  const toggleOpen = () => {
+    setMenuOpened(!menuOpened);
+  };
+
+  const drawerContent = () => {
+    return (
+      <TouchableOpacity onPress={() => setMenuOpened(false)} style={styles.animatedMenuBox}>
+        <View style={{height: 70, flexDirection: 'row', alignItems: 'center'}}>
+          <Text style={styles.menu_text_voltar}>Fechar Menu</Text>
+        </View>
+
+        <View style={styles.menu_item} onTouchEnd={_handleAlunoCadastro}>
+          <View style={styles.menu_item_interno}>
+            <View style={styles.menu_item_icon}>
+              <Icon name='cogs' color='white' size={20} style={{flex: 1}} />
+            </View>
+            <View style={styles.menu_item_view_descricao}>
+              <View style={styles.menu_item_view_text_descricao}>
+                <Text style={styles.menu_item_text_value}>Cadastro</Text>
+              </View>            
+            </View>
+            <View style={styles.menu_item_seta}>
+              <IconEntypo name="chevron-thin-right" color='#A79898' size={20} style={{flex: 1}} />
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.menu_item} onTouchEnd={_handleAulasRealizadas}>
+          <View style={styles.menu_item_interno}>
+            <View style={styles.menu_item_icon}>
+              <Icon name='check-circle' color='white' size={20} style={{flex: 1}} />
+            </View>
+            <View style={styles.menu_item_view_descricao}>
+              <View style={styles.menu_item_view_text_descricao}>
+                <Text style={styles.menu_item_text_value}>Aulas Realizadas</Text>
+              </View>            
+            </View>
+            <View style={styles.menu_item_seta}>
+              <IconEntypo name="chevron-thin-right" color='#A79898' size={20} style={{flex: 1}} />
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.menu_item} onTouchEnd={_handleProximasAulas}>
+          <View style={styles.menu_item_interno}>
+            <View style={styles.menu_item_icon}>
+              <Icon name='exclamation-circle' color='white' size={20} style={{flex: 1}} />
+            </View>
+            <View style={styles.menu_item_view_descricao}>
+              <View style={styles.menu_item_view_text_descricao}>
+                <Text style={styles.menu_item_text_value}>Próximas Aulas</Text>
+              </View>            
+            </View>
+            <View style={styles.menu_item_seta}>
+              <IconEntypo name="chevron-thin-right" color='#A79898' size={20} style={{flex: 1}} />
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.menu_item} onTouchEnd={_handleAgendar}>
+          <View style={styles.menu_item_interno}>
+            <View style={styles.menu_item_icon}>
+              <Icon name='car' color='white' size={20} style={{flex: 1}} />
+            </View>
+            <View style={styles.menu_item_view_descricao}>
+              <View style={styles.menu_item_view_text_descricao}>
+                <Text style={styles.menu_item_text_value}>Agendar Nova</Text>
+              </View>            
+            </View>
+            <View style={styles.menu_item_seta}>
+              <IconEntypo name="chevron-thin-right" color='#A79898' size={20} style={{flex: 1}} />
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.menu_item} onTouchEnd={() => {}}>
+          <View style={styles.menu_item_interno}>
+            <View style={styles.menu_item_icon}>
+              <Icon name='envelope' color='white' size={20} style={{flex: 1}} />
+            </View>
+            <View style={styles.menu_item_view_descricao}>
+              <View style={styles.menu_item_view_text_descricao}>
+                <Text style={styles.menu_item_text_value}>Mensagens</Text>
+              </View>            
+            </View>
+            <View style={styles.menu_item_seta}>
+              <IconEntypo name="chevron-thin-right" color='#A79898' size={20} style={{flex: 1}} />
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.menu_item} onTouchEnd={() => {}}>
+          <View style={styles.menu_item_interno}>
+            <View style={styles.menu_item_icon}>
+              <Icon name='comments' color='white' size={20} style={{flex: 1}} />
+            </View>
+            <View style={styles.menu_item_view_descricao}>
+              <View style={styles.menu_item_view_text_descricao}>
+                <Text style={styles.menu_item_text_value}>Contato</Text>
+              </View>            
+            </View>
+            <View style={styles.menu_item_seta}>
+              <IconEntypo name="chevron-thin-right" color='#A79898' size={20} style={{flex: 1}} />
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.menu_item_sair} onTouchEnd={_handleSair}>
+          <View style={styles.menu_item_interno}>
+            <View style={styles.menu_item_icon}>
+              <Icon name='arrow-circle-left' color='white' size={20} style={{flex: 1}} />
+            </View>
+            <View style={styles.menu_item_sair_view}>
+              <View style={styles.menu_item_view_text_descricao}>
+                <Text style={styles.menu_item_text_value}>Sair da conta</Text>
+              </View>            
+            </View>
+          </View>
+        </View>
+        
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <KeyboardAvoidingView style={styles.container_principal} 
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
 
-      <Appbar.Header statusBarHeight={-15} style={{height: 45, backgroundColor: '#212F3C'}}>
-        <Appbar.Action icon="menu" size={30} onPress={_handleMore} />
+      <MenuDrawer 
+          open={menuOpened} 
+          drawerContent={drawerContent()}
+          drawerPercentage={65}
+          animationTime={400}
+          overlay={false}
+          opacity={0.2}
+        >
+
+      <Appbar.Header statusBarHeight={15} style={{height: 45, backgroundColor: '#212F3C'}}>
+        <Appbar.Action icon="menu" size={30} onPress={() => setMenuOpened(true)} />
         <Appbar.Content title="Jonatas Vasconcellos" />
-        <Appbar.Action icon="bell" size={30} onPress={_handleSearch} />
+        <Appbar.Action icon="bell" size={30} onPress={() => {}} />
       </Appbar.Header>
       <View style={{alignItems: 'center'}}>
         <Avatar.Image 
@@ -106,6 +241,7 @@ const  AlunoDashboard = () => {
         </View>
       </View>
 
+      </MenuDrawer>
 
     </KeyboardAvoidingView>
 
@@ -119,7 +255,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'black',
     alignContent: 'center',
-    paddingTop: 40
+    paddingTop: 40,
   },
 
   dash:{
@@ -198,6 +334,73 @@ const styles = StyleSheet.create({
   item_dash_texto_agendar:{
     fontSize: 35,
     fontWeight: 'bold'
+  },
+
+  animatedMenuBox: {
+    flex: 1,
+    backgroundColor: "#47476b",
+    padding: 15
+  },
+
+  menu_text_voltar: {
+    flex: 1,
+    color: '#A79898',
+    fontSize: 22,
+  },
+
+  menu_item: {
+    height: 40,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
+  menu_item_sair: {
+    marginTop: 20,
+    height: 40,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
+  menu_item_interno: {
+    flex: 1,
+    flexDirection: 'row',
+   /*  backgroundColor: '#F1F1F1', */
+    height: '90%',
+  },
+
+  menu_item_icon: {
+    flex: 1,
+    paddingTop: 15,
+    alignItems: 'center',
+  },
+
+  menu_item_view_descricao: {
+    flex: 5,
+    paddingTop: 15,
+    paddingLeft: 15,
+  },
+
+  menu_item_sair_view: {
+    flex: 6,
+    paddingTop: 15,
+    paddingLeft: 15,
+  },
+
+  menu_item_view_text_descricao: {
+    flex: 1,
+  },
+  
+  menu_item_text_value: {
+    flex: 1,
+    fontSize: 17,
+    color: 'white',
+    fontWeight: 'bold'
+  },
+
+  menu_item_seta: {
+    flex: 1,
+    paddingTop: 16,
+    alignItems: 'center',
   },
 
 });
