@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { StyleSheet, Text, View, TextInput, Image, ImageBackground, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native';
 import { Appbar, Avatar } from 'react-native-paper';
 import MenuDrawer from 'react-native-side-drawer'
 import SideMenuItem from '../../components/SideMenuItem';
@@ -29,7 +29,6 @@ const AlunoDashboard = (props: any) => {
     navigation.navigate('Notificacoes');
   }
 
-  const [checked, setChecked] = React.useState(false);
   const [menuOpened, setMenuOpened] = React.useState(false);
 
   const[qtdProximasAulas, setQtdProximasAulas] = useState(2)

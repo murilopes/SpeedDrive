@@ -13,7 +13,7 @@ import AlunoCadastro from './pages/Aluno/cadastro';
 import CadastroDadosPessoais from './pages/Comum/cadastroDadosPessoais';
 import CadastroEndereco from './pages/Comum/cadastroEndereco';
 import CadastroDocumentosAluno from './pages/Aluno/cadastroDocumentos';
-import AulaDetalheInstrutor from './pages/Aula/detalheInstrutor';
+import AulaDetalheInstrutor from './pages/Aula/detalhe';
 import UploadDocumento from './pages/Comum/uploadDocumento';
 import Notificacoes from './pages/Comum/notificacoes';
 
@@ -40,6 +40,7 @@ const Routes = () => {
         <AppStack.Screen name="CadastroDadosPessoais" component={CadastroDadosPessoais} />
         <AppStack.Screen name="CadastroEndereco" component={CadastroEndereco} />
         <AppStack.Screen name="CadastroDocumentosAluno" component={CadastroDocumentosAluno} />
+        <AppStack.Screen name="AulaDetalheInstrutor" component={AulaDetalheInstrutor} />
         <AppStack.Screen name="UploadDocumento" component={UploadDocumento} />
         <AppStack.Screen name="Notificacoes" component={Notificacoes} />
       </AppStack.Navigator>

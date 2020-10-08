@@ -6,16 +6,12 @@ import {
 import { Appbar, Avatar } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IconMaterial from 'react-native-vector-icons/MaterialCommunityIcons';
-import { RectButton } from 'react-native-gesture-handler';
 
-const AulaDetalheInstrutor = () => {
+const AulaDetalhe = () => {
   const navigation = useNavigation();
 
   const _goBack = () => {
     navigation.goBack();
-  };
-  const _handleAulaDetalheInstrutor = () => {
-    navigation.navigate('AulaDetalheInstrutor');
   };
 
   return (
@@ -112,7 +108,7 @@ const AulaDetalheInstrutor = () => {
   );
 };
 
-export default AulaDetalheInstrutor;
+export default AulaDetalhe;
 
 const styles = StyleSheet.create({
   container_principal: {
