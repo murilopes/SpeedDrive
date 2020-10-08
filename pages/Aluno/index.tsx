@@ -3,7 +3,6 @@ import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, Text, View, TextInput, Image, ImageBackground, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native';
 import { Appbar, Avatar } from 'react-native-paper';
 import MenuDrawer from 'react-native-side-drawer'
-import Icon from 'react-native-vector-icons/FontAwesome';
 import SideMenuItem from '../../components/SideMenuItem';
 import SideMenuItemSair from '../../components/SideMenuItemSair';
 
@@ -26,6 +25,9 @@ const AlunoDashboard = (props: any) => {
   const _handleAlunoCadastro = () => {
     navigation.navigate('AlunoCadastro');
   }
+  const _handleNotificacoes = () => {
+    navigation.navigate('Notificacoes');
+  }
 
   const [checked, setChecked] = React.useState(false);
   const [menuOpened, setMenuOpened] = React.useState(false);
@@ -47,7 +49,7 @@ const AlunoDashboard = (props: any) => {
         <SideMenuItem icon='check-circle' text='Aulas Realizada' onAction={() => _handleAulasRealizadas()}/>
         <SideMenuItem icon='exclamation-circle' text='Próximas Aula' onAction={() => _handleProximasAulas()}/>
         <SideMenuItem icon='car' text='Agendar Aulas' onAction={() => _handleAgendar()}/>
-        <SideMenuItem icon='envelope' text='Mensagens' onAction={() => {}}/>
+        <SideMenuItem icon='envelope' text='Notificações' onAction={() => _handleNotificacoes()}/>
         <SideMenuItem icon='comments' text='Contato' onAction={() => {}}/>
         <SideMenuItemSair icon='arrow-circle-left' text='Sair da conta' onAction={() => _handleSair()}/>
 
@@ -71,7 +73,7 @@ const AlunoDashboard = (props: any) => {
       <Appbar.Header statusBarHeight={15} style={{height: 45, backgroundColor: '#212F3C'}}>
         <Appbar.Action icon="menu" size={30} onPress={() => setMenuOpened(true)} />
         <Appbar.Content title="Jonatas Vasconcellos" />
-        <Appbar.Action icon="bell" size={30} onPress={() => {}} />
+        <Appbar.Action icon="bell" size={30} onPress={_handleNotificacoes} />
       </Appbar.Header>
       <View style={{alignItems: 'center'}}>
         <Avatar.Image 
