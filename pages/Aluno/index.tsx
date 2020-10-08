@@ -4,7 +4,8 @@ import { StyleSheet, Text, View, TextInput, Image, ImageBackground, KeyboardAvoi
 import { Appbar, Avatar } from 'react-native-paper';
 import MenuDrawer from 'react-native-side-drawer'
 import Icon from 'react-native-vector-icons/FontAwesome';
-import IconEntypo from 'react-native-vector-icons/Entypo';
+import SideMenuItem from '../../components/SideMenuItem';
+import SideMenuItemSair from '../../components/SideMenuItemSair';
 
 const AlunoDashboard = (props: any) => {
   
@@ -42,115 +43,14 @@ const AlunoDashboard = (props: any) => {
           <Text style={styles.menu_text_voltar}>Fechar Menu</Text>
         </View>
 
-        <View style={styles.menu_item} onTouchEnd={_handleAlunoCadastro}>
-          <View style={styles.menu_item_interno}>
-            <View style={styles.menu_item_icon}>
-              <Icon name='cogs' color='white' size={20} style={{flex: 1}} />
-            </View>
-            <View style={styles.menu_item_view_descricao}>
-              <View style={styles.menu_item_view_text_descricao}>
-                <Text style={styles.menu_item_text_value}>Cadastro</Text>
-              </View>            
-            </View>
-            <View style={styles.menu_item_seta}>
-              <IconEntypo name="chevron-thin-right" color='#A79898' size={20} style={{flex: 1}} />
-            </View>
-          </View>
-        </View>
+        <SideMenuItem icon='cogs' text='Cadastro' onAction={() => _handleAlunoCadastro()}/>
+        <SideMenuItem icon='check-circle' text='Aulas Realizada' onAction={() => _handleAulasRealizadas()}/>
+        <SideMenuItem icon='exclamation-circle' text='Próximas Aula' onAction={() => _handleProximasAulas()}/>
+        <SideMenuItem icon='car' text='Agendar Aulas' onAction={() => _handleAgendar()}/>
+        <SideMenuItem icon='envelope' text='Mensagens' onAction={() => {}}/>
+        <SideMenuItem icon='comments' text='Contato' onAction={() => {}}/>
+        <SideMenuItemSair icon='arrow-circle-left' text='Sair da conta' onAction={() => _handleSair()}/>
 
-        <View style={styles.menu_item} onTouchEnd={_handleAulasRealizadas}>
-          <View style={styles.menu_item_interno}>
-            <View style={styles.menu_item_icon}>
-              <Icon name='check-circle' color='white' size={20} style={{flex: 1}} />
-            </View>
-            <View style={styles.menu_item_view_descricao}>
-              <View style={styles.menu_item_view_text_descricao}>
-                <Text style={styles.menu_item_text_value}>Aulas Realizadas</Text>
-              </View>            
-            </View>
-            <View style={styles.menu_item_seta}>
-              <IconEntypo name="chevron-thin-right" color='#A79898' size={20} style={{flex: 1}} />
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.menu_item} onTouchEnd={_handleProximasAulas}>
-          <View style={styles.menu_item_interno}>
-            <View style={styles.menu_item_icon}>
-              <Icon name='exclamation-circle' color='white' size={20} style={{flex: 1}} />
-            </View>
-            <View style={styles.menu_item_view_descricao}>
-              <View style={styles.menu_item_view_text_descricao}>
-                <Text style={styles.menu_item_text_value}>Próximas Aulas</Text>
-              </View>            
-            </View>
-            <View style={styles.menu_item_seta}>
-              <IconEntypo name="chevron-thin-right" color='#A79898' size={20} style={{flex: 1}} />
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.menu_item} onTouchEnd={_handleAgendar}>
-          <View style={styles.menu_item_interno}>
-            <View style={styles.menu_item_icon}>
-              <Icon name='car' color='white' size={20} style={{flex: 1}} />
-            </View>
-            <View style={styles.menu_item_view_descricao}>
-              <View style={styles.menu_item_view_text_descricao}>
-                <Text style={styles.menu_item_text_value}>Agendar Nova</Text>
-              </View>            
-            </View>
-            <View style={styles.menu_item_seta}>
-              <IconEntypo name="chevron-thin-right" color='#A79898' size={20} style={{flex: 1}} />
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.menu_item} onTouchEnd={() => {}}>
-          <View style={styles.menu_item_interno}>
-            <View style={styles.menu_item_icon}>
-              <Icon name='envelope' color='white' size={20} style={{flex: 1}} />
-            </View>
-            <View style={styles.menu_item_view_descricao}>
-              <View style={styles.menu_item_view_text_descricao}>
-                <Text style={styles.menu_item_text_value}>Mensagens</Text>
-              </View>            
-            </View>
-            <View style={styles.menu_item_seta}>
-              <IconEntypo name="chevron-thin-right" color='#A79898' size={20} style={{flex: 1}} />
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.menu_item} onTouchEnd={() => {}}>
-          <View style={styles.menu_item_interno}>
-            <View style={styles.menu_item_icon}>
-              <Icon name='comments' color='white' size={20} style={{flex: 1}} />
-            </View>
-            <View style={styles.menu_item_view_descricao}>
-              <View style={styles.menu_item_view_text_descricao}>
-                <Text style={styles.menu_item_text_value}>Contato</Text>
-              </View>            
-            </View>
-            <View style={styles.menu_item_seta}>
-              <IconEntypo name="chevron-thin-right" color='#A79898' size={20} style={{flex: 1}} />
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.menu_item_sair} onTouchEnd={_handleSair}>
-          <View style={styles.menu_item_interno}>
-            <View style={styles.menu_item_icon}>
-              <Icon name='arrow-circle-left' color='white' size={20} style={{flex: 1}} />
-            </View>
-            <View style={styles.menu_item_sair_view}>
-              <View style={styles.menu_item_view_text_descricao}>
-                <Text style={styles.menu_item_text_value}>Sair da conta</Text>
-              </View>            
-            </View>
-          </View>
-        </View>
-        
       </TouchableOpacity>
     );
   };
@@ -346,61 +246,6 @@ const styles = StyleSheet.create({
     flex: 1,
     color: '#A79898',
     fontSize: 22,
-  },
-
-  menu_item: {
-    height: 40,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-
-  menu_item_sair: {
-    marginTop: 20,
-    height: 40,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-
-  menu_item_interno: {
-    flex: 1,
-    flexDirection: 'row',
-   /*  backgroundColor: '#F1F1F1', */
-    height: '90%',
-  },
-
-  menu_item_icon: {
-    flex: 1,
-    paddingTop: 15,
-    alignItems: 'center',
-  },
-
-  menu_item_view_descricao: {
-    flex: 5,
-    paddingTop: 15,
-    paddingLeft: 15,
-  },
-
-  menu_item_sair_view: {
-    flex: 6,
-    paddingTop: 15,
-    paddingLeft: 15,
-  },
-
-  menu_item_view_text_descricao: {
-    flex: 1,
-  },
-  
-  menu_item_text_value: {
-    flex: 1,
-    fontSize: 17,
-    color: 'white',
-    fontWeight: 'bold'
-  },
-
-  menu_item_seta: {
-    flex: 1,
-    paddingTop: 16,
-    alignItems: 'center',
   },
 
 });
