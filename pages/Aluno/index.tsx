@@ -10,47 +10,59 @@ const AlunoDashboard = (props: any) => {
   
   const navigation = useNavigation();
   
-  const _handleSair = () => { 
-    navigation.navigate('Login');
+  const _handleSair = (origemMenuLateral: boolean) => {
+    setMenuOpened(false)    
+    if (origemMenuLateral || !menuOpened)     
+      navigation.navigate('Login');
   }
-  const _handleAulasRealizadas = () => { 
-    navigation.navigate('AlunoRealizadas');
+  const _handleAulasRealizadas = (origemMenuLateral: boolean) => {
+    setMenuOpened(false)    
+    if (origemMenuLateral || !menuOpened)     
+      navigation.navigate('AlunoRealizadas');
   }
-  const _handleProximasAulas = () => {
-    navigation.navigate('AlunoProximas');
+  const _handleProximasAulas = (origemMenuLateral: boolean) => {
+    setMenuOpened(false)
+    if (origemMenuLateral || !menuOpened)     
+      navigation.navigate('AlunoProximas');
   }
-  const _handleAgendar = () => {
-    navigation.navigate('AlunoAgendar');
+  const _handleAgendar = (origemMenuLateral: boolean) => {
+    setMenuOpened(false)
+    if (origemMenuLateral || !menuOpened)     
+      navigation.navigate('AlunoAgendar');
   }
-  const _handleAlunoCadastro = () => {
-    navigation.navigate('AlunoCadastro');
+  const _handleAlunoCadastro = (origemMenuLateral: boolean) => {
+    setMenuOpened(false)
+    if (origemMenuLateral || !menuOpened)     
+      navigation.navigate('AlunoCadastro');
   }
-  const _handleNotificacoes = () => {
-    navigation.navigate('Notificacoes');
+  const _handleNotificacoes = (origemMenuLateral: boolean) => {
+    setMenuOpened(false)
+    if (origemMenuLateral || !menuOpened)     
+      navigation.navigate('Notificacoes');
   }
 
   const [menuOpened, setMenuOpened] = React.useState(false);
 
   const[qtdProximasAulas, setQtdProximasAulas] = useState(2)
 
-  const toggleOpen = () => {
-    setMenuOpened(!menuOpened);
+  const _handleTouchMenu = () => {
+    menuOpened ? setMenuOpened(false) : setMenuOpened(true)
   };
 
   const drawerContent = () => {
     return (
-      <TouchableOpacity onPress={() => setMenuOpened(false)} style={styles.animatedMenuBox}>
-        <View style={{height: 70, flexDirection: 'row', alignItems: 'center'}}>
+      <TouchableOpacity style={styles.animatedMenuBox}>
+        <View onTouchEnd={() => setMenuOpened(false)} style={{height: 70, flexDirection: 'row', alignItems: 'center'}}>
           <Text style={styles.menu_text_voltar}>Fechar Menu</Text>
         </View>
 
-        <SideMenuItem icon='cogs' text='Cadastro' onAction={() => _handleAlunoCadastro()}/>
-        <SideMenuItem icon='check-circle' text='Aulas Realizada' onAction={() => _handleAulasRealizadas()}/>
-        <SideMenuItem icon='exclamation-circle' text='Próximas Aula' onAction={() => _handleProximasAulas()}/>
-        <SideMenuItem icon='car' text='Agendar Aulas' onAction={() => _handleAgendar()}/>
-        <SideMenuItem icon='envelope' text='Notificações' onAction={() => _handleNotificacoes()}/>
+        <SideMenuItem icon='cogs' text='Cadastro' onAction={() => _handleAlunoCadastro(true)}/>
+        <SideMenuItem icon='check-circle' text='Aulas Realizada' onAction={() => _handleAulasRealizadas(true)}/>
+        <SideMenuItem icon='exclamation-circle' text='Próximas Aula' onAction={() => _handleProximasAulas(true)}/>
+        <SideMenuItem icon='car' text='Agendar Aulas' onAction={() => _handleAgendar(true)}/>
+        <SideMenuItem icon='envelope' text='Notificações' onAction={() => _handleNotificacoes(true)}/>
         <SideMenuItem icon='comments' text='Contato' onAction={() => {}}/>
-        <SideMenuItemSair icon='arrow-circle-left' text='Sair da conta' onAction={() => _handleSair()}/>
+        <SideMenuItemSair icon='arrow-circle-left' text='Sair da conta' onAction={() => _handleSair(true)}/>
 
       </TouchableOpacity>
     );
@@ -70,11 +82,11 @@ const AlunoDashboard = (props: any) => {
         >
 
       <Appbar.Header statusBarHeight={15} style={{height: 45, backgroundColor: '#212F3C'}}>
-        <Appbar.Action icon="menu" size={30} onPress={() => setMenuOpened(true)} />
-        <Appbar.Content title="Jonatas Vasconcellos" />
-        <Appbar.Action icon="bell" size={30} onPress={_handleNotificacoes} />
+        <Appbar.Action icon="menu" size={30} onPress={ _handleTouchMenu} />
+        <Appbar.Content onTouchEnd={() => setMenuOpened(false)} title="Jonatas Vasconcellos" />
+        <Appbar.Action icon="bell" size={30} onPress={() => _handleNotificacoes(false)} />
       </Appbar.Header>
-      <View style={{alignItems: 'center'}}>
+      <View style={{alignItems: 'center'}} onTouchEnd={() => setMenuOpened(false)}>
         <Avatar.Image 
           size={170} 
           source={{uri:'https://s2.glbimg.com/jsaPuF7nO23vRxQkuJ_V3WgouKA=/e.glbimg.com/og/ed/f/original/2014/06/10/461777879.jpg'}}
@@ -85,7 +97,7 @@ const AlunoDashboard = (props: any) => {
       <View style={styles.dash}>
         <View style={styles.dash_column}>
           <View style={styles.item_dash_exterior}>
-            <View style={styles.item_dash_interior_1} onTouchEnd={_handleAulasRealizadas}>
+            <View style={styles.item_dash_interior_1} onTouchEnd={() => _handleAulasRealizadas(false)}>
               <View style={styles.item_dash_view_texto}>
                 <Text style={styles.item_dash_texto_1}>Aulas</Text>
               </View>
@@ -98,7 +110,7 @@ const AlunoDashboard = (props: any) => {
             </View>
           </View>
           <View style={styles.item_dash_exterior}>
-            <View style={styles.item_dash_interior_2} onTouchEnd={_handleAlunoCadastro}>
+            <View style={styles.item_dash_interior_2} onTouchEnd={() => _handleAlunoCadastro(false)}>
               <View style={styles.item_dash_view_texto}>
                 <Text style={styles.item_dash_texto_1}>Cadastro</Text>
               </View>
@@ -115,7 +127,7 @@ const AlunoDashboard = (props: any) => {
         </View>
         <View style={styles.dash_column}>
           <View style={styles.item_dash_exterior}>
-            <View style={styles.item_dash_interior_3} onTouchEnd={_handleProximasAulas}>
+            <View style={styles.item_dash_interior_3} onTouchEnd={() => _handleProximasAulas(false)}>
               <View style={styles.item_dash_view_texto}>
                 <Text style={styles.item_dash_texto_1}>Próximas</Text>
               </View>
@@ -128,7 +140,7 @@ const AlunoDashboard = (props: any) => {
             </View>
           </View>
           <View style={styles.item_dash_exterior}>
-            <View style={styles.item_dash_interior_4} onTouchEnd={_handleAgendar}>
+            <View style={styles.item_dash_interior_4} onTouchEnd={() => _handleAgendar(false)}>
               <View style={styles.item_dash_view_agendar}>
                 <Text style={styles.item_dash_texto_agendar}>Agendar</Text>
               </View>
