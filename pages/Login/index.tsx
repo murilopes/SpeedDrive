@@ -1,20 +1,19 @@
 import 'react-native-gesture-handler';
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, Image, ImageBackground, KeyboardAvoidingView, Platform } from 'react-native';
-import { Input, Button } from 'react-native-elements';
+import { Overlay } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { RectButton } from 'react-native-gesture-handler';
 import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { DefaultTheme, TextInput as TextInputNativePaper } from 'react-native-paper';
 import { useFonts, Roboto_400Regular, Roboto_500Medium, Roboto_900Black_Italic } from '@expo-google-fonts/roboto';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const  Login = () => {
 
   const navigation = useNavigation();
-
-  function handleNavigateToOnboarding() {
-    navigation.navigate('Onboarding');
-  }
 
   function handleNavigateToDashboard() {
     navigation.navigate('AlunoDashboard');
@@ -28,14 +27,51 @@ const  Login = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [overlayCriaContaVisibility, setOverlayCriaContaVisibility] = useState(false);
+  const [opacityContainerPrincipal, setOpacityContainerPrincipal] = useState(1);
+
+  const [criarContaNome, setCriarContaNome] = React.useState('');
+  const [criarContaEmail, setCriarContaEmail] = React.useState('');
+  const [criarContaSenha, setCriarContaSenha] = React.useState('');
+  const [criarContaRepetirSenha, setCriarContaRepetirSenha] = React.useState('');
+
+  const toggleOverlayCriarContaVisibility = () => {
+    if (overlayCriaContaVisibility) {
+      setOverlayCriaContaVisibility(false)
+      setOpacityContainerPrincipal(1)
+    } else {
+      setOverlayCriaContaVisibility(true)
+      setOpacityContainerPrincipal(0.5)
+    }
+  };
+
+  const CriarConta = () => {
+    console.log(criarContaSenha)
+    console.log(criarContaRepetirSenha)
+  }
+
+  const theme = {
+    ...DefaultTheme,
+    dark: false,
+    roundness: 2,
+    colors: {
+      ...DefaultTheme.colors,
+      primary: '#B70A0A',
+      accent: '#212F3C',
+      text: 'white',
+      surface: 'white',
+      background: '#212F3C',
+      placeholder: '#A79898',
+    },
+  };
+
 
   while (!fontsLoaded) {
     return <View />;
   }
 
   return (
-    <KeyboardAvoidingView style={styles.container_principal} 
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <KeyboardAwareScrollView style={{flex: 1, backgroundColor: 'black', alignContent: 'center', paddingTop: 40, opacity: opacityContainerPrincipal}} >
 
       <ImageBackground
         style={{}}
@@ -81,7 +117,7 @@ const  Login = () => {
               </View>
               <Text style={styles.buttonText}>Entrar</Text>
           </RectButton>
-          <RectButton style={styles.button} onPress={handleNavigateToOnboarding}>
+          <RectButton style={styles.button} onPress={toggleOverlayCriarContaVisibility}>
               <View style={styles.buttonIcon}>
                 <Feather name="plus" color="#fff" size={24} />
               </View>
@@ -95,7 +131,29 @@ const  Login = () => {
           </RectButton>
         </View>
       </ImageBackground>
-    </KeyboardAvoidingView>
+      
+      <Overlay isVisible={overlayCriaContaVisibility} overlayStyle={styles.overlay_criar_conta}>
+      <>
+        <View style={styles.overlay_view_titulo}>
+          <View style={{flex: 1}}>
+            <MaterialIcon name='arrow-back' size={35} onPress={toggleOverlayCriarContaVisibility}/>
+          </View>
+        </View>
+
+        <View style={styles.overlay_view_dados}>
+          <TextInputNativePaper theme={theme} label="Primeiro Nome" value={criarContaNome} onChangeText={text => setCriarContaNome(text)}/>
+          <TextInputNativePaper theme={theme} label="E-mail" value={criarContaEmail} onChangeText={text => setCriarContaEmail(text)}/>
+          <TextInputNativePaper secureTextEntry={true} theme={theme} label="Senha" value={criarContaSenha} onChangeText={text => setCriarContaSenha(text)}/>
+          <TextInputNativePaper secureTextEntry={true} theme={theme} label="Repetir Senha" value={criarContaRepetirSenha} onChangeText={text => setCriarContaRepetirSenha(text)}/>
+        </View>
+                            
+        <View style={styles.overlay_view_button} onTouchEnd={CriarConta}>
+          <Text style={{textAlign: 'center', fontSize: 25, fontWeight: 'bold'}}>Criar conta!</Text>
+        </View>
+      </>
+      </Overlay>
+
+    </KeyboardAwareScrollView>
   );
 }
 
@@ -106,7 +164,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'black',
     alignContent: 'center',
-    paddingTop: 40
+    paddingTop: 40,
   },
   TextInput_Container: {
     flexDirection: 'row', 
@@ -186,4 +244,31 @@ const styles = StyleSheet.create({
     borderColor: '#34CB79',
     borderWidth: 2
   },
+
+  overlay_criar_conta: {
+    height: 450,
+    width: 300,
+    borderRadius: 8,
+    backgroundColor: '#212F3C',
+    marginBottom: 70
+  },
+
+  overlay_view_titulo:{
+    flex: 1,
+    flexDirection: 'row',
+  },
+
+  overlay_view_dados:{
+    flex: 4,
+  },
+
+  overlay_view_button:{
+    flex: 1,
+    backgroundColor: 'red',
+    margin: -10,
+    borderBottomStartRadius: 8,
+    borderBottomEndRadius: 8,
+    justifyContent: 'center',  
+  },
+
 });
