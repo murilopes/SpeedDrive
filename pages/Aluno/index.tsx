@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, Text, View, Image, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native';
-import { Appbar, Avatar } from 'react-native-paper';
+import { Appbar, Avatar, Snackbar } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 import MenuDrawer from 'react-native-side-drawer'
 import SideMenuItem from '../../components/SideMenuItem';
 import SideMenuItemSair from '../../components/SideMenuItemSair';
@@ -27,8 +28,12 @@ const AlunoDashboard = (props: any) => {
   }
   const _handleAgendar = (origemMenuLateral: boolean) => {
     setMenuOpened(false)
-    if (origemMenuLateral || !menuOpened)     
-      navigation.navigate('AlunoAgendar');
+    if (origemMenuLateral || !menuOpened){
+      if (statusCadastroOk)
+        navigation.navigate('AlunoAgendar');
+      else
+        setSnackCadastroPendenteVisible(true)
+    }
   }
   const _handleAlunoCadastro = (origemMenuLateral: boolean) => {
     setMenuOpened(false)
@@ -42,8 +47,11 @@ const AlunoDashboard = (props: any) => {
   }
 
   const [menuOpened, setMenuOpened] = React.useState(false);
+  const [snackCadastroPendenteVisible, setSnackCadastroPendenteVisible] = React.useState(false);
 
+  const[qtdAulasRealizadas, setQtdAulasRealizadas] = useState(2)
   const[qtdProximasAulas, setQtdProximasAulas] = useState(2)
+  const[statusCadastroOk, setStatusCadastroOk] = useState(true)
 
   const _handleTouchMenu = () => {
     menuOpened ? setMenuOpened(false) : setMenuOpened(true)
@@ -73,86 +81,92 @@ const AlunoDashboard = (props: any) => {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
 
       <MenuDrawer 
-          open={menuOpened} 
-          drawerContent={drawerContent()}
-          drawerPercentage={65}
-          animationTime={400}
-          overlay={false}
-          opacity={0.2}
-        >
+        open={menuOpened} 
+        drawerContent={drawerContent()}
+        drawerPercentage={65}
+        animationTime={400}
+        overlay={false}
+        opacity={0.2}
+      >
 
-      <Appbar.Header statusBarHeight={15} style={{height: 45, backgroundColor: '#212F3C'}}>
-        <Appbar.Action icon="menu" size={30} onPress={ _handleTouchMenu} />
-        <Appbar.Content onTouchEnd={() => setMenuOpened(false)} title="Jonatas Vasconcellos" />
-        <Appbar.Action icon="bell" size={30} onPress={() => _handleNotificacoes(false)} />
-      </Appbar.Header>
-      <View style={{alignItems: 'center'}} onTouchEnd={() => setMenuOpened(false)}>
-        <Avatar.Image 
-          size={170} 
-          source={{uri:'https://s2.glbimg.com/jsaPuF7nO23vRxQkuJ_V3WgouKA=/e.glbimg.com/og/ed/f/original/2014/06/10/461777879.jpg'}}
-          style={{marginTop: 15, marginBottom: 15}}          
-        />
-      </View>
-      
-      <View style={styles.dash}>
-        <View style={styles.dash_column}>
-          <View style={styles.item_dash_exterior}>
-            <View style={styles.item_dash_interior_1} onTouchEnd={() => _handleAulasRealizadas(false)}>
-              <View style={styles.item_dash_view_texto}>
-                <Text style={styles.item_dash_texto_1}>Aulas</Text>
+        <Appbar.Header statusBarHeight={15} style={{height: 45, backgroundColor: '#212F3C'}}>
+          <Appbar.Action icon="menu" size={30} onPress={ _handleTouchMenu} />
+          <Appbar.Content onTouchEnd={() => setMenuOpened(false)} title="Jonatas Vasconcellos" />
+          <Appbar.Action icon="bell" size={30} onPress={() => _handleNotificacoes(false)} />
+        </Appbar.Header>
+        <View style={{alignItems: 'center'}} onTouchEnd={() => setMenuOpened(false)}>
+          <Avatar.Image 
+            size={170} 
+            source={{uri:'https://s2.glbimg.com/jsaPuF7nO23vRxQkuJ_V3WgouKA=/e.glbimg.com/og/ed/f/original/2014/06/10/461777879.jpg'}}
+            style={{marginTop: 15, marginBottom: 15}}          
+          />
+        </View>
+        
+        <View style={styles.dash}>
+          <View style={styles.dash_column}>
+            <View style={styles.item_dash_exterior}>
+              <View style={styles.item_dash_interior_1} onTouchEnd={() => _handleAulasRealizadas(false)}>
+                <View style={styles.item_dash_view_texto}>
+                  <Text style={styles.item_dash_texto_1}>Aulas</Text>
+                </View>
+                <View style={styles.item_dash_view_texto}>
+                  <Text style={styles.item_dash_texto_2}>Realizadas</Text>
+                </View>
+                <View style={styles.item_dash_view_numero}>
+                  <Text style={styles.item_dash_texto_3}>{qtdAulasRealizadas}</Text>
+                </View>
               </View>
-              <View style={styles.item_dash_view_texto}>
-                <Text style={styles.item_dash_texto_2}>Realizadas</Text>
-              </View>
-              <View style={styles.item_dash_view_numero}>
-                <Text style={styles.item_dash_texto_3}>2</Text>
+            </View>
+            <View style={styles.item_dash_exterior}>
+              <View style={styles.item_dash_interior_2} onTouchEnd={() => _handleAlunoCadastro(false)}>
+                <View style={styles.item_dash_view_texto}>
+                  <Text style={styles.item_dash_texto_1}>Cadastro</Text>
+                </View>
+                <View style={styles.item_dash_view_texto}>
+                  <Text style={styles.item_dash_texto_2}>{statusCadastroOk ? 'Ok' : 'Pendente'}</Text>
+                </View>
+                <View style={styles.item_dash_view_numero}>
+                  {statusCadastroOk ? <Icon name= 'check-circle' color= 'green' size={90} /> : <Icon name= 'times-circle' color= 'red' size={90} />}
+                </View>
               </View>
             </View>
           </View>
-          <View style={styles.item_dash_exterior}>
-            <View style={styles.item_dash_interior_2} onTouchEnd={() => _handleAlunoCadastro(false)}>
-              <View style={styles.item_dash_view_texto}>
-                <Text style={styles.item_dash_texto_1}>Cadastro</Text>
+          <View style={styles.dash_column}>
+            <View style={styles.item_dash_exterior}>
+              <View style={styles.item_dash_interior_3} onTouchEnd={() => _handleProximasAulas(false)}>
+                <View style={styles.item_dash_view_texto}>
+                  <Text style={styles.item_dash_texto_1}>Próximas</Text>
+                </View>
+                <View style={styles.item_dash_view_texto}>
+                  <Text style={styles.item_dash_texto_2}>Aulas</Text>
+                </View>
+                <View style={styles.item_dash_view_numero}>
+                  <Text style={styles.item_dash_texto_3}>{qtdProximasAulas}</Text>
+                </View>
               </View>
-              <View style={styles.item_dash_view_texto}>
-                <Text style={styles.item_dash_texto_2}>Ok</Text>
-              </View>
-              <View style={styles.item_dash_view_numero}>
-                <Image style={{width: 100, height: 100,}} 
-                  source={{uri:'https://img.pngio.com/check-mark-scalable-vector-graphics-transparency-computer-icons-complete-png-512_512.png'}}
-                />
+            </View>
+            <View style={styles.item_dash_exterior}>
+              <View style={styles.item_dash_interior_4} onTouchEnd={() => _handleAgendar(false)}>
+                <View style={styles.item_dash_view_agendar}>
+                  <Text style={styles.item_dash_texto_agendar}>Agendar</Text>
+                </View>
+                <View style={styles.item_dash_view_numero}>
+                  <Icon name= 'plus' color= 'purple' size={90} />
+                </View>
               </View>
             </View>
           </View>
         </View>
-        <View style={styles.dash_column}>
-          <View style={styles.item_dash_exterior}>
-            <View style={styles.item_dash_interior_3} onTouchEnd={() => _handleProximasAulas(false)}>
-              <View style={styles.item_dash_view_texto}>
-                <Text style={styles.item_dash_texto_1}>Próximas</Text>
-              </View>
-              <View style={styles.item_dash_view_texto}>
-                <Text style={styles.item_dash_texto_2}>Aulas</Text>
-              </View>
-              <View style={styles.item_dash_view_numero}>
-                <Text style={styles.item_dash_texto_3}>{qtdProximasAulas}</Text>
-              </View>
-            </View>
-          </View>
-          <View style={styles.item_dash_exterior}>
-            <View style={styles.item_dash_interior_4} onTouchEnd={() => _handleAgendar(false)}>
-              <View style={styles.item_dash_view_agendar}>
-                <Text style={styles.item_dash_texto_agendar}>Agendar</Text>
-              </View>
-              <View style={styles.item_dash_view_numero}>
-                <Image style={{width: 100, height: 100,}} 
-                  source={{uri:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAABmJLR0QA/wD/AP+gvaeTAAAAcElEQVRoge3XsQ2AIBBAUWQZ13EIxmII13Ea7Q3QmPPnkv9KiiM/NEcpkkTaIob2/bzfZ+06Qu6qEUP/ZADNAJoBNANoBtAMoKUPmK64o5WYslrF07+AAbT0Af6JaQbQDKAZQDOAZgDNAFr6AEnSJw9NMAxEv2Qz4wAAAABJRU5ErkJggg=='}}
-                />
-              </View>
-            </View>
-          </View>
-        </View>
-      </View>
+
+        <Snackbar
+          visible={snackCadastroPendenteVisible}
+          onDismiss={() => setSnackCadastroPendenteVisible(false)}
+          action={{
+            label: 'Ajustar',
+            onPress: () => _handleAlunoCadastro(false),
+          }}>
+          Cadastro Pendente!
+        </Snackbar>
 
       </MenuDrawer>
 
