@@ -7,7 +7,11 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { RectButton } from 'react-native-gesture-handler';
 import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { DefaultTheme, TextInput as TextInputNativePaper, Provider } from 'react-native-paper';
+import { 
+  DefaultTheme,
+  Provider,
+  TextInput as TextInputNativePaper, 
+} from 'react-native-paper';
 import DropDown from 'react-native-paper-dropdown'
 import { useFonts, Roboto_400Regular, Roboto_500Medium, Roboto_900Black_Italic } from '@expo-google-fonts/roboto';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -28,15 +32,19 @@ const  Login = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [overlayCriaContaVisibility, setOverlayCriaContaVisibility] = useState(false);
+
   const [opacityContainerPrincipal, setOpacityContainerPrincipal] = useState(1);
 
+  const [overlayCriaContaVisibility, setOverlayCriaContaVisibility] = useState(false);
   const [criarContaShowDropDownPapel, setCriarContaShowDropDownPapel] = useState(false);
   const [criarContaPapel, setCriarContaPapel] = useState('aluno');
   const [criarContaNome, setCriarContaNome] = React.useState('');
   const [criarContaEmail, setCriarContaEmail] = React.useState('');
   const [criarContaSenha, setCriarContaSenha] = React.useState('');
   const [criarContaRepetirSenha, setCriarContaRepetirSenha] = React.useState('');
+
+  const [overlayEsqueciSenhaVisibility, setOverlayEsqueciSenhaVisibility] = useState(false);
+  const [esqueciSenhaEmail, setEsqueciSenhaEmail] = React.useState('');
 
   const papelList = [
     { label: 'Aluno', value: 'aluno' },
@@ -53,10 +61,24 @@ const  Login = () => {
     }
   };
 
+  const toggleOverlayEsqueciSenhaVisibility = () => {
+    if (overlayEsqueciSenhaVisibility) {
+      setOverlayEsqueciSenhaVisibility(false)
+      setOpacityContainerPrincipal(1)
+    } else {
+      setOverlayEsqueciSenhaVisibility(true)
+      setOpacityContainerPrincipal(0.5)
+    }
+  };
+
   const CriarConta = () => {
     console.log(criarContaSenha)
     console.log(criarContaRepetirSenha)
     console.log(criarContaPapel)
+  }
+
+  const EsqueciSenha = () => {
+    console.log(esqueciSenhaEmail)
   }
 
   const theme = {
@@ -131,7 +153,7 @@ const  Login = () => {
               </View>
               <Text style={styles.buttonText}>Criar conta</Text>
           </RectButton>
-          <RectButton style={styles.buttonSemFundo}>
+          <RectButton style={styles.buttonSemFundo} onPress={toggleOverlayEsqueciSenhaVisibility}>
               <View style={styles.buttonIcon}>
                 <Feather name="slack" color="#fff" size={24} />
               </View>
@@ -141,38 +163,56 @@ const  Login = () => {
       </ImageBackground>
       
       <Overlay isVisible={overlayCriaContaVisibility} overlayStyle={styles.overlay_criar_conta}>
-      <Provider>
-        <View style={styles.overlay_view_titulo}>
-          <View style={{flex: 1}}>
-            <MaterialIcon name='arrow-back' size={35} onPress={toggleOverlayCriarContaVisibility}/>
+        <Provider>
+          <View style={styles.overlay_criar_conta_view_titulo}>
+            <View style={{flex: 1}}>
+              <MaterialIcon name='arrow-back' size={35} onPress={toggleOverlayCriarContaVisibility}/>
+            </View>
           </View>
-        </View>
-        
-        <View style={styles.overlay_view_dados}>
-          <DropDown
-            theme={theme}
-            label={'Tipo da Conta'}
-            mode={'flat'}
-            value={criarContaPapel}
-            setValue={setCriarContaPapel}
-            list={papelList}
-            visible={criarContaShowDropDownPapel}
-            showDropDown={() => setCriarContaShowDropDownPapel(true)}
-            onDismiss={() => setCriarContaShowDropDownPapel(false)}
-            inputProps={{
-              right: <TextInputNativePaper.Icon name={'menu-down'} />,
-            }}
-          />
-          <TextInputNativePaper theme={theme} label="Primeiro Nome" value={criarContaNome} onChangeText={text => setCriarContaNome(text)}/>
-          <TextInputNativePaper theme={theme} label="E-mail" value={criarContaEmail} onChangeText={text => setCriarContaEmail(text)}/>
-          <TextInputNativePaper secureTextEntry={true} theme={theme} label="Senha" value={criarContaSenha} onChangeText={text => setCriarContaSenha(text)}/>
-          <TextInputNativePaper secureTextEntry={true} theme={theme} label="Repetir Senha" value={criarContaRepetirSenha} onChangeText={text => setCriarContaRepetirSenha(text)}/>
-        </View>
-                            
-        <View style={styles.overlay_view_button} onTouchEnd={CriarConta}>
-          <Text style={{textAlign: 'center', fontSize: 25, fontWeight: 'bold'}}>Criar conta!</Text>
-        </View>
-      </Provider>
+          
+          <View style={styles.overlay_criar_conta_view_dados}>
+            <DropDown
+              theme={theme}
+              label={'Tipo da Conta'}
+              mode={'flat'}
+              value={criarContaPapel}
+              setValue={setCriarContaPapel}
+              list={papelList}
+              visible={criarContaShowDropDownPapel}
+              showDropDown={() => setCriarContaShowDropDownPapel(true)}
+              onDismiss={() => setCriarContaShowDropDownPapel(false)}
+              inputProps={{
+                right: <TextInputNativePaper.Icon name={'menu-down'} />,
+              }}
+            />
+            <TextInputNativePaper theme={theme} label="Primeiro Nome" value={criarContaNome} onChangeText={text => setCriarContaNome(text)}/>
+            <TextInputNativePaper theme={theme} label="E-mail" value={criarContaEmail} onChangeText={text => setCriarContaEmail(text)}/>
+            <TextInputNativePaper secureTextEntry={true} theme={theme} label="Senha" value={criarContaSenha} onChangeText={text => setCriarContaSenha(text)}/>
+            <TextInputNativePaper secureTextEntry={true} theme={theme} label="Repetir Senha" value={criarContaRepetirSenha} onChangeText={text => setCriarContaRepetirSenha(text)}/>
+          </View>
+                              
+          <View style={styles.overlay_criar_conta_view_button} onTouchEnd={CriarConta}>
+            <Text style={{textAlign: 'center', fontSize: 25, fontWeight: 'bold'}}>Criar conta</Text>
+          </View>
+        </Provider>
+      </Overlay>
+
+      <Overlay isVisible={overlayEsqueciSenhaVisibility} overlayStyle={styles.overlay_esqueci_senha}>
+        <Provider>
+          <View style={styles.overlay_esqueci_senha_view_titulo}>
+            <View style={{flex: 1}}>
+              <MaterialIcon name='arrow-back' size={35} onPress={toggleOverlayEsqueciSenhaVisibility}/>
+            </View>
+          </View>
+          <View style={styles.overlay_esqueci_senha_view_dados}>          
+            <Text style={{fontSize: 16, marginBottom: 15}} >Enviaremos instruções para que você possa recuperar sua conta</Text>
+            <TextInputNativePaper theme={theme} label="E-mail" value={esqueciSenhaEmail} onChangeText={text => setEsqueciSenhaEmail(text)}/>
+          </View>
+                              
+          <View style={styles.overlay_esqueci_senha_view_button} onTouchEnd={EsqueciSenha}>
+            <Text style={{textAlign: 'center', fontSize: 25, fontWeight: 'bold'}}>Recuperar conta</Text>
+          </View>
+        </Provider>
       </Overlay>
 
     </KeyboardAwareScrollView>
@@ -275,16 +315,42 @@ const styles = StyleSheet.create({
     marginBottom: 70
   },
 
-  overlay_view_titulo:{
+  overlay_esqueci_senha: {
+    height: 250,
+    width: 300,
+    borderRadius: 8,
+    backgroundColor: '#212F3C',
+    marginBottom: 70
+  },
+
+  overlay_criar_conta_view_titulo:{
     flex: 1,
     flexDirection: 'row',
   },
 
-  overlay_view_dados:{
+  overlay_esqueci_senha_view_titulo:{
+    flex: 1,
+    flexDirection: 'row',
+  },
+
+  overlay_criar_conta_view_dados:{
     flex: 8,
   },
 
-  overlay_view_button:{
+  overlay_esqueci_senha_view_dados:{
+    flex: 4,
+  },
+
+  overlay_criar_conta_view_button:{
+    flex: 1.5,
+    backgroundColor: 'red',
+    margin: -10,
+    borderBottomStartRadius: 8,
+    borderBottomEndRadius: 8,
+    justifyContent: 'center',  
+  },
+
+  overlay_esqueci_senha_view_button:{
     flex: 1.5,
     backgroundColor: 'red',
     margin: -10,
