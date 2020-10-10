@@ -1,13 +1,14 @@
 import 'react-native-gesture-handler';
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, Image, ImageBackground, KeyboardAvoidingView, Platform } from 'react-native';
+import { StyleSheet, Text, View, TextInput, ImageBackground } from 'react-native';
 import { Overlay } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { RectButton } from 'react-native-gesture-handler';
 import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { DefaultTheme, TextInput as TextInputNativePaper } from 'react-native-paper';
+import { DefaultTheme, TextInput as TextInputNativePaper, Provider } from 'react-native-paper';
+import DropDown from 'react-native-paper-dropdown'
 import { useFonts, Roboto_400Regular, Roboto_500Medium, Roboto_900Black_Italic } from '@expo-google-fonts/roboto';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
@@ -30,10 +31,17 @@ const  Login = () => {
   const [overlayCriaContaVisibility, setOverlayCriaContaVisibility] = useState(false);
   const [opacityContainerPrincipal, setOpacityContainerPrincipal] = useState(1);
 
+  const [criarContaShowDropDownPapel, setCriarContaShowDropDownPapel] = useState(false);
+  const [criarContaPapel, setCriarContaPapel] = useState('aluno');
   const [criarContaNome, setCriarContaNome] = React.useState('');
   const [criarContaEmail, setCriarContaEmail] = React.useState('');
   const [criarContaSenha, setCriarContaSenha] = React.useState('');
   const [criarContaRepetirSenha, setCriarContaRepetirSenha] = React.useState('');
+
+  const papelList = [
+    { label: 'Aluno', value: 'aluno' },
+    { label: 'Instrutor', value: 'instrutor' },
+  ];
 
   const toggleOverlayCriarContaVisibility = () => {
     if (overlayCriaContaVisibility) {
@@ -48,6 +56,7 @@ const  Login = () => {
   const CriarConta = () => {
     console.log(criarContaSenha)
     console.log(criarContaRepetirSenha)
+    console.log(criarContaPapel)
   }
 
   const theme = {
@@ -64,7 +73,6 @@ const  Login = () => {
       placeholder: '#A79898',
     },
   };
-
 
   while (!fontsLoaded) {
     return <View />;
@@ -133,14 +141,28 @@ const  Login = () => {
       </ImageBackground>
       
       <Overlay isVisible={overlayCriaContaVisibility} overlayStyle={styles.overlay_criar_conta}>
-      <>
+      <Provider>
         <View style={styles.overlay_view_titulo}>
           <View style={{flex: 1}}>
             <MaterialIcon name='arrow-back' size={35} onPress={toggleOverlayCriarContaVisibility}/>
           </View>
         </View>
-
+        
         <View style={styles.overlay_view_dados}>
+          <DropDown
+            theme={theme}
+            label={'Tipo da Conta'}
+            mode={'flat'}
+            value={criarContaPapel}
+            setValue={setCriarContaPapel}
+            list={papelList}
+            visible={criarContaShowDropDownPapel}
+            showDropDown={() => setCriarContaShowDropDownPapel(true)}
+            onDismiss={() => setCriarContaShowDropDownPapel(false)}
+            inputProps={{
+              right: <TextInputNativePaper.Icon name={'menu-down'} />,
+            }}
+          />
           <TextInputNativePaper theme={theme} label="Primeiro Nome" value={criarContaNome} onChangeText={text => setCriarContaNome(text)}/>
           <TextInputNativePaper theme={theme} label="E-mail" value={criarContaEmail} onChangeText={text => setCriarContaEmail(text)}/>
           <TextInputNativePaper secureTextEntry={true} theme={theme} label="Senha" value={criarContaSenha} onChangeText={text => setCriarContaSenha(text)}/>
@@ -150,7 +172,7 @@ const  Login = () => {
         <View style={styles.overlay_view_button} onTouchEnd={CriarConta}>
           <Text style={{textAlign: 'center', fontSize: 25, fontWeight: 'bold'}}>Criar conta!</Text>
         </View>
-      </>
+      </Provider>
       </Overlay>
 
     </KeyboardAwareScrollView>
@@ -259,11 +281,11 @@ const styles = StyleSheet.create({
   },
 
   overlay_view_dados:{
-    flex: 4,
+    flex: 8,
   },
 
   overlay_view_button:{
-    flex: 1,
+    flex: 1.5,
     backgroundColor: 'red',
     margin: -10,
     borderBottomStartRadius: 8,
