@@ -15,6 +15,7 @@ import {
 import DropDown from 'react-native-paper-dropdown'
 import { useFonts, Roboto_400Regular, Roboto_500Medium, Roboto_900Black_Italic } from '@expo-google-fonts/roboto';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const  Login = () => {
 
@@ -75,10 +76,21 @@ const  Login = () => {
     console.log(criarContaSenha)
     console.log(criarContaRepetirSenha)
     console.log(criarContaPapel)
+    toggleOverlayCriarContaVisibility()
+    storeData('Valor 3')
   }
 
   const EsqueciSenha = () => {
     console.log(esqueciSenhaEmail)
+    setOverlayEsqueciSenhaVisibility(false)
+  }
+
+  const storeData = async (value: string) => {
+    try {
+      await AsyncStorage.setItem('teste', value)
+    } catch (e) {
+      console.log('ocorreu erro ao armazenar dado no async storage')
+    }
   }
 
   const theme = {

@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import MenuDrawer from 'react-native-side-drawer'
 import SideMenuItem from '../../components/SideMenuItem';
 import SideMenuItemSair from '../../components/SideMenuItemSair';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const AlunoDashboard = (props: any) => {
   
@@ -17,6 +18,7 @@ const AlunoDashboard = (props: any) => {
       navigation.navigate('Login');
   }
   const _handleAulasRealizadas = (origemMenuLateral: boolean) => {
+    getData()
     setMenuOpened(false)    
     if (origemMenuLateral || !menuOpened)     
       navigation.navigate('AlunoRealizadas');
@@ -56,6 +58,17 @@ const AlunoDashboard = (props: any) => {
   const _handleTouchMenu = () => {
     menuOpened ? setMenuOpened(false) : setMenuOpened(true)
   };
+
+  const getData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('teste')
+      if(value !== null) {
+        console.log(value)
+      }
+    } catch(e) {
+      console.log('ocorreu erro ao recuperar dado guardado no async storage')
+    }
+  }
 
   const drawerContent = () => {
     return (
