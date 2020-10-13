@@ -36,8 +36,8 @@ const  Login = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [snackErroAutenticacaoVisible, setSnackErroAutenticacaoVisible] = React.useState(false);
-  const [mensagemErroAutenticacao, setMensagemErroAutenticacao] = React.useState('');
+  const [snackErroVisible, setSnackErroVisible] = React.useState(false);
+  const [mensagemErro, setMensagemErro] = React.useState('');
 
   const [opacityContainerPrincipal, setOpacityContainerPrincipal] = useState(1);
 
@@ -61,9 +61,13 @@ const  Login = () => {
     if (overlayCriaContaVisibility) {
       setOverlayCriaContaVisibility(false)
       setOpacityContainerPrincipal(1)
+      setCriarContaNome('')
+      setCriarContaEmail('')
+      setCriarContaSenha('')
+      setCriarContaRepetirSenha('')
     } else {
       setOverlayCriaContaVisibility(true)
-      setOpacityContainerPrincipal(0.5)
+      setOpacityContainerPrincipal(0.2)
     }
   };
 
@@ -73,7 +77,7 @@ const  Login = () => {
       setOpacityContainerPrincipal(1)
     } else {
       setOverlayEsqueciSenhaVisibility(true)
-      setOpacityContainerPrincipal(0.5)
+      setOpacityContainerPrincipal(0.2)
     }
   };
 
@@ -117,8 +121,8 @@ const  Login = () => {
 
     } catch (error) {
       console.log('Deu Errado')
-      setMensagemErroAutenticacao(error.response.data.error)
-      setSnackErroAutenticacaoVisible(true)
+      setMensagemErro(error.response.data.error)
+      setSnackErroVisible(true)
     }
     /* 
     LIDANDO COM O OBJETO "error" 
@@ -132,13 +136,70 @@ const  Login = () => {
     */   
   }
 
-  const CriarConta = () => {
-    console.log(criarContaSenha)
-    console.log(criarContaRepetirSenha)
-    console.log(criarContaPapel)
-    toggleOverlayCriarContaVisibility()
-    //storeData('Valor 3')
-    console.log()
+  const CriarConta = async () => {
+
+    if(criarContaPapel != 'aluno' && criarContaPapel != 'instrutor') {
+      setMensagemErro('Escolha o Tipo de Conta')
+      setSnackErroVisible(true)
+    }
+
+    else if(criarContaNome == '' || criarContaEmail == '' || criarContaSenha == '' || criarContaRepetirSenha == '') {
+      setMensagemErro('Prencha todos os campos')
+      setSnackErroVisible(true)
+    }
+
+    else if(criarContaSenha.length < 6 || criarContaSenha.length > 12) {
+      setMensagemErro('Senha deve ter entre 6 e 12 caracteres')
+      setSnackErroVisible(true)
+    }
+
+    else if(criarContaSenha != criarContaRepetirSenha) {
+      setMensagemErro('Confirmação da senha não confere')
+      setSnackErroVisible(true)
+    }
+    else {
+      var userData = {
+        nome: criarContaNome,
+        email: criarContaEmail,
+        senha: criarContaSenha
+      };
+      console.log(userData)
+
+      if(criarContaPapel == 'aluno') {
+        try {
+          const resp = await API.post('/auth/registrarAluno', userData)
+          if(resp.status == 200)
+          {
+            console.log('Cadastrou o usuario tipo aluno')
+    
+            const UserAuthData = {
+              tipoUsuario: resp.data.tipoUsuario,
+              nome: resp.data.aluno.nome,
+              sobrenome: '',
+              datahoraLogin: Date.now().toString(),
+              token: resp.data.token
+            }
+            console.log(UserAuthData)
+    
+            storeUserAuthData(JSON.stringify(UserAuthData))
+
+            setMensagemErro('Conta criada com sucesso!')
+            setSnackErroVisible(true)
+            
+            setTimeout(() => {
+              toggleOverlayCriarContaVisibility()              
+              handleNavigateToAlunoDashboard()       
+            }, 2000);                 
+          }
+    
+        } catch (error) {
+          console.log('Deu Errado')
+          setMensagemErro(error.response.data.error)
+          setSnackErroVisible(true)
+        }
+      }
+
+    }
   }
 
   const EsqueciSenha = () => {
@@ -174,66 +235,67 @@ const  Login = () => {
   }
 
   return (
-    <KeyboardAwareScrollView style={{flex: 1, backgroundColor: 'black', alignContent: 'center', paddingTop: 40, opacity: opacityContainerPrincipal}} >
+    <KeyboardAwareScrollView style={{flex: 1, backgroundColor: 'black', alignContent: 'center', paddingTop: 40, }} >
+      <View style={{opacity: opacityContainerPrincipal}}>
+        <ImageBackground
+          style={{}}
+          source={require('../../assets/bbb.jpg')}
+          imageStyle={{ width: '100%', height: '100%' }}
+        >
+          <Text style={styles.Titulo}>SPEED DRIVE</Text>
+          <Text style={styles.DescricaoMaior}>Treinamento para habilitados</Text>
+          <Text style={styles.DescricaoMenor}>Sua liberdade</Text>
+          <Text style={styles.DescricaoMenor}>perto de virar realidade.</Text>
 
-      <ImageBackground
-        style={{}}
-        source={require('../../assets/bbb.jpg')}
-        imageStyle={{ width: '100%', height: '100%' }}
-      >
-        <Text style={styles.Titulo}>SPEED DRIVE</Text>
-        <Text style={styles.DescricaoMaior}>Treinamento para habilitados</Text>
-        <Text style={styles.DescricaoMenor}>Sua liberdade</Text>
-        <Text style={styles.DescricaoMenor}>perto de virar realidade.</Text>
-
-        <View style={{paddingTop: 130, marginBottom: 20}}>
-          <View style={styles.TextInput_Container}>
-            <Icon name="user" size={25} color="white" style={{marginRight:10, width: '7%'}} />
-            <TextInput style={{color: 'white', fontSize: 19, width: '93%'}}
-            placeholder="e-mail"
-            placeholderTextColor = "#797D7F"
-            textContentType = "username"
-            selectionColor = "red"
-            autoCompleteType = "email"
-            onChangeText = {email => setEmail(email)}
-            value = {email}
-            />            
+          <View style={{paddingTop: 130, marginBottom: 20}}>
+            <View style={styles.TextInput_Container}>
+              <Icon name="user" size={25} color="white" style={{marginRight:10, width: '7%'}} />
+              <TextInput style={{color: 'white', fontSize: 19, width: '93%'}}
+              placeholder="e-mail"
+              placeholderTextColor = "#797D7F"
+              textContentType = "username"
+              selectionColor = "red"
+              autoCompleteType = "email"
+              onChangeText = {email => setEmail(email)}
+              value = {email}
+              />            
+            </View>
+            <View style={styles.TextInput_Container}>
+              <Icon name="key" size={25} color="white" style={{marginRight:10, width: '7%'}} />
+              <TextInput style={{color: 'white', fontSize: 19, width: '93%'}}
+              placeholder="senha"
+              placeholderTextColor = "#797D7F"
+              textContentType="password"
+              secureTextEntry={true}
+              selectionColor= "red"
+              autoCompleteType = "password"
+              onChangeText={password => setPassword(password)}
+              value = {password}
+              />
+            </View>       
           </View>
-          <View style={styles.TextInput_Container}>
-            <Icon name="key" size={25} color="white" style={{marginRight:10, width: '7%'}} />
-            <TextInput style={{color: 'white', fontSize: 19, width: '93%'}}
-            placeholder="senha"
-            placeholderTextColor = "#797D7F"
-            textContentType="password"
-            secureTextEntry={true}
-            selectionColor= "red"
-            autoCompleteType = "password"
-            onChangeText={password => setPassword(password)}
-            value = {password}
-            />
-          </View>       
-        </View>
-        <View >
-          <RectButton style={styles.button} onPress={Entrar}>
-              <View style={styles.buttonIcon}>
-                <Feather name="play" color="#fff" size={24} />
-              </View>
-              <Text style={styles.buttonText}>Entrar</Text>
-          </RectButton>
-          <RectButton style={styles.button} onPress={toggleOverlayCriarContaVisibility}>
-              <View style={styles.buttonIcon}>
-                <Feather name="plus" color="#fff" size={24} />
-              </View>
-              <Text style={styles.buttonText}>Criar conta</Text>
-          </RectButton>
-          <RectButton style={styles.buttonSemFundo} onPress={toggleOverlayEsqueciSenhaVisibility}>
-              <View style={styles.buttonIcon}>
-                <Feather name="slack" color="#fff" size={24} />
-              </View>
-              <Text style={styles.buttonText}>Esqueci minha senha</Text>
-          </RectButton>
-        </View>
-      </ImageBackground>
+          <View >
+            <RectButton style={styles.button} onPress={Entrar}>
+                <View style={styles.buttonIcon}>
+                  <Feather name="play" color="#fff" size={24} />
+                </View>
+                <Text style={styles.buttonText}>Entrar</Text>
+            </RectButton>
+            <RectButton style={styles.button} onPress={toggleOverlayCriarContaVisibility}>
+                <View style={styles.buttonIcon}>
+                  <Feather name="plus" color="#fff" size={24} />
+                </View>
+                <Text style={styles.buttonText}>Criar conta</Text>
+            </RectButton>
+            <RectButton style={styles.buttonSemFundo} onPress={toggleOverlayEsqueciSenhaVisibility}>
+                <View style={styles.buttonIcon}>
+                  <Feather name="slack" color="#fff" size={24} />
+                </View>
+                <Text style={styles.buttonText}>Esqueci minha senha</Text>
+            </RectButton>
+          </View>
+        </ImageBackground>
+      </View>
       
       <Overlay isVisible={overlayCriaContaVisibility} overlayStyle={styles.overlay_criar_conta}>
         <Provider>
@@ -290,13 +352,13 @@ const  Login = () => {
 
       <View style={{marginTop: 50}} >
         <Snackbar
-            visible={snackErroAutenticacaoVisible}
-            onDismiss={() => setSnackErroAutenticacaoVisible(false)}
+            visible={snackErroVisible}
+            onDismiss={() => setSnackErroVisible(false)}
             action={{
               label: 'Ok',
               onPress: () => {},
             }}>
-            {mensagemErroAutenticacao}
+            {mensagemErro}
           </Snackbar>
       </View>
 
