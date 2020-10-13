@@ -10,18 +10,21 @@ import { useNavigation } from '@react-navigation/native';
 import { 
   DefaultTheme,
   Provider,
+  Snackbar,
   TextInput as TextInputNativePaper, 
 } from 'react-native-paper';
 import DropDown from 'react-native-paper-dropdown'
 import { useFonts, Roboto_400Regular, Roboto_500Medium, Roboto_900Black_Italic } from '@expo-google-fonts/roboto';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import AsyncStorage from '@react-native-community/async-storage';
+import ConfigFile from "../../config.json"
+import axios from "axios";
 
 const  Login = () => {
 
   const navigation = useNavigation();
 
-  function handleNavigateToDashboard() {
+  function handleNavigateToAlunoDashboard() {
     navigation.navigate('AlunoDashboard');
   }
 
@@ -33,6 +36,8 @@ const  Login = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [snackErroAutenticacaoVisible, setSnackErroAutenticacaoVisible] = React.useState(false);
+  const [mensagemErroAutenticacao, setMensagemErroAutenticacao] = React.useState('');
 
   const [opacityContainerPrincipal, setOpacityContainerPrincipal] = useState(1);
 
@@ -72,12 +77,68 @@ const  Login = () => {
     }
   };
 
+  const API = axios.create({
+    baseURL: ConfigFile.API_SERVER_URL,
+  });
+
+  const Entrar = async () => {
+
+    /* var userData = {
+      email, 
+      senha: password 
+    }; */
+
+    var userData = {
+      email: 'pedro.dog@hotmail.com', 
+      senha: 'abc' 
+    };
+    
+    try {
+      const resp = await API.post('/auth/autenticar', userData)
+      if(resp.status == 200)
+      {
+        console.log('Achou o usuário')
+
+        const UserAuthData = {
+          tipoUsuario: resp.data.tipoUsuario,
+          nome: resp.data.usuario.nome,
+          sobrenome: resp.data.usuario.sobrenome,
+          datahoraLogin: Date.now().toString(),
+          token: resp.data.token
+        }
+        console.log(UserAuthData)
+
+        storeUserAuthData(JSON.stringify(UserAuthData))
+
+        if(UserAuthData.tipoUsuario == 'aluno'){
+          handleNavigateToAlunoDashboard()
+        }
+      }
+
+    } catch (error) {
+      console.log('Deu Errado')
+      setMensagemErroAutenticacao(error.response.data.error)
+      setSnackErroAutenticacaoVisible(true)
+    }
+    /* 
+    LIDANDO COM O OBJETO "error" 
+    error.response.data = Object {"error": "Usuário não encontrado",} 
+    error.response = vem o objeto completo do erro
+    error.message = Request failed with status code 400
+
+    LIDANDO COM O OBJETVO "resp" quando a solicitação deu erro
+    resp.status = 200
+    resp.data = objeto devolvido pelo backend como resposta
+    */   
+  }
+
   const CriarConta = () => {
     console.log(criarContaSenha)
     console.log(criarContaRepetirSenha)
     console.log(criarContaPapel)
     toggleOverlayCriarContaVisibility()
-    storeData('Valor 3')
+    //storeData('Valor 3')
+    console.log()
   }
 
   const EsqueciSenha = () => {
@@ -85,11 +146,11 @@ const  Login = () => {
     setOverlayEsqueciSenhaVisibility(false)
   }
 
-  const storeData = async (value: string) => {
+  const storeUserAuthData = async (value: string) => {
     try {
-      await AsyncStorage.setItem('teste', value)
+      await AsyncStorage.setItem('UserAuthData', value)
     } catch (e) {
-      console.log('ocorreu erro ao armazenar dado no async storage')
+      console.log('ocorreu erro ao armazenar dados do usuario no AsyncStorage')
     }
   }
 
@@ -153,7 +214,7 @@ const  Login = () => {
           </View>       
         </View>
         <View >
-          <RectButton style={styles.button} onPress={handleNavigateToDashboard}>
+          <RectButton style={styles.button} onPress={Entrar}>
               <View style={styles.buttonIcon}>
                 <Feather name="play" color="#fff" size={24} />
               </View>
@@ -226,6 +287,18 @@ const  Login = () => {
           </View>
         </Provider>
       </Overlay>
+
+      <View style={{marginTop: 50}} >
+        <Snackbar
+            visible={snackErroAutenticacaoVisible}
+            onDismiss={() => setSnackErroAutenticacaoVisible(false)}
+            action={{
+              label: 'Ok',
+              onPress: () => {},
+            }}>
+            {mensagemErroAutenticacao}
+          </Snackbar>
+      </View>
 
     </KeyboardAwareScrollView>
   );
