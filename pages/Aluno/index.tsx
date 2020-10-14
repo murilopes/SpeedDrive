@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, Text, View, Image, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native';
 import { Appbar, Avatar, Snackbar } from 'react-native-paper';
@@ -7,7 +7,9 @@ import MenuDrawer from 'react-native-side-drawer'
 import SideMenuItem from '../../components/SideMenuItem';
 import SideMenuItemSair from '../../components/SideMenuItemSair';
 import AsyncStorage from '@react-native-community/async-storage';
+import ConfigFile from "../../config.json"
 import * as userLib from '../../lib/user.ts'
+import axios from "axios";
 
 const AlunoDashboard = (props: any) => {
   
@@ -33,8 +35,10 @@ const AlunoDashboard = (props: any) => {
     if (origemMenuLateral || !menuOpened){
       if (statusCadastroOk)
         navigation.navigate('AlunoAgendar');
-      else
-        setSnackCadastroPendenteVisible(true)
+      else{
+        setSnackMensagem('Cadastro Pendente!')
+        setSnackMensagemVisible(true)
+      }        
     }
   }
   const _handleAlunoCadastro = (origemMenuLateral: boolean) => {
@@ -47,18 +51,59 @@ const AlunoDashboard = (props: any) => {
     if (origemMenuLateral || !menuOpened)     
       navigation.navigate('Notificacoes');
   }
-
-  const [menuOpened, setMenuOpened] = React.useState(false);
-  const [snackCadastroPendenteVisible, setSnackCadastroPendenteVisible] = React.useState(false);
-
-  const[qtdAulasRealizadas, setQtdAulasRealizadas] = useState(2)
-  const[qtdProximasAulas, setQtdProximasAulas] = useState(2)
-  const[statusCadastroOk, setStatusCadastroOk] = useState(true)
-
   const _handleTouchMenu = async () => {
     menuOpened ? setMenuOpened(false) : setMenuOpened(true)
-    console.log(await userLib.getUserAuthData())
   };
+
+  const [menuOpened, setMenuOpened] = React.useState(false);
+  const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
+  const [snackMensagem, setSnackMensagem] = React.useState('');
+  const [count, setCount] = React.useState(0)
+
+  const [nomeCompleto, setNomeCompleto] = React.useState('');
+  const [urlFotoPerfil, setUrlFotoPerfil] = React.useState();
+  const [qtdAulasRealizadas, setQtdAulasRealizadas] = useState(0)
+  const [qtdProximasAulas, setQtdProximasAulas] = useState(0)
+  const [statusCadastroOk, setStatusCadastroOk] = useState(false)
+  const [temNotificacao, setTemNotificacao] = useState(false)
+
+  const API = axios.create({
+    baseURL: ConfigFile.API_SERVER_URL,
+  });
+
+  const PreencheInfosDashboard = async () => {
+     try { 
+      const { id, token } = JSON.parse(await userLib.getUserAuthData())
+
+      const resp = await API.get('/aluno/infosDash/' + id, {headers: {Authorization: 'Bearer ' + token}})
+
+      if(resp.status == 200)
+      {
+        console.log('Conseguiu carregar infos dash')
+
+        setNomeCompleto(resp.data.response.nome + ' ' + resp.data.response.sobrenome)
+        setUrlFotoPerfil(resp.data.response.urlFotoPerfil)
+        setStatusCadastroOk(resp.data.response.isCadastroCompleto)
+        setTemNotificacao(resp.data.response.hasNotificacao)
+        setQtdAulasRealizadas(resp.data.response.qtdAulasRealizadas)
+        setQtdProximasAulas(resp.data.response.qtdProximasAulas)
+      }
+    } catch (error) {
+      console.log('Não conseguiu carregar infos dash')
+      console.log(error.response.data.error)
+      setSnackMensagem(error.response.data.error)
+      setSnackMensagemVisible(true)
+    } 
+  }
+
+  navigation.addListener('focus', () => {
+    setCount(count+1)
+  })
+
+  useEffect(() => {
+    PreencheInfosDashboard()  
+   
+  }, [count])
 
   const drawerContent = () => {
     return (
@@ -94,13 +139,13 @@ const AlunoDashboard = (props: any) => {
 
         <Appbar.Header statusBarHeight={15} style={{height: 45, backgroundColor: '#212F3C'}}>
           <Appbar.Action icon="menu" size={30} onPress={ _handleTouchMenu} />
-          <Appbar.Content onTouchEnd={() => setMenuOpened(false)} title="Jonatas Vasconcellos" />
+          <Appbar.Content onTouchEnd={() => setMenuOpened(false)} title={nomeCompleto} />
           <Appbar.Action icon="bell" size={30} onPress={() => _handleNotificacoes(false)} />
         </Appbar.Header>
         <View style={{alignItems: 'center'}} onTouchEnd={() => setMenuOpened(false)}>
           <Avatar.Image 
-            size={170} 
-            source={{uri:'https://s2.glbimg.com/jsaPuF7nO23vRxQkuJ_V3WgouKA=/e.glbimg.com/og/ed/f/original/2014/06/10/461777879.jpg'}}
+            size={170}
+            source={{ uri: urlFotoPerfil ? urlFotoPerfil : 'https://www.southtabor.com/newsite/wp-content/themes/consultix/images/no-image-found-360x250.png'}}
             style={{marginTop: 15, marginBottom: 15}}          
           />
         </View>
@@ -162,13 +207,13 @@ const AlunoDashboard = (props: any) => {
         </View>
 
         <Snackbar
-          visible={snackCadastroPendenteVisible}
-          onDismiss={() => setSnackCadastroPendenteVisible(false)}
+          visible={snackMensagemVisible}
+          onDismiss={() => setSnackMensagemVisible(false)}
           action={{
             label: 'Ajustar',
             onPress: () => _handleAlunoCadastro(false),
           }}>
-          Cadastro Pendente!
+          {snackMensagem}
         </Snackbar>
 
       </MenuDrawer>

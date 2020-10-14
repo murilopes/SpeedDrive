@@ -16,7 +16,6 @@ import {
 import DropDown from 'react-native-paper-dropdown'
 import { useFonts, Roboto_400Regular, Roboto_500Medium, Roboto_900Black_Italic } from '@expo-google-fonts/roboto';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import AsyncStorage from '@react-native-community/async-storage';
 import ConfigFile from "../../config.json"
 import * as userLib from '../../lib/user.ts'
 import axios from "axios";
