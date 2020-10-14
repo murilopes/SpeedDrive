@@ -18,6 +18,7 @@ import { useFonts, Roboto_400Regular, Roboto_500Medium, Roboto_900Black_Italic }
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import AsyncStorage from '@react-native-community/async-storage';
 import ConfigFile from "../../config.json"
+import * as userLib from '../../lib/user.ts'
 import axios from "axios";
 
 const  Login = () => {
@@ -105,6 +106,7 @@ const  Login = () => {
 
         const UserAuthData = {
           tipoUsuario: resp.data.tipoUsuario,
+          id: resp.data.usuario._id,
           nome: resp.data.usuario.nome,
           sobrenome: resp.data.usuario.sobrenome,
           datahoraLogin: Date.now().toString(),
@@ -112,7 +114,7 @@ const  Login = () => {
         }
         console.log(UserAuthData)
 
-        storeUserAuthData(JSON.stringify(UserAuthData))
+        userLib.storeUserAuthData(JSON.stringify(UserAuthData))
 
         if(UserAuthData.tipoUsuario == 'aluno'){
           handleNavigateToAlunoDashboard()
@@ -174,6 +176,7 @@ const  Login = () => {
     
             const UserAuthData = {
               tipoUsuario: resp.data.tipoUsuario,
+              id: resp.data.aluno._id,
               nome: resp.data.aluno.nome,
               sobrenome: '',
               datahoraLogin: Date.now().toString(),
@@ -181,7 +184,7 @@ const  Login = () => {
             }
             console.log(UserAuthData)
     
-            storeUserAuthData(JSON.stringify(UserAuthData))
+            userLib.storeUserAuthData(JSON.stringify(UserAuthData))
 
             setMensagemErro('Conta criada com sucesso!')
             setSnackErroVisible(true)
@@ -205,14 +208,6 @@ const  Login = () => {
   const EsqueciSenha = () => {
     console.log(esqueciSenhaEmail)
     setOverlayEsqueciSenhaVisibility(false)
-  }
-
-  const storeUserAuthData = async (value: string) => {
-    try {
-      await AsyncStorage.setItem('UserAuthData', value)
-    } catch (e) {
-      console.log('ocorreu erro ao armazenar dados do usuario no AsyncStorage')
-    }
   }
 
   const theme = {

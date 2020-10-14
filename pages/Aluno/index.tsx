@@ -7,6 +7,7 @@ import MenuDrawer from 'react-native-side-drawer'
 import SideMenuItem from '../../components/SideMenuItem';
 import SideMenuItemSair from '../../components/SideMenuItemSair';
 import AsyncStorage from '@react-native-community/async-storage';
+import * as userLib from '../../lib/user.ts'
 
 const AlunoDashboard = (props: any) => {
   
@@ -18,7 +19,6 @@ const AlunoDashboard = (props: any) => {
       navigation.navigate('Login');
   }
   const _handleAulasRealizadas = (origemMenuLateral: boolean) => {
-    getData()
     setMenuOpened(false)    
     if (origemMenuLateral || !menuOpened)     
       navigation.navigate('AlunoRealizadas');
@@ -55,20 +55,10 @@ const AlunoDashboard = (props: any) => {
   const[qtdProximasAulas, setQtdProximasAulas] = useState(2)
   const[statusCadastroOk, setStatusCadastroOk] = useState(true)
 
-  const _handleTouchMenu = () => {
+  const _handleTouchMenu = async () => {
     menuOpened ? setMenuOpened(false) : setMenuOpened(true)
+    console.log(await userLib.getUserAuthData())
   };
-
-  const getData = async () => {
-    try {
-      const value = await AsyncStorage.getItem('teste')
-      if(value !== null) {
-        console.log(value)
-      }
-    } catch(e) {
-      console.log('ocorreu erro ao recuperar dado guardado no async storage')
-    }
-  }
 
   const drawerContent = () => {
     return (
@@ -79,7 +69,7 @@ const AlunoDashboard = (props: any) => {
 
         <SideMenuItem icon='cogs' text='Cadastro' onAction={() => _handleAlunoCadastro(true)}/>
         <SideMenuItem icon='check-circle' text='Aulas Realizada' onAction={() => _handleAulasRealizadas(true)}/>
-        <SideMenuItem icon='exclamation-circle' text='Próximas Aula' onAction={() => _handleProximasAulas(true)}/>
+        <SideMenuItem icon='exclamation-circle' text='Próximas Aulas' onAction={() => _handleProximasAulas(true)}/>
         <SideMenuItem icon='car' text='Agendar Aulas' onAction={() => _handleAgendar(true)}/>
         <SideMenuItem icon='envelope' text='Notificações' onAction={() => _handleNotificacoes(true)}/>
         <SideMenuItem icon='comments' text='Contato' onAction={() => {}}/>

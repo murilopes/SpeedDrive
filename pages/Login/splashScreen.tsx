@@ -4,6 +4,7 @@ import { StyleSheet, Text, View, KeyboardAvoidingView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useFonts, Roboto_400Regular, Roboto_500Medium, Roboto_900Black_Italic } from '@expo-google-fonts/roboto';
 import AsyncStorage from '@react-native-community/async-storage';
+import * as userLib from '../../lib/user.ts'
 
 const  SplashScreen = () => {
 
@@ -23,19 +24,8 @@ const  SplashScreen = () => {
     Roboto_900Black_Italic
   });
 
-  const getUserLoggedData = async () => {
-    try {
-      const value = await AsyncStorage.getItem('UserLoggedData')
-      if(value !== null) {
-        return value
-      }
-    } catch(e) {
-      console.log('Ocorreu erro ao recuperar dado guardado no async storage')
-    }
-  }
-
   const usuarioEstaAutenticado = async () => {
-    const dadosUsuario = await getUserLoggedData();
+    const dadosUsuario = await userLib.getUserAuthData();
     console.log(dadosUsuario)
     if (dadosUsuario != undefined)
       return true
