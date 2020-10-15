@@ -1,9 +1,12 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { StyleSheet, Text, View, TextInput, Image, ImageBackground, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
-import { Appbar, Avatar } from 'react-native-paper';
+import { StyleSheet, Text, View, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { Appbar, Snackbar } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { RectButton } from 'react-native-gesture-handler';
+import ConfigFile from "../../config.json"
+import * as userLib from '../../lib/user.ts'
+import axios from "axios";
 
 const  AlunoRealizadas = () => {
 
@@ -15,6 +18,66 @@ const  AlunoRealizadas = () => {
   const _handleAulaDetalheInstrutor = () => {
     navigation.navigate('AulaDetalheInstrutor');
   }
+
+  type AulaRealizada = { id: string, status: string, data: string, horarioInicio: string, horarioFim: string, nomeInstrutor: string}; 
+  const arrayInitialValue:Array<AulaRealizada> = []
+  
+  const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
+  const [snackMensagem, setSnackMensagem] = React.useState('');
+  const [arrayAulasRealizadas, setArrayAulasRealizadas] = React.useState(arrayInitialValue)
+
+  const API = axios.create({
+    baseURL: ConfigFile.API_SERVER_URL,
+  });
+
+  const PreencheObjAulasRealizadas = async () => {
+    try {
+            
+      const { id, token } = JSON.parse(await userLib.getUserAuthData())
+
+      var reqData = {
+        tipoUsuario: 'aluno',
+        idUsuario: id,
+      };
+
+      const resp = await API.get('/agendamento/realizadas/' + reqData.idUsuario, 
+      {
+        headers: 
+        {
+          Authorization: 'Bearer ' + token,
+          tipoUsuario: reqData.tipoUsuario
+        }
+      })
+
+      if(resp.status == 200)
+      {
+        console.log('Conseguiu carregar info realizadas')
+        
+        const arrayResponse = Object.keys(resp.data.aulas).map(i => resp.data.aulas[Number(i)]);
+        
+        for(const element of arrayResponse) {
+          if(arrayAulasRealizadas.some(x => x.id == element._id) == false) {
+            console.log('Adicionou', element._id)
+            setArrayAulasRealizadas(arrayAulasRealizadas.concat({
+              id: element._id,
+              status: element.status, 
+              data: element.horarioInicio, 
+              horarioInicio: element.horarioInicio, 
+              horarioFim: element.horarioFim, 
+              nomeInstrutor: element.instrutor.nome
+            }));
+          }            
+        }
+      }
+    } catch (error) {
+      console.log('Não conseguiu carregar info realizadas')
+      console.log(error.response.data.error)
+      setSnackMensagem(error.response.data.error)
+      setSnackMensagemVisible(true)
+    } 
+  }
+
+  PreencheObjAulasRealizadas()
 
   return (
     <KeyboardAvoidingView style={styles.container_principal} 
@@ -28,66 +91,52 @@ const  AlunoRealizadas = () => {
       <ScrollView>        
         <View style={styles.view_items} >
           
-          <View style={styles.item}>
-            <View style={styles.item_status}>
-              <Icon name='circle' size={20} color='#0081DA'/>
-            </View >
-            <View style={styles.item_detalhes}>
-              <Text style={styles.item_text_line}>
-                <Text style={styles.item_text_title}>Status: </Text>
-                <Text>Realizada</Text>
-              </Text>
-              <Text style={styles.item_text_line}>
-                <Text style={styles.item_text_title}>Data: </Text>
-                <Text >23/06/2020</Text>
-              </Text>
-              <Text style={styles.item_text_line}>
-                <Text style={styles.item_text_title}>Horário: </Text>
-                <Text >19:00</Text>
-              </Text>
-              <Text style={styles.item_text_line}>
-                <Text style={styles.item_text_title}>Instrutor: </Text>
-                <Text >João Bonifácio</Text>
-              </Text>
-            </View>
-            <View style={styles.item_action}>
-              <RectButton style={styles.button} onPress={_handleAulaDetalheInstrutor}>
-                <Text style={styles.buttonText}>Detalhe</Text>
-              </RectButton>
-            </View >
-          </View>
-
-          <View style={styles.item}>
-            <View style={styles.item_status}>
-              <Icon name='circle' size={20} color='#0081DA'/>
-            </View >
-            <View style={styles.item_detalhes}>
-              <Text style={styles.item_text_line}>
-                <Text style={styles.item_text_title}>Status: </Text>
-                <Text>Realizada</Text>
-              </Text>
-              <Text style={styles.item_text_line}>
-                <Text style={styles.item_text_title}>Data: </Text>
-                <Text >24/06/2020</Text>
-              </Text>
-              <Text style={styles.item_text_line}>
-                <Text style={styles.item_text_title}>Horário: </Text>
-                <Text >20:00</Text>
-              </Text>
-              <Text style={styles.item_text_line}>
-                <Text style={styles.item_text_title}>Instrutor: </Text>
-                <Text >João Bonifácio</Text>
-              </Text>
-            </View>
-            <View style={styles.item_action}>
-              <RectButton style={styles.button} onPress={_handleAulaDetalheInstrutor}>
-                <Text style={styles.buttonText}>Detalhe</Text>
-              </RectButton>
-            </View >
-          </View>
+          {
+            arrayAulasRealizadas.map((item, i) => (
+              <View key={item.id} style={styles.item}>
+                <View style={styles.item_status}>
+                  <Icon name='circle' size={20} color='#0081DA'/>
+                </View>
+                <View style={styles.item_detalhes}>
+                  <Text style={styles.item_text_line}>
+                    <Text style={styles.item_text_title}>Status: </Text>
+                    <Text>{item.status}</Text>
+                  </Text>
+                  <Text style={styles.item_text_line}>
+                    <Text style={styles.item_text_title}>Data: </Text>
+                    <Text>{item.data.substr(0, 10)}</Text>
+                  </Text>
+                  <Text style={styles.item_text_line}>
+                    <Text style={styles.item_text_title}>Horário início: </Text>
+                    <Text>{item.horarioInicio}</Text>
+                  </Text>
+                  <Text style={styles.item_text_line}>
+                    <Text style={styles.item_text_title}>Instrutor: </Text>
+                    <Text>{item.nomeInstrutor}</Text>
+                  </Text>
+                </View>
+                <View style={styles.item_action}>
+                  <RectButton style={styles.button} onPress={_handleAulaDetalheInstrutor}>
+                    <Text style={styles.buttonText}>Detalhe</Text>
+                  </RectButton>
+                </View >
+              </View>
+            ))
+          }
 
         </View>
       </ScrollView>
+
+      <Snackbar
+        visible={snackMensagemVisible}
+        onDismiss={() => setSnackMensagemVisible(false)}
+        action={{
+          label: 'OK',
+          onPress: () => {},
+        }}>
+        {snackMensagem}
+      </Snackbar>
+
     </KeyboardAvoidingView>
 
   );

@@ -6,7 +6,6 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import MenuDrawer from 'react-native-side-drawer'
 import SideMenuItem from '../../components/SideMenuItem';
 import SideMenuItemSair from '../../components/SideMenuItemSair';
-import AsyncStorage from '@react-native-community/async-storage';
 import ConfigFile from "../../config.json"
 import * as userLib from '../../lib/user.ts'
 import axios from "axios";
