@@ -135,7 +135,7 @@ const AlunoCadastro = () => {
       <View style={{alignItems: 'center', marginTop: 15, marginBottom: 20}}>
         <Avatar.Image 
           size={170} 
-          source={{uri: fotoPerfil}}
+          source={{uri: fotoPerfil ? fotoPerfil : 'https://www.southtabor.com/newsite/wp-content/themes/consultix/images/no-image-found-360x250.png'}}
           style={{}}
         />
         <View style={{alignItems: 'center', marginTop: -30}}>
