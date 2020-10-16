@@ -107,7 +107,7 @@ const AlunoDashboard = (props: any) => {
   const drawerContent = () => {
     return (
       <TouchableOpacity style={styles.animatedMenuBox}>
-        <View onTouchEnd={() => setMenuOpened(false)} style={{height: 70, flexDirection: 'row', alignItems: 'center'}}>
+        <View onTouchEnd={() => setMenuOpened(false)} style={{height: 100, flexDirection: 'row', alignItems: 'center'}}>
           <Text style={styles.menu_text_voltar}>Fechar Menu</Text>
         </View>
 
@@ -320,6 +320,7 @@ const styles = StyleSheet.create({
     flex: 1,
     color: '#A79898',
     fontSize: 22,
+    paddingTop: 20,
   },
 
 });

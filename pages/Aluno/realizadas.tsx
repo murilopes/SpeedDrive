@@ -1,12 +1,25 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, Text, View, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { Appbar, Snackbar } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { RectButton } from 'react-native-gesture-handler';
 import ConfigFile from "../../config.json"
-import * as userLib from '../../lib/user.ts'
+import * as userLib from '../../lib/user'
+import * as utilLib from '../../lib/util'
 import axios from "axios";
+
+interface aula {
+  _id: string,
+  horarioInicio: string,
+  horarioFim: string,
+  status: string,
+  instrutor: instrutor,
+}
+
+interface instrutor {
+  nome: string
+}
 
 const  AlunoRealizadas = () => {
 
@@ -19,20 +32,17 @@ const  AlunoRealizadas = () => {
     navigation.navigate('AulaDetalheInstrutor');
   }
 
-  type AulaRealizada = { id: string, status: string, data: string, horarioInicio: string, horarioFim: string, nomeInstrutor: string}; 
-  const arrayInitialValue:Array<AulaRealizada> = []
-  
   const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
   const [snackMensagem, setSnackMensagem] = React.useState('');
-  const [arrayAulasRealizadas, setArrayAulasRealizadas] = React.useState(arrayInitialValue)
+  const [arrayAulasRealizadas, setArrayAulasRealizadas] = React.useState(Array<aula>())
 
   const API = axios.create({
     baseURL: ConfigFile.API_SERVER_URL,
   });
 
   const PreencheObjAulasRealizadas = async () => {
-    try {
-            
+
+    try {            
       const { id, token } = JSON.parse(await userLib.getUserAuthData())
 
       var reqData = {
@@ -51,23 +61,9 @@ const  AlunoRealizadas = () => {
 
       if(resp.status == 200)
       {
-        console.log('Conseguiu carregar info realizadas')
-        
-        const arrayResponse = Object.keys(resp.data.aulas).map(i => resp.data.aulas[Number(i)]);
-        
-        for(const element of arrayResponse) {
-          if(arrayAulasRealizadas.some(x => x.id == element._id) == false) {
-            console.log('Adicionou', element._id)
-            setArrayAulasRealizadas(arrayAulasRealizadas.concat({
-              id: element._id,
-              status: element.status, 
-              data: element.horarioInicio, 
-              horarioInicio: element.horarioInicio, 
-              horarioFim: element.horarioFim, 
-              nomeInstrutor: element.instrutor.nome
-            }));
-          }            
-        }
+        console.log('Conseguiu carregar info realizadas')        
+        const arrayAulas:Array<aula> = resp.data.aulas
+        return arrayAulas
       }
     } catch (error) {
       console.log('Não conseguiu carregar info realizadas')
@@ -77,35 +73,15 @@ const  AlunoRealizadas = () => {
     } 
   }
 
-  PreencheObjAulasRealizadas()   
+  useEffect(() => {
+    PreencheObjAulasRealizadas().then(
+      (conclusao) => {
+        if (conclusao)
+        setArrayAulasRealizadas(conclusao)
+      }
+    ) 
+  }, [])
   
-  const formataDataParaExibicaoDataFriendly = (data: string) => {
-    
-    let dataFriendly = data
-    
-    if(data.length == 24) {
-      const dia = data.substr(8, 2)
-      const mes = data.substr(5, 2)
-      const ano = data.substr(0, 4)
-
-      dataFriendly = `${dia}/${mes}/${ano}`
-    }
-    return dataFriendly;
-  }
-
-  const formataDataParaExibicaoHorarioFriendly = (data: string) => {
-    
-    let horarioFriendly = data
-    
-    if(data.length == 24) {
-      const hora = data.substr(11, 2)
-      const minuto = data.substr(14, 2)
-
-      horarioFriendly = `${hora}:${minuto}`
-    }
-    return horarioFriendly;
-  }
-
   return (
     <KeyboardAvoidingView style={styles.container_principal} 
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
@@ -120,26 +96,26 @@ const  AlunoRealizadas = () => {
           
           {
             arrayAulasRealizadas.map((item, i) => (
-              <View key={item.id} style={styles.item}>
+              <View key={item._id} style={styles.item}>
                 <View style={styles.item_status}>
                   <Icon name='circle' size={20} color='#0081DA'/>
                 </View>
                 <View style={styles.item_detalhes}>
                   <Text style={styles.item_text_line}>
                     <Text style={styles.item_text_title}>Status: </Text>
-                    <Text>{item.status}</Text>
+                    <Text>{item.status ? item.status : ''}</Text>
                   </Text>
                   <Text style={styles.item_text_line}>
                     <Text style={styles.item_text_title}>Data: </Text>
-                    <Text>{formataDataParaExibicaoDataFriendly(item.data)}</Text>
+                    <Text>{ item.horarioInicio ? utilLib.formataDataParaExibicaoDataFriendly(item.horarioInicio) : ''}</Text>
                   </Text>
                   <Text style={styles.item_text_line}>
                     <Text style={styles.item_text_title}>Horário início: </Text>
-                    <Text>{formataDataParaExibicaoHorarioFriendly(item.horarioInicio)}</Text>
+                    <Text>{ item.horarioInicio ? utilLib.formataDataParaExibicaoHorarioFriendly(item.horarioInicio) : ''}</Text>
                   </Text>
                   <Text style={styles.item_text_line}>
                     <Text style={styles.item_text_title}>Instrutor: </Text>
-                    <Text>{item.nomeInstrutor}</Text>
+                    <Text>{(item.instrutor) ? item.instrutor.nome: ''}</Text>
                   </Text>
                 </View>
                 <View style={styles.item_action}>

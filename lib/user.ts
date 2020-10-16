@@ -5,6 +5,8 @@ export const getUserAuthData = async() => {
         const value = await AsyncStorage.getItem('UserAuthData')
         if (value !== null) {
             return value
+        } else {
+          return ''
         }
     } catch (e) {
         console.log('Ocorreu erro ao recuperar dado guardado no async storage')
