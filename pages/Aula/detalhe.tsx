@@ -20,7 +20,7 @@ const AulaDetalhe = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
 
-      <Appbar.Header statusBarHeight={-15} style={{ height: 45, backgroundColor: '#212F3C' }}>
+      <Appbar.Header statusBarHeight={0} style={{ height: 45, backgroundColor: '#212F3C' }}>
         <Appbar.Action icon="arrow-left-circle" size={30} onPress={_goBack} />
         <Appbar.Content title="Detalhe Aula" />
       </Appbar.Header>

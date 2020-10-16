@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, Text, View, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { Appbar, Snackbar } from 'react-native-paper';
@@ -77,13 +77,40 @@ const  AlunoRealizadas = () => {
     } 
   }
 
-  PreencheObjAulasRealizadas()
+  PreencheObjAulasRealizadas()   
+  
+  const formataDataParaExibicaoDataFriendly = (data: string) => {
+    
+    let dataFriendly = data
+    
+    if(data.length == 24) {
+      const dia = data.substr(8, 2)
+      const mes = data.substr(5, 2)
+      const ano = data.substr(0, 4)
+
+      dataFriendly = `${dia}/${mes}/${ano}`
+    }
+    return dataFriendly;
+  }
+
+  const formataDataParaExibicaoHorarioFriendly = (data: string) => {
+    
+    let horarioFriendly = data
+    
+    if(data.length == 24) {
+      const hora = data.substr(11, 2)
+      const minuto = data.substr(14, 2)
+
+      horarioFriendly = `${hora}:${minuto}`
+    }
+    return horarioFriendly;
+  }
 
   return (
     <KeyboardAvoidingView style={styles.container_principal} 
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
 
-      <Appbar.Header statusBarHeight={-15} style={{height: 45, backgroundColor: '#212F3C'}}>
+      <Appbar.Header statusBarHeight={0} style={{height: 45, backgroundColor: '#212F3C'}}>
         <Appbar.Action icon="arrow-left-circle" size={30} onPress={_goBack} />
         <Appbar.Content title="Aulas Realizadas" />
       </Appbar.Header>
@@ -104,11 +131,11 @@ const  AlunoRealizadas = () => {
                   </Text>
                   <Text style={styles.item_text_line}>
                     <Text style={styles.item_text_title}>Data: </Text>
-                    <Text>{item.data.substr(0, 10)}</Text>
+                    <Text>{formataDataParaExibicaoDataFriendly(item.data)}</Text>
                   </Text>
                   <Text style={styles.item_text_line}>
                     <Text style={styles.item_text_title}>Horário início: </Text>
-                    <Text>{item.horarioInicio}</Text>
+                    <Text>{formataDataParaExibicaoHorarioFriendly(item.horarioInicio)}</Text>
                   </Text>
                   <Text style={styles.item_text_line}>
                     <Text style={styles.item_text_title}>Instrutor: </Text>
