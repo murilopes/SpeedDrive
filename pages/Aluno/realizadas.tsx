@@ -46,7 +46,6 @@ const  AlunoRealizadas = () => {
       const { id, token } = JSON.parse(await userLib.getUserAuthData())
 
       var reqData = {
-        tipoUsuario: 'aluno',
         idUsuario: id,
       };
 
@@ -55,7 +54,6 @@ const  AlunoRealizadas = () => {
         headers: 
         {
           Authorization: 'Bearer ' + token,
-          tipoUsuario: reqData.tipoUsuario
         }
       })
 
