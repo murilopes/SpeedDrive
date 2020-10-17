@@ -14,7 +14,7 @@ import AlunoCadastro from './pages/Aluno/cadastro';
 import CadastroDadosPessoais from './pages/Comum/cadastroDadosPessoais';
 import CadastroEndereco from './pages/Comum/cadastroEndereco';
 import CadastroDocumentosAluno from './pages/Aluno/cadastroDocumentos';
-import AulaDetalheInstrutor from './pages/Aula/detalhe';
+import AulaDetalheInstrutor from './pages/Aluno/aulaDetalhe';
 import UploadDocumento from './pages/Comum/uploadDocumento';
 import Notificacoes from './pages/Comum/notificacoes';
 

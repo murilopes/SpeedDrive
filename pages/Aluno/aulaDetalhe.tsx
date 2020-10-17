@@ -3,16 +3,84 @@ import { useNavigation } from '@react-navigation/native';
 import {
   StyleSheet, Text, View, TextInput, Image, ImageBackground, KeyboardAvoidingView, Platform, ScrollView,
 } from 'react-native';
-import { Appbar, Avatar } from 'react-native-paper';
+import { Appbar, Avatar, Snackbar } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IconMaterial from 'react-native-vector-icons/MaterialCommunityIcons';
+import ConfigFile from "../../config.json"
+import * as userLib from '../../lib/user'
+import * as utilLib from '../../lib/util'
+import axios from "axios";
 
-const AulaDetalhe = () => {
+interface IAulaDetalhe {
+  _id?: string,
+  status?: string,
+  horarioInicio?: string,
+  horarioFim?: string,
+  valor?: string,
+  instrutor?: IInstrutor,
+}
+
+interface IInstrutor {
+  nome?: string,
+  sobrenome?: string,
+  dataNascimento?: string,
+  veiculo?: string,
+  urlFotoPerfil?: string,
+}
+
+const AulaDetalhe = (props: object) => {
+  
   const navigation = useNavigation();
 
   const _goBack = () => {
     navigation.goBack();
   };
+  
+  let aulaDetalheVazio: IAulaDetalhe = {}
+
+  const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
+  const [snackMensagem, setSnackMensagem] = React.useState('');
+  const [objAulaDetalhe, setObjAulaDetalhe] = React.useState(aulaDetalheVazio)
+
+  const API = axios.create({
+    baseURL: ConfigFile.API_SERVER_URL,
+  });
+
+  const getAulaDetalhe = async () => {
+
+    try {
+
+      const { token } = JSON.parse(await userLib.getUserAuthData())
+      const resp = await API.get('/agendamento/detalhe/' + props.route.params.idAgendamento, 
+      {
+        headers: 
+        {
+          Authorization: 'Bearer ' + token,
+        }
+      })
+
+      if(resp.status == 200)
+      {
+        console.log('Conseguiu carregar detalhe da aula') 
+        return  resp.data.aula
+      }
+    } catch (error) {
+      console.log('Não conseguiu carregar detalhe da aula')
+      console.log(error.response.data.error)
+      setSnackMensagem(error.response.data.error)
+      setSnackMensagemVisible(true)
+    } 
+  }
+
+  React.useEffect(() => {
+    getAulaDetalhe().then(
+      (aulaDetalhe) => {
+        if (aulaDetalhe)
+        setObjAulaDetalhe(aulaDetalhe)
+      }
+    ) 
+  }, [])
+  
 
   return (
     <KeyboardAvoidingView
@@ -31,16 +99,16 @@ const AulaDetalhe = () => {
           <View style={styles.view_intrutor_foto}>
             <Avatar.Image
               size={150}
-              source={{ uri: 'https://img.ibxk.com.br/2019/02/17/17124052466014.jpg?w=704' }}
+              source={{ uri: objAulaDetalhe.instrutor?.urlFotoPerfil ? objAulaDetalhe.instrutor.urlFotoPerfil : ConfigFile.URL_IMAGEM_NAO_ENCONTRADA }}
               style={{ marginTop: 15, marginBottom: 15 }}
             />
           </View>
           <View style={styles.view_intrutor_detalhe}>
             <View style={styles.view_instrutor_detalhe_interno}>
               <Text style={styles.instrutor_titulo}>Instrutor:</Text>
-              <Text style={styles.instrutor_info_principal}>João Bonifácio</Text>
-              <Text style={styles.instrutor_info_secundaria}>33 anos</Text>
-              <Text style={styles.instrutor_info_secundaria}>Hyundai HB20</Text>
+              <Text style={styles.instrutor_info_principal}>{objAulaDetalhe.instrutor?.nome} {utilLib.retornaUltimoNome(objAulaDetalhe.instrutor?.sobrenome)}</Text>
+              <Text style={styles.instrutor_info_secundaria}>{objAulaDetalhe.instrutor?.dataNascimento ? `${utilLib.retornaIdade(objAulaDetalhe.instrutor?.dataNascimento)} anos` : ''}</Text>
+              <Text style={styles.instrutor_info_secundaria}>{objAulaDetalhe.instrutor?.veiculo}</Text>
             </View>
           </View>
         </View>
@@ -54,7 +122,7 @@ const AulaDetalhe = () => {
               </View>
               <View style={styles.item_detalhes}>
                 <View style={styles.item_text_superior}>
-                  <Text style={styles.item_text_value}>23/06/2020</Text>
+                  <Text style={styles.item_text_value}>{ objAulaDetalhe.horarioInicio ? utilLib.formataDataParaExibicaoDataFriendly(objAulaDetalhe.horarioInicio) : ''}</Text>
                 </View>
                 <View style={styles.item_text_inferior}>
                   <Text style={styles.item_text_title}>Data</Text>
@@ -70,10 +138,42 @@ const AulaDetalhe = () => {
               </View>
               <View style={styles.item_detalhes}>
                 <View style={styles.item_text_superior}>
-                  <Text style={styles.item_text_value}>19:00</Text>
+                  <Text style={styles.item_text_value}>{ objAulaDetalhe.horarioInicio ? utilLib.formataDataParaExibicaoHorarioFriendly(objAulaDetalhe.horarioInicio) : ''}</Text>
                 </View>
                 <View style={styles.item_text_inferior}>
-                  <Text style={styles.item_text_title}>Horário</Text>
+                  <Text style={styles.item_text_title}>Horário início</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.item}>
+            <View style={styles.item_interno}>
+              <View style={styles.item_status}>
+                <IconMaterial name="timer-off" size={20} />
+              </View>
+              <View style={styles.item_detalhes}>
+                <View style={styles.item_text_superior}>
+                  <Text style={styles.item_text_value}>{ objAulaDetalhe.horarioFim ? utilLib.formataDataParaExibicaoHorarioFriendly(objAulaDetalhe.horarioFim) : ''}</Text>
+                </View>
+                <View style={styles.item_text_inferior}>
+                  <Text style={styles.item_text_title}>Horário fim</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.item}>
+            <View style={styles.item_interno}>
+              <View style={styles.item_status}>
+                <IconMaterial name="currency-usd" size={20} />
+              </View>
+              <View style={styles.item_detalhes}>
+                <View style={styles.item_text_superior}>
+                  <Text style={styles.item_text_value}>{objAulaDetalhe.valor ? `${objAulaDetalhe.valor} reais` : ''}</Text>
+                </View>
+                <View style={styles.item_text_inferior}>
+                  <Text style={styles.item_text_title}>Valor</Text>
                 </View>
               </View>
             </View>
@@ -86,7 +186,7 @@ const AulaDetalhe = () => {
               </View>
               <View style={styles.item_detalhes}>
                 <View style={styles.item_text_superior}>
-                  <Text style={styles.item_text_value}>Realizada</Text>
+                  <Text style={styles.item_text_value}>{objAulaDetalhe.status}</Text>
                 </View>
                 <View style={styles.item_text_inferior}>
                   <Text style={styles.item_text_title}>Status</Text>
@@ -97,11 +197,21 @@ const AulaDetalhe = () => {
 
         </View>
 
-        <View style={styles.item_action}>
-          {/* <RectButton style={styles.button} onPress={_handleAulaDetalheInstrutor}>
-              <Text style={styles.buttonText}>Cancelar Aula</Text>
-            </RectButton> */}
-        </View>
+        {/* <View style={styles.item_action}>
+          <RectButton style={styles.button} onPress={_handleAulaDetalheInstrutor}>
+            <Text style={styles.buttonText}>Cancelar Aula</Text>
+          </RectButton>
+        </View> */}
+
+        <Snackbar
+          visible={snackMensagemVisible}
+          onDismiss={() => setSnackMensagemVisible(false)}
+          action={{
+            label: 'OK',
+            onPress: () => {},
+          }}>
+          {snackMensagem}
+        </Snackbar>
 
       </View>
     </KeyboardAvoidingView>
@@ -166,16 +276,14 @@ const styles = StyleSheet.create({
   },
 
   view_items: {
-    flex: 5,
-    maxHeight: '40%',
+    flex: 7,
     alignItems: 'center',
-    width: '100%',
   },
 
   item: {
-    flex: 1,
     flexDirection: 'row',
     width: '90%',
+    height: 70,
     alignItems: 'center',
   },
 
@@ -198,13 +306,13 @@ const styles = StyleSheet.create({
 
   item_text_superior: {
     flex: 1,
-    paddingTop: 20,
+    paddingTop: 10,
 
   },
 
   item_text_inferior: {
     flex: 1,
-    paddingBottom: 20,
+    paddingBottom: 10,
   },
 
   item_text_title: {

@@ -9,6 +9,7 @@ import IconMaterial from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconEntypo from 'react-native-vector-icons/Entypo';
 import useStateWithCallback from 'use-state-with-callback';
 import * as ImagePicker from 'expo-image-picker';
+import ConfigFile from "../../config.json"
 
 const AlunoCadastro = () => {
   const navigation = useNavigation();
@@ -135,7 +136,7 @@ const AlunoCadastro = () => {
       <View style={{alignItems: 'center', marginTop: 15, marginBottom: 20}}>
         <Avatar.Image 
           size={170} 
-          source={{uri: fotoPerfil ? fotoPerfil : 'https://www.southtabor.com/newsite/wp-content/themes/consultix/images/no-image-found-360x250.png'}}
+          source={{uri: fotoPerfil ? fotoPerfil : ConfigFile.URL_IMAGEM_NAO_ENCONTRADA}}
           style={{}}
         />
         <View style={{alignItems: 'center', marginTop: -30}}>

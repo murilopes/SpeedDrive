@@ -144,7 +144,7 @@ const AlunoDashboard = (props: any) => {
         <View style={{alignItems: 'center'}} onTouchEnd={() => setMenuOpened(false)}>
           <Avatar.Image 
             size={170}
-            source={{ uri: urlFotoPerfil ? urlFotoPerfil : 'https://www.southtabor.com/newsite/wp-content/themes/consultix/images/no-image-found-360x250.png'}}
+            source={{ uri: urlFotoPerfil ? urlFotoPerfil : ConfigFile.URL_IMAGEM_NAO_ENCONTRADA}}
             style={{marginTop: 15, marginBottom: 15}}          
           />
         </View>

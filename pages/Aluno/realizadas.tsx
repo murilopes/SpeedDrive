@@ -9,15 +9,15 @@ import * as userLib from '../../lib/user'
 import * as utilLib from '../../lib/util'
 import axios from "axios";
 
-interface aula {
+interface IAula {
   _id: string,
   horarioInicio: string,
   horarioFim: string,
   status: string,
-  instrutor: instrutor,
+  instrutor: IInstrutor,
 }
 
-interface instrutor {
+interface IInstrutor {
   nome: string
 }
 
@@ -28,19 +28,19 @@ const  AlunoRealizadas = () => {
   const _goBack = () => {
     navigation.goBack()
   }
-  const _handleAulaDetalheInstrutor = () => {
-    navigation.navigate('AulaDetalheInstrutor');
+  const _handleAulaDetalheInstrutor = (idAgendamento: string) => {
+    navigation.navigate('AulaDetalheInstrutor', {idAgendamento});
   }
 
   const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
   const [snackMensagem, setSnackMensagem] = React.useState('');
-  const [arrayAulasRealizadas, setArrayAulasRealizadas] = React.useState(Array<aula>())
+  const [arrayAulasRealizadas, setArrayAulasRealizadas] = React.useState(Array<IAula>())
 
   const API = axios.create({
     baseURL: ConfigFile.API_SERVER_URL,
   });
 
-  const PreencheObjAulasRealizadas = async () => {
+  const getAulasRealizadas = async () => {
 
     try {            
       const { id, token } = JSON.parse(await userLib.getUserAuthData())
@@ -60,7 +60,7 @@ const  AlunoRealizadas = () => {
       if(resp.status == 200)
       {
         console.log('Conseguiu carregar info realizadas')        
-        const arrayAulas:Array<aula> = resp.data.aulas
+        const arrayAulas:Array<IAula> = resp.data.aulas
         return arrayAulas
       }
     } catch (error) {
@@ -72,10 +72,10 @@ const  AlunoRealizadas = () => {
   }
 
   useEffect(() => {
-    PreencheObjAulasRealizadas().then(
-      (conclusao) => {
-        if (conclusao)
-        setArrayAulasRealizadas(conclusao)
+    getAulasRealizadas().then(
+      (aulasRealizadas) => {
+        if (aulasRealizadas)
+        setArrayAulasRealizadas(aulasRealizadas)
       }
     ) 
   }, [])
@@ -117,7 +117,7 @@ const  AlunoRealizadas = () => {
                   </Text>
                 </View>
                 <View style={styles.item_action}>
-                  <RectButton style={styles.button} onPress={_handleAulaDetalheInstrutor}>
+                  <RectButton style={styles.button} onPress={() => _handleAulaDetalheInstrutor(item._id)}>
                     <Text style={styles.buttonText}>Detalhe</Text>
                   </RectButton>
                 </View >

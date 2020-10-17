@@ -1,3 +1,4 @@
 {
-    "API_SERVER_URL": "http://192.168.0.12:3000"
+    "API_SERVER_URL": "http://192.168.0.12:3000",
+    "URL_IMAGEM_NAO_ENCONTRADA": "https://www.southtabor.com/newsite/wp-content/themes/consultix/images/no-image-found-360x250.png"
 }
