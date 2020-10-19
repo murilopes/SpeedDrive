@@ -1,3 +1,4 @@
+import moment from 'moment' 
 
 export const formataDataParaExibicaoDataFriendly = (data: string) => {
     
@@ -55,5 +56,20 @@ export const retornaIdade = (dataNascimento?: string) => {
     }
 
     return quantos_anos < 0 ? 0 : quantos_anos;
+  }
+}
+
+export const retornaQtdDias = (dataBase?: string) => {
+  if (dataBase == undefined)
+    return undefined
+  else {
+
+    const now = moment(new Date()); 
+    const base = moment(dataBase)
+    const duration = moment.duration(now.diff(base));
+
+    const days = Math.floor(duration.asDays());
+
+    return days;
   }
 }

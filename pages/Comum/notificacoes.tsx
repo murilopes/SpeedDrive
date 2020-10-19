@@ -69,6 +69,15 @@ const  Notificacoes = (props: object) => {
     ) 
   }, [])
 
+  const qtdDiasTexto = (dias?: number): string => {
+    if (dias == 0)
+      return 'hoje'
+    else if (dias == 1)
+      return 'ontem'
+    else
+      return `${dias} dias`
+  }
+
   return (
     <KeyboardAvoidingView style={styles.container_principal} 
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
@@ -104,7 +113,7 @@ const  Notificacoes = (props: object) => {
                   </View>          
                 </View>
                 <View style={styles.item_info_dias}>
-                  <Text style={styles.item_text_dias}>{item.createAt} dias</Text>
+                  <Text style={styles.item_text_dias}>{qtdDiasTexto(utilLib.retornaQtdDias(item.createAt))}</Text>
                 </View >
               </View>
             ))
