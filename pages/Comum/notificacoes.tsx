@@ -1,10 +1,22 @@
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, Text, View, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
-import { Appbar, Avatar } from 'react-native-paper';
+import { Appbar } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import ConfigFile from "../../config.json"
+import * as userLib from '../../lib/user'
+import * as utilLib from '../../lib/util'
+import axios from "axios";
 
-const  Notificacoes = () => {
+interface INotificacao {
+  _id: string,
+  titulo?: string,
+  mensagem?: string,
+  flgLida: boolean,
+  createAt: string,
+}
+
+const  Notificacoes = (props: object) => {
 
   const navigation = useNavigation();
 
@@ -12,11 +24,50 @@ const  Notificacoes = () => {
     navigation.goBack()
   }
 
-  const [icon, setIcon] = React.useState('envelope');
-  const [titulo, setTitulo] = React.useState('Agendamento confirmado');
-  const [mensagem, setMensagem] = React.useState('Sua aula do dia 01/10/2020 está confirmada com o instrutor Roberto da Silva');
-  const [dias, setDias] = React.useState(15);
+  let NotificacoesVazio: Array<INotificacao> = []
 
+  const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
+  const [snackMensagem, setSnackMensagem] = React.useState('');
+  const [objArrayNotificacoes, setObjArrayNotificacoes] = React.useState(NotificacoesVazio)
+
+  const API = axios.create({
+    baseURL: ConfigFile.API_SERVER_URL,
+  });
+
+  const getNotificacoes = async () => {
+
+    try {
+
+      const { id, token, tipoUsuario } = JSON.parse(await userLib.getUserAuthData())
+      const resp = await API.get(`/notificacao/${tipoUsuario}/${id}`, 
+      {
+        headers: 
+        {
+          Authorization: 'Bearer ' + token,
+        }
+      })
+
+      if(resp.status == 200)
+      {
+        console.log('Conseguiu carregar notificacoes do usuario') 
+        return  resp.data.notificacoes
+      }
+    } catch (error) {
+      console.log('Não conseguiu carregar notificacoes do usuario')
+      console.log(error.response.data.error)
+      setSnackMensagem(error.response.data.error)
+      setSnackMensagemVisible(true)
+    } 
+  }
+
+  React.useEffect(() => {
+    getNotificacoes().then(
+      (notificacoes) => {
+        if (notificacoes)
+        setObjArrayNotificacoes(notificacoes)
+      }
+    ) 
+  }, [])
 
   return (
     <KeyboardAvoidingView style={styles.container_principal} 
@@ -29,26 +80,35 @@ const  Notificacoes = () => {
 
       <ScrollView>        
         <View style={styles.view_items} >
-          
-          <View style={styles.item}>
-            <View style={styles.item_status}>
-              <Icon name={icon} size={30} />
-            </View >
-            <View style={styles.item_detalhes}>
-              <View style={styles.item_titulo}>
-                <>
-                  <Text style={styles.item_text_title}>{titulo}</Text>
-                </>
-              </View>
-              <View style={styles.item_mensagem}>
-                <Text style={styles.item_text_mensagem}>{mensagem}</Text>
-              </View>          
-            </View>
-            <View style={styles.item_info_dias}>
-              <Text style={styles.item_text_dias}>{dias} dias</Text>
-            </View >
-          </View>
 
+          {
+            objArrayNotificacoes.map((item, i) => (
+          
+              <View key={item._id} style={styles.item}>
+                <View style={styles.item_status}>
+                  <View style={styles.item_icon_new}>
+                    <Icon name='circle' size={10} color={item.flgLida == true ? '#F1F1F1' : 'green'}/>
+                  </View>
+                  <View style={styles.item_icon_envelope}>
+                    <Icon name={item.flgLida == true ? 'envelope-open' : 'envelope'} size={30} />
+                  </View>
+                </View >
+                <View style={styles.item_detalhes}>
+                  <View style={styles.item_titulo}>
+                    <>
+                      <Text style={styles.item_text_title}>{item.titulo}</Text>
+                    </>
+                  </View>
+                  <View style={styles.item_mensagem}>
+                    <Text style={styles.item_text_mensagem}>{item.mensagem}</Text>
+                  </View>          
+                </View>
+                <View style={styles.item_info_dias}>
+                  <Text style={styles.item_text_dias}>{item.createAt} dias</Text>
+                </View >
+              </View>
+            ))
+          }
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -84,6 +144,17 @@ const styles = StyleSheet.create({
     flex: 3,
     alignItems: 'center',
     justifyContent: 'center'
+  },
+
+  item_icon_new: {
+    flex: 1,
+    alignSelf: 'flex-end',
+    paddingRight: 10,
+    paddingTop: 10,
+  },
+
+  item_icon_envelope: {
+    flex: 6,
   },
 
   item_detalhes:{
