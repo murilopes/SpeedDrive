@@ -80,6 +80,15 @@ const AulaDetalhe = (props: object) => {
       }
     ) 
   }, [])
+
+  const textoValorAula = (valor: string) => {
+    if (valor != "0")
+      return `${valor} reais`
+    else if (valor == "0")
+      return `${valor} reais (aula remarcada)`
+    else
+      return ''
+  }
   
 
   return (
@@ -170,7 +179,7 @@ const AulaDetalhe = (props: object) => {
               </View>
               <View style={styles.item_detalhes}>
                 <View style={styles.item_text_superior}>
-                  <Text style={styles.item_text_value}>{objAulaDetalhe.valor ? `${objAulaDetalhe.valor} reais` : ''}</Text>
+                  <Text style={styles.item_text_value}>{objAulaDetalhe.valor ? textoValorAula(objAulaDetalhe.valor) : ''}</Text>
                 </View>
                 <View style={styles.item_text_inferior}>
                   <Text style={styles.item_text_title}>Valor</Text>
