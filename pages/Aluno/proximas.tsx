@@ -1,9 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { StyleSheet, Text, View, TextInput, Image, ImageBackground, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
-import { Appbar, Avatar } from 'react-native-paper';
+import { StyleSheet, Text, View, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { Appbar, Snackbar } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { RectButton } from 'react-native-gesture-handler';
+import ConfigFile from "../../config.json"
+import * as userLib from '../../lib/user'
+import * as utilLib from '../../lib/util'
+import axios from "axios";
+
+interface IAula {
+  _id: string,
+  horarioInicio: string,
+  horarioFim: string,
+  status: string,
+  instrutor: IInstrutor,
+}
+
+interface IInstrutor {
+  nome: string
+}
 
 const  AlunoProximas = () => {
 
@@ -12,7 +28,58 @@ const  AlunoProximas = () => {
   const _goBack = () => {
     navigation.goBack()
   }
+  const _handleAulaDetalheInstrutor = (idAgendamento: string) => {
+    navigation.navigate('AulaDetalheInstrutor', {idAgendamento});
+  }
 
+  const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
+  const [snackMensagem, setSnackMensagem] = React.useState('');
+  const [arrayAulasProximas, setArrayAulasProximas] = React.useState(Array<IAula>())
+
+  const API = axios.create({
+    baseURL: ConfigFile.API_SERVER_URL,
+  });
+
+  const getAulasProximas = async () => {
+
+    try {            
+      const { id, token } = JSON.parse(await userLib.getUserAuthData())
+
+      var reqData = {
+        idUsuario: id,
+      };
+
+      const resp = await API.get('/agendamento/proximas/' + reqData.idUsuario, 
+      {
+        headers: 
+        {
+          Authorization: 'Bearer ' + token,
+        }
+      })
+
+      if(resp.status == 200)
+      {
+        console.log('Conseguiu carregar info proximas')        
+        const arrayAulas:Array<IAula> = resp.data.aulas
+        return arrayAulas
+      }
+    } catch (error) {
+      console.log('Não conseguiu carregar info proximas')
+      console.log(error.response.data.error)
+      setSnackMensagem(error.response.data.error)
+      setSnackMensagemVisible(true)
+    } 
+  }
+
+  useEffect(() => {
+    getAulasProximas().then(
+      (aulasProximas) => {
+        if (aulasProximas)
+        setArrayAulasProximas(aulasProximas)
+      }
+    ) 
+  }, [])
+  
   return (
     <KeyboardAvoidingView style={styles.container_principal} 
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
@@ -25,158 +92,55 @@ const  AlunoProximas = () => {
       <ScrollView>        
         <View style={styles.view_items} >
           
-          <View style={styles.item}>
-            <View style={styles.item_status}>
-              <Icon name='circle' size={20} color='#00AA4E'/>
-            </View >
-            <View style={styles.item_detalhes}>
-              <Text style={styles.item_text_line}>
-                <Text style={styles.item_text_title}>Status: </Text>
-                <Text>Confirmada</Text>
-              </Text>
-              <Text style={styles.item_text_line}>
-                <Text style={styles.item_text_title}>Data: </Text>
-                <Text >27/06/2020</Text>
-              </Text>
-              <Text style={styles.item_text_line}>
-                <Text style={styles.item_text_title}>Horário: </Text>
-                <Text >16:00</Text>
-              </Text>
-              <Text style={styles.item_text_line}>
-                <Text style={styles.item_text_title}>Instrutor: </Text>
-                <Text >Carlos Fonseca</Text>
-              </Text>
-            </View>
-            <View style={styles.item_action}>
-              <RectButton style={styles.button}>
-                <Text style={styles.buttonText}>Detalhe</Text>
-              </RectButton>
-            </View >
-          </View>
-
-          <View style={styles.item}>
-            <View style={styles.item_status}>
-              <Icon name='circle' size={20} color='#C80000'/>
-            </View >
-            <View style={styles.item_detalhes}>
-              <Text style={styles.item_text_line}>
-                <Text style={styles.item_text_title}>Status: </Text>
-                <Text>Favor Reagendar</Text>
-              </Text>
-              <Text style={styles.item_text_line}>
-                <Text style={styles.item_text_title}>Data: </Text>
-                <Text >28/06/2020</Text>
-              </Text>
-              <Text style={styles.item_text_line}>
-                <Text style={styles.item_text_title}>Horário: </Text>
-                <Text >14:00</Text>
-              </Text>
-              <Text style={styles.item_text_line}>
-                <Text style={styles.item_text_title}>Instrutor: </Text>
-                <Text >João Bonifácio</Text>
-              </Text>
-            </View>
-            <View style={styles.item_action}>
-              <RectButton style={styles.button}>
-                <Text style={styles.buttonText}>Detalhe</Text>
-              </RectButton>
-            </View >
-          </View>
-
-          <View style={styles.item}>
-            <View style={styles.item_status}>
-              <Icon name='circle' size={20} color='#F7C700'/>
-            </View >
-            <View style={styles.item_detalhes}>
-              <Text style={styles.item_text_line}>
-                <Text style={styles.item_text_title}>Status: </Text>
-                <Text>Pend. Confirmação</Text>
-              </Text>
-              <Text style={styles.item_text_line}>
-                <Text style={styles.item_text_title}>Data: </Text>
-                <Text >07/09/2020</Text>
-              </Text>
-              <Text style={styles.item_text_line}>
-                <Text style={styles.item_text_title}>Horário: </Text>
-                <Text >18:00</Text>
-              </Text>
-              <Text style={styles.item_text_line}>
-                <Text style={styles.item_text_title}>Instrutor: </Text>
-                <Text >À definir</Text>
-              </Text>
-            </View>
-            <View style={styles.item_action}>
-              <RectButton style={styles.button}>
-                <Text style={styles.buttonText}>Detalhe</Text>
-              </RectButton>
-            </View >
-          </View>
-
-          <View style={styles.item}>
-            <View style={styles.item_status}>
-              <Icon name='circle' size={20} color='#F7C700'/>
-            </View >
-            <View style={styles.item_detalhes}>
-              <Text style={styles.item_text_line}>
-                <Text style={styles.item_text_title}>Status: </Text>
-                <Text>Pend. Confirmação</Text>
-              </Text>
-              <Text style={styles.item_text_line}>
-                <Text style={styles.item_text_title}>Data: </Text>
-                <Text >08/09/2020</Text>
-              </Text>
-              <Text style={styles.item_text_line}>
-                <Text style={styles.item_text_title}>Horário: </Text>
-                <Text >19:00</Text>
-              </Text>
-              <Text style={styles.item_text_line}>
-                <Text style={styles.item_text_title}>Instrutor: </Text>
-                <Text >À definir</Text>
-              </Text>
-            </View>
-            <View style={styles.item_action}>
-              <RectButton style={styles.button}>
-                <Text style={styles.buttonText}>Detalhe</Text>
-              </RectButton>
-            </View >
-          </View>
-
-          <View style={styles.item}>
-            <View style={styles.item_status}>
-              <Icon name='circle' size={20} color='#F7C700'/>
-            </View >
-            <View style={styles.item_detalhes}>
-              <Text style={styles.item_text_line}>
-                <Text style={styles.item_text_title}>Status: </Text>
-                <Text>Pend. Confirmação</Text>
-              </Text>
-              <Text style={styles.item_text_line}>
-                <Text style={styles.item_text_title}>Data: </Text>
-                <Text >13/09/2020</Text>
-              </Text>
-              <Text style={styles.item_text_line}>
-                <Text style={styles.item_text_title}>Horário: </Text>
-                <Text >19:00</Text>
-              </Text>
-              <Text style={styles.item_text_line}>
-                <Text style={styles.item_text_title}>Instrutor: </Text>
-                <Text >À definir</Text>
-              </Text>
-            </View>
-            <View style={styles.item_action}>
-              <RectButton style={styles.button}>
-                <Text style={styles.buttonText}>Detalhe</Text>
-              </RectButton>
-            </View >
-          </View>
-
-          
+          {
+            arrayAulasProximas.map((item, i) => (
+              <View key={item._id} style={styles.item}>
+                <View style={styles.item_status}>
+                  <Icon name='circle' size={20} color='#0081DA'/>
+                </View>
+                <View style={styles.item_detalhes}>
+                  <Text style={styles.item_text_line}>
+                    <Text style={styles.item_text_title}>Status: </Text>
+                    <Text>{item.status ? item.status : ''}</Text>
+                  </Text>
+                  <Text style={styles.item_text_line}>
+                    <Text style={styles.item_text_title}>Data: </Text>
+                    <Text>{ item.horarioInicio ? utilLib.formataDataParaExibicaoDataFriendly(item.horarioInicio) : ''}</Text>
+                  </Text>
+                  <Text style={styles.item_text_line}>
+                    <Text style={styles.item_text_title}>Horário início: </Text>
+                    <Text>{ item.horarioInicio ? utilLib.formataDataParaExibicaoHorarioFriendly(item.horarioInicio) : ''}</Text>
+                  </Text>
+                  <Text style={styles.item_text_line}>
+                    <Text style={styles.item_text_title}>Instrutor: </Text>
+                    <Text>{(item.instrutor) ? item.instrutor.nome: ''}</Text>
+                  </Text>
+                </View>
+                <View style={styles.item_action}>
+                  <RectButton style={styles.button} onPress={() => _handleAulaDetalheInstrutor(item._id)}>
+                    <Text style={styles.buttonText}>Detalhe</Text>
+                  </RectButton>
+                </View >
+              </View>
+            ))
+          }
 
         </View>
       </ScrollView>
+
+      <Snackbar
+        visible={snackMensagemVisible}
+        onDismiss={() => setSnackMensagemVisible(false)}
+        action={{
+          label: 'OK',
+          onPress: () => {},
+        }}>
+        {snackMensagem}
+      </Snackbar>
+
     </KeyboardAvoidingView>
 
-);
+  );
 }
 
 export default AlunoProximas;
