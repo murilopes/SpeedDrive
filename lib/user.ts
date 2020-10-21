@@ -6,7 +6,7 @@ export const getUserAuthData = async() => {
         if (value !== null) {
             return value
         } else {
-          return ''
+          return undefined
         }
     } catch (e) {
         console.log('Ocorreu erro ao recuperar dado guardado no async storage')

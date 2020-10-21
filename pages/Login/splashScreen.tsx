@@ -4,7 +4,9 @@ import { StyleSheet, Text, View, KeyboardAvoidingView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useFonts, Roboto_400Regular, Roboto_500Medium, Roboto_900Black_Italic } from '@expo-google-fonts/roboto';
 import AsyncStorage from '@react-native-community/async-storage';
-import * as userLib from '../../lib/user.ts'
+import * as userLib from '../../lib/user'
+import ConfigFile from "../../config.json"
+import axios from "axios";
 
 const  SplashScreen = () => {
 
@@ -24,11 +26,30 @@ const  SplashScreen = () => {
     Roboto_900Black_Italic
   });
 
+  const API = axios.create({
+    baseURL: ConfigFile.API_SERVER_URL,
+  });
+
+  const ValidaToken = async (token: string) => {
+
+    var userData = { token };
+    
+    try {
+      const resp = await API.post('/auth/validaToken', userData)
+      if(resp.status == 200)
+        return true        
+
+    } catch (error) {
+      return false
+    }
+  }
+
   const usuarioEstaAutenticado = async () => {
-    const dadosUsuario = await userLib.getUserAuthData();
-    console.log(dadosUsuario)
-    if (dadosUsuario != undefined)
-      return true
+    const rawDadosUsuario = await userLib.getUserAuthData();
+    if (rawDadosUsuario != undefined) {
+      const { token } = JSON.parse(rawDadosUsuario)
+      return await ValidaToken(token) ? true : false
+    }      
     else
       return false
   }
