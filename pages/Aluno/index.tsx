@@ -16,8 +16,10 @@ const AlunoDashboard = (props: any) => {
   
   const _handleSair = (origemMenuLateral: boolean) => {
     setMenuOpened(false)    
-    if (origemMenuLateral || !menuOpened)     
+    if (origemMenuLateral || !menuOpened) {
+      userLib.removeUserAuthData();
       navigation.navigate('Login');
+    }      
   }
   const _handleAulasRealizadas = (origemMenuLateral: boolean) => {
     setMenuOpened(false)    

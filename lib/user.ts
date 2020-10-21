@@ -20,3 +20,11 @@ export const storeUserAuthData = async (value: string) => {
     console.log('Ocorreu erro ao armazenar dados do usuario no AsyncStorage')
   }
 }
+
+export const removeUserAuthData = async () => {
+  try {
+    await AsyncStorage.removeItem('UserAuthData')
+  } catch (e) {
+    console.log('Ocorreu erro ao armazenar dados do usuario no AsyncStorage')
+  }
+}
