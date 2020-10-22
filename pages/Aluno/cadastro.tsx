@@ -3,13 +3,33 @@ import { useNavigation } from '@react-navigation/native';
 import {
   Dimensions, Text, StyleSheet, View, KeyboardAvoidingView, Platform, 
 } from 'react-native';
-import { Appbar, Avatar } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import IconMaterial from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Appbar, Avatar, Snackbar } from 'react-native-paper';
 import IconEntypo from 'react-native-vector-icons/Entypo';
 import useStateWithCallback from 'use-state-with-callback';
 import * as ImagePicker from 'expo-image-picker';
+import * as userLib from '../../lib/user'
 import ConfigFile from "../../config.json"
+import axios from "axios";
+
+interface IAluno {
+  _id?: string,
+  nome?: string,
+  sobrenome?: string,
+  CPF?: string,
+  dataNascimento?: string,
+  whatsapp?: string,
+  sexo?: string,
+  email?: string,
+  CEP?: string,
+  endereco?: string,
+  numero?: string,
+  complemento?: string,
+  bairro?: string,  
+  cidade?: string,  
+  estado?: string,  
+  urlFotoPerfil?: string,  
+  urlCarteiraHabilitacao?: string,  
+}
 
 const AlunoCadastro = () => {
   const navigation = useNavigation();
@@ -30,7 +50,12 @@ const AlunoCadastro = () => {
     navigation.navigate('CadastroDocumentosAluno');
   };
 
-  const [fotoPerfil, setFotoPerfil] = React.useState('');
+  let alunoVazio: IAluno = {}
+
+  const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
+  const [snackMensagem, setSnackMensagem] = React.useState('');
+  const [count, setCount] = React.useState(0)
+
   const [iconeDadosPessoais, setIconeDadosPessoais] = React.useState('')
   const [iconeEndereco, setIconeEndereco] = React.useState('')
   const [iconeDocumentos, setIconeDocumentos] = React.useState('')
@@ -38,8 +63,14 @@ const AlunoCadastro = () => {
   const [corIconeEndereco, setCorIconeEndereco] = React.useState('')
   const [corIconeDocumentos, setCorIconeDocumentos] = React.useState('')
 
-  const [cameraPermission, setCameraPermission] = React.useState(false)
-  
+  const [objAluno, setObjAluno] = useStateWithCallback(alunoVazio, 
+    () => {
+      setPercentDadosPessoais(calculaPercentDadosPessoais());
+      setPercentEndereco(calculaPercentEndereco());
+      setPercentDocumentos(calculaPercentDocumentos());
+    }
+  )
+
   const [percentDadosPessoais, setPercentDadosPessoais] = useStateWithCallback(0, 
     () => {
       setIconeDadosPessoais(defineIconeDeProgresso(percentDadosPessoais))
@@ -60,6 +91,50 @@ const AlunoCadastro = () => {
     }
   )
 
+  const calculaPercentDadosPessoais = () : number => {
+    let contagemTotalCampos = 7
+    let contagemTotalPreenchido = 0
+
+    if (objAluno.nome != undefined) contagemTotalPreenchido++
+    if (objAluno.sobrenome != undefined) contagemTotalPreenchido++
+    if (objAluno.sexo != undefined) contagemTotalPreenchido++
+    if (objAluno.CPF != undefined) contagemTotalPreenchido++
+    if (objAluno.whatsapp != undefined) contagemTotalPreenchido++
+    if (objAluno.dataNascimento != undefined) contagemTotalPreenchido++
+    if (objAluno.email != undefined) contagemTotalPreenchido++
+
+    const percentObtido = contagemTotalPreenchido/contagemTotalCampos * 100
+    
+    return Math.floor(percentObtido)
+  }
+
+  const calculaPercentEndereco = () : number => {
+    let contagemTotalCampos = 6
+    let contagemTotalPreenchido = 0
+
+    if (objAluno.CEP != undefined) contagemTotalPreenchido++
+    if (objAluno.endereco != undefined) contagemTotalPreenchido++
+    if (objAluno.numero != undefined) contagemTotalPreenchido++
+    if (objAluno.bairro != undefined) contagemTotalPreenchido++
+    if (objAluno.cidade != undefined) contagemTotalPreenchido++
+    if (objAluno.estado != undefined) contagemTotalPreenchido++
+
+    const percentObtido = contagemTotalPreenchido/contagemTotalCampos * 100
+
+    return Math.floor(percentObtido)
+  }
+
+  const calculaPercentDocumentos = () : number => {
+    let contagemTotalCampos = 1
+    let contagemTotalPreenchido = 0
+
+    if (objAluno.urlCarteiraHabilitacao != undefined) contagemTotalPreenchido++
+
+    const percentObtido = contagemTotalPreenchido/contagemTotalCampos * 100
+
+    return Math.floor(percentObtido)
+  }
+
   const pickImage = async () => {
 
     if (Platform.OS !== 'web') {
@@ -78,7 +153,7 @@ const AlunoCadastro = () => {
         console.log(result);
     
         if (!result.cancelled) {
-          setFotoPerfil(result.uri);
+          //setFotoPerfil(result.uri);
         }
       }
     }
@@ -114,14 +189,49 @@ const AlunoCadastro = () => {
     }
   }
 
+  const API = axios.create({
+    baseURL: ConfigFile.API_SERVER_URL,
+  });
+
+  const getAluno = async () => {
+
+    try {
+
+      const { id, token } = JSON.parse(await userLib.getUserAuthData())
+      const resp = await API.get('/aluno/' + id, 
+      {
+        headers: 
+        {
+          Authorization: 'Bearer ' + token,
+        }
+      })
+
+      if(resp.status == 200)
+      {
+        console.log('Conseguiu carregar aluno')
+        return  resp.data.aluno
+      }
+    } catch (error) {
+      console.log('Não conseguiu carregar aluno')
+      console.log(error.response.data.error)
+      setSnackMensagem(error.response.data.error)
+      setSnackMensagemVisible(true)
+    } 
+  }
+
+  navigation.addListener('focus', () => {
+    setCount(count+1)
+  })
+
   React.useEffect(() => {
-
-    setPercentDadosPessoais(42)
-    setPercentEndereco(100)
-    setPercentDocumentos(100)
-    setFotoPerfil('https://s2.glbimg.com/jsaPuF7nO23vRxQkuJ_V3WgouKA=/e.glbimg.com/og/ed/f/original/2014/06/10/461777879.jpg')
-
-  }, [])
+    getAluno().then(
+      (aluno) => {
+        if (aluno)
+        setObjAluno(aluno)
+      }
+    ) 
+    
+  }, [count])
 
   return (
     <KeyboardAvoidingView
@@ -136,7 +246,7 @@ const AlunoCadastro = () => {
       <View style={{alignItems: 'center', marginTop: 15, marginBottom: 20}}>
         <Avatar.Image 
           size={170} 
-          source={{uri: fotoPerfil ? fotoPerfil : ConfigFile.URL_IMAGEM_NAO_ENCONTRADA}}
+          source={{uri: objAluno.urlFotoPerfil ? objAluno.urlFotoPerfil : ConfigFile.URL_IMAGEM_NAO_ENCONTRADA}}
           style={{}}
         />
         <View style={{alignItems: 'center', marginTop: -30}}>
@@ -211,6 +321,16 @@ const AlunoCadastro = () => {
 
       </View>
 
+      <Snackbar
+          visible={snackMensagemVisible}
+          onDismiss={() => setSnackMensagemVisible(false)}
+          action={{
+            label: 'OK',
+            onPress: () => {},
+          }}>
+          {snackMensagem}
+        </Snackbar>
+
     </KeyboardAvoidingView>
   );
 };
@@ -231,7 +351,7 @@ const styles = StyleSheet.create({
   },
 
   item: {
-    height: Dimensions.get('window').height * 0.1,
+    height: 70,
     flexDirection: 'row',
     alignItems: 'center',
   },
