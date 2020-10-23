@@ -20,6 +20,7 @@ interface IAluno {
   whatsapp?: string,
   sexo?: string,
   email?: string,
+  observacoes?: string,
   CEP?: string,
   endereco?: string,
   numero?: string,
@@ -39,15 +40,15 @@ const AlunoCadastro = () => {
   };
 
   const _handleCadastroDadosPessoais = () => {
-    navigation.navigate('CadastroDadosPessoais');
+    navigation.navigate('CadastroDadosPessoais', {aluno: objAluno});
   };
 
   const _handleCadastroEndereco = () => {
-    navigation.navigate('CadastroEndereco');
+    navigation.navigate('CadastroEndereco', {aluno: objAluno});
   };
 
   const _handleCadastroDocumentos = () => {
-    navigation.navigate('CadastroDocumentosAluno');
+    navigation.navigate('CadastroDocumentosAluno', {aluno: objAluno});
   };
 
   let alunoVazio: IAluno = {}
@@ -95,13 +96,15 @@ const AlunoCadastro = () => {
     let contagemTotalCampos = 7
     let contagemTotalPreenchido = 0
 
-    if (objAluno.nome != undefined) contagemTotalPreenchido++
-    if (objAluno.sobrenome != undefined) contagemTotalPreenchido++
-    if (objAluno.sexo != undefined) contagemTotalPreenchido++
-    if (objAluno.CPF != undefined) contagemTotalPreenchido++
-    if (objAluno.whatsapp != undefined) contagemTotalPreenchido++
-    if (objAluno.dataNascimento != undefined) contagemTotalPreenchido++
-    if (objAluno.email != undefined) contagemTotalPreenchido++
+    console.log(objAluno)
+
+    if (objAluno.nome != undefined && objAluno.nome != '') contagemTotalPreenchido++
+    if (objAluno.sobrenome != undefined && objAluno.sobrenome != '') contagemTotalPreenchido++
+    if (objAluno.sexo != undefined && objAluno.sexo != '') contagemTotalPreenchido++
+    if (objAluno.CPF != undefined && objAluno.CPF != '') contagemTotalPreenchido++
+    if (objAluno.whatsapp != undefined && objAluno.whatsapp != '') contagemTotalPreenchido++
+    if (objAluno.dataNascimento != undefined && objAluno.dataNascimento != '') contagemTotalPreenchido++
+    if (objAluno.email != undefined && objAluno.email != '') contagemTotalPreenchido++
 
     const percentObtido = contagemTotalPreenchido/contagemTotalCampos * 100
     
@@ -112,12 +115,12 @@ const AlunoCadastro = () => {
     let contagemTotalCampos = 6
     let contagemTotalPreenchido = 0
 
-    if (objAluno.CEP != undefined) contagemTotalPreenchido++
-    if (objAluno.endereco != undefined) contagemTotalPreenchido++
-    if (objAluno.numero != undefined) contagemTotalPreenchido++
-    if (objAluno.bairro != undefined) contagemTotalPreenchido++
-    if (objAluno.cidade != undefined) contagemTotalPreenchido++
-    if (objAluno.estado != undefined) contagemTotalPreenchido++
+    if (objAluno.CEP != undefined && objAluno.CEP != '') contagemTotalPreenchido++
+    if (objAluno.endereco != undefined && objAluno.endereco != '') contagemTotalPreenchido++
+    if (objAluno.numero != undefined && objAluno.numero != '') contagemTotalPreenchido++
+    if (objAluno.bairro != undefined && objAluno.bairro != '') contagemTotalPreenchido++
+    if (objAluno.cidade != undefined && objAluno.cidade != '') contagemTotalPreenchido++
+    if (objAluno.estado != undefined && objAluno.estado != '') contagemTotalPreenchido++
 
     const percentObtido = contagemTotalPreenchido/contagemTotalCampos * 100
 
@@ -128,7 +131,7 @@ const AlunoCadastro = () => {
     let contagemTotalCampos = 1
     let contagemTotalPreenchido = 0
 
-    if (objAluno.urlCarteiraHabilitacao != undefined) contagemTotalPreenchido++
+    if (objAluno.urlCarteiraHabilitacao != undefined && objAluno.urlCarteiraHabilitacao != '') contagemTotalPreenchido++
 
     const percentObtido = contagemTotalPreenchido/contagemTotalCampos * 100
 
@@ -140,7 +143,7 @@ const AlunoCadastro = () => {
     if (Platform.OS !== 'web') {
       const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
       if (status !== 'granted') {
-        alert('Desculpa, nós precisamos de acesso ao rolo de foto para isso!');
+        alert('Desculpa, precisamos de acesso ao rolo de foto para isso!');
       }
       else {
         let result = await ImagePicker.launchImageLibraryAsync({

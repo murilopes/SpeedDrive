@@ -1,10 +1,10 @@
 import moment from 'moment' 
 
-export const formataDataParaExibicaoDataFriendly = (data: string) => {
+export const formataDataParaExibicaoDataFriendly = (data?: string) => {
     
   let dataFriendly = data
   
-  if(data.length == 24) {
+  if(data?.length == 24) {
     const dia = data.substr(8, 2)
     const mes = data.substr(5, 2)
     const ano = data.substr(0, 4)
@@ -41,15 +41,15 @@ export const retornaIdade = (dataNascimento?: string) => {
     return ''
   else {
     var d = new Date,
-        ano_atual = d.getFullYear(),
-        mes_atual = d.getMonth() + 1,
-        dia_atual = d.getDate(),
+      ano_atual = d.getFullYear(),
+      mes_atual = d.getMonth() + 1,
+      dia_atual = d.getDate(),
 
-        ano_aniversario = +dataNascimento.substr(0, 4),
-        mes_aniversario = +dataNascimento.substr(5, 2),
-        dia_aniversario = +dataNascimento.substr(8, 2),
+      ano_aniversario = +dataNascimento.substr(0, 4),
+      mes_aniversario = +dataNascimento.substr(5, 2),
+      dia_aniversario = +dataNascimento.substr(8, 2),
 
-        quantos_anos = ano_atual - ano_aniversario;
+      quantos_anos = ano_atual - ano_aniversario;
 
     if (mes_atual < mes_aniversario || mes_atual == mes_aniversario && dia_atual < dia_aniversario) {
         quantos_anos--;
@@ -71,5 +71,23 @@ export const retornaQtdDias = (dataBase?: string) => {
     const days = Math.floor(duration.asDays());
 
     return days;
+  }
+}
+
+export const formataDataFriendlyParaDataSistema = (dataFriendly?: string) => {
+  if (dataFriendly == undefined)
+    return ''
+  else {
+
+    const arrayDataSplitado = dataFriendly.split('/')
+    if (arrayDataSplitado.length != 3) return ''
+  
+    const dia = arrayDataSplitado[0]    
+    const mes = arrayDataSplitado[1]
+    const ano = arrayDataSplitado[2]    
+
+    const dataSistema = moment(`${ano}-${mes}-${dia}`)
+    
+    return dataSistema
   }
 }

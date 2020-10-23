@@ -75,7 +75,7 @@ const  Notificacoes = (props: object) => {
     else if (dias == 1)
       return 'ontem'
     else
-      return `${dias} dias`
+      return `${dias} dias atrás`
   }
 
   return (
