@@ -158,7 +158,7 @@ const cadastroDadosPessoais = (props: object) => {
         />}
       />
 
-      <TextInput theme={theme} label="Email" value={objAluno.email} onChangeText={text => setObjAluno({...objAluno, email: text})}/>
+      <TextInput theme={theme} label="Email" value={objAluno.email} onChangeText={text => setObjAluno({...objAluno, email: text})} keyboardType='email-address'/>
 
       <TextInput  theme={theme} 
                   label="Observações" 
