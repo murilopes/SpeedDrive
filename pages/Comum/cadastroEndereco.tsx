@@ -5,10 +5,12 @@ import {
   StyleSheet, View,  
 } from 'react-native';
 import { Appbar, TextInput, DefaultTheme, Text, Snackbar } from 'react-native-paper';
+import DropDown from 'react-native-paper-dropdown'
 import { TextInputMask } from 'react-native-masked-text'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { RectButton } from 'react-native-gesture-handler';
 import * as userLib from '../../lib/user'
+import * as utilLib from '../../lib/util'
 import ConfigFile from "../../config.json"
 import { IAluno } from '../../interfaces/interfaces'
 import axios from "axios";
@@ -25,6 +27,8 @@ const cadastroEndereco = (props: object) => {
 
   const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
   const [snackMensagem, setSnackMensagem] = React.useState('');
+  
+  const [showDropDownEstado, setShowDropDownEstado] = React.useState(false);
 
   const API = axios.create({
     baseURL: ConfigFile.API_SERVER_URL,
@@ -67,6 +71,26 @@ const cadastroEndereco = (props: object) => {
     }
   }
 
+  const BuscaCEP = async () => {
+
+    try {
+      const cep = objAluno.CEP
+      const resp = await API.get(`https://viacep.com.br/ws/${cep}/json/`)
+      if(resp.status == 200 && !resp.data.erro)
+      {
+        setObjAluno({
+          ...objAluno,
+          endereco: resp.data.logradouro,
+          bairro: resp.data.bairro,
+          cidade: resp.data.localidade,
+          estado: resp.data.uf,
+        })
+      }  
+    } catch (error) {
+    }
+
+  }
+
   React.useEffect(() => {
     let aluno = props.route.params.aluno as IAluno
 
@@ -97,7 +121,7 @@ const cadastroEndereco = (props: object) => {
         <Appbar.Content title="Endereço" />
       </Appbar.Header>
 
-      <TextInput theme={theme} label="CEP" value={objAluno.CEP} returnKeyType={ 'done' }
+      <TextInput theme={theme} label="CEP" value={objAluno.CEP} returnKeyType={ 'done' } onBlur={BuscaCEP}
         render={props =><TextInputMask
           {...props}
           type={'zip-code'}
@@ -110,8 +134,20 @@ const cadastroEndereco = (props: object) => {
       <TextInput theme={theme} label="Complemento" value={objAluno.complemento} onChangeText={text => setObjAluno({...objAluno, complemento: text})}/>
       <TextInput theme={theme} label="Bairro" value={objAluno.bairro} onChangeText={text => setObjAluno({...objAluno, bairro: text})}/>
       <TextInput theme={theme} label="Cidade" value={objAluno.cidade} onChangeText={text => setObjAluno({...objAluno, cidade: text})}/>
-      <TextInput theme={theme} label="Estado" value={objAluno.estado} onChangeText={text => setObjAluno({...objAluno, estado: text})}/>
-
+      <DropDown
+        theme={theme}
+        label={'Estado'}
+        mode={'flat'}
+        value={objAluno.estado}
+        setValue={text => setObjAluno({...objAluno, estado: text.toString()})}
+        list={utilLib.estadoList}
+        visible={showDropDownEstado}
+        showDropDown={() => setShowDropDownEstado(true)}
+        onDismiss={() => setShowDropDownEstado(false)}
+        inputProps={{
+          right: <TextInput.Icon name={'menu-down'} />,
+        }}
+      />
 
       <View style={styles.buttonView}>
         <RectButton style={styles.button} onPress={() => SalvarDados()}>
