@@ -147,7 +147,7 @@ const AlunoCadastro = () => {
       }
       else {
         let result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.All,
+          mediaTypes: ImagePicker.MediaTypeOptions.Images,
           allowsEditing: true,
           aspect: [4, 3],
           quality: 1,
@@ -156,11 +156,45 @@ const AlunoCadastro = () => {
         console.log(result);
     
         if (!result.cancelled) {
-          //setFotoPerfil(result.uri);
+          setObjAluno({...objAluno, urlFotoPerfil: result.uri})
+          SalvarFotoPerfil(result)
         }
       }
     }
   };
+
+  const SalvarFotoPerfil = async (imageFile: any) => {
+
+    const { token } = JSON.parse(await userLib.getUserAuthData())
+
+    const bodyFormData = new FormData();
+    bodyFormData.append('imagem',  {
+      uri: imageFile.uri,
+      type: 'image/jpeg',
+      name: `perfil.jpg`
+    });
+
+    try {
+      const resp = await API.put('/aluno/alterarFotoPerfil',
+      bodyFormData, 
+      {
+       headers: 
+        {
+          Authorization: 'Bearer ' + token,
+        }
+      })
+
+      if(resp.status == 200)
+      {
+        setSnackMensagem('Foto do perfil alterada')
+        setSnackMensagemVisible(true)                    
+      }  
+
+    } catch (error) {
+      setSnackMensagem('Erro ao alterar foto do perfil')
+      setSnackMensagemVisible(true)
+    }
+  }
 
   const defineIconeDeProgresso = (percent: number):string => {
     if(percent == 0){

@@ -20,6 +20,7 @@
         "expo": "^37.0.0",
         "expo-font": "~8.1.0",
         "expo-image-picker": "~8.1.0",
+        "fs": "0.0.1-security",
         "https": "^1.0.0",
         "moment": "^2.29.1",
         "native-base": "^2.13.14",

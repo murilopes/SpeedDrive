@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, KeyboardAvoidingView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useFonts, Roboto_400Regular, Roboto_500Medium, Roboto_900Black_Italic } from '@expo-google-fonts/roboto';
-import AsyncStorage from '@react-native-community/async-storage';
 import * as userLib from '../../lib/user'
 import ConfigFile from "../../config.json"
 import axios from "axios";
