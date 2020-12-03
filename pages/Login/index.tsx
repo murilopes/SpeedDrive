@@ -38,6 +38,8 @@ const  Login = () => {
   const [password, setPassword] = useState('');
   const [snackErroVisible, setSnackErroVisible] = React.useState(false);
   const [mensagemErro, setMensagemErro] = React.useState('');
+  const [snackErroOverlayVisible, setSnackErroOverlayVisible] = React.useState(false);
+  const [mensagemErroOverlay, setMensagemErroOverlay] = React.useState('');
 
   const [opacityContainerPrincipal, setOpacityContainerPrincipal] = useState(1);
 
@@ -87,15 +89,15 @@ const  Login = () => {
 
   const Entrar = async () => {
 
-    /* var userData = {
+    var userData = {
       email, 
       senha: password 
-    }; */
+    }; 
 
-    var userData = {
+   /*  var userData = {
       email: 'pedro.dog@hotmail.com', 
       senha: 'abc' 
-    };
+    }; */
     
     try {
       const resp = await API.post('/auth/autenticar', userData)
@@ -140,23 +142,23 @@ const  Login = () => {
   const CriarConta = async () => {
 
     if(criarContaPapel != 'aluno' && criarContaPapel != 'instrutor') {
-      setMensagemErro('Escolha o Tipo de Conta')
-      setSnackErroVisible(true)
+      setMensagemErroOverlay('Escolha o Tipo de Conta')
+      setSnackErroOverlayVisible(true)
     }
 
     else if(criarContaNome == '' || criarContaEmail == '' || criarContaSenha == '' || criarContaRepetirSenha == '') {
-      setMensagemErro('Prencha todos os campos')
-      setSnackErroVisible(true)
+      setMensagemErroOverlay('Prencha todos os campos')
+      setSnackErroOverlayVisible(true)
     }
 
     else if(criarContaSenha.length < 6 || criarContaSenha.length > 12) {
-      setMensagemErro('Senha deve ter entre 6 e 12 caracteres')
-      setSnackErroVisible(true)
+      setMensagemErroOverlay('Senha deve ter entre 6 e 12 caracteres')
+      setSnackErroOverlayVisible(true)
     }
 
     else if(criarContaSenha != criarContaRepetirSenha) {
-      setMensagemErro('Confirmação da senha não confere')
-      setSnackErroVisible(true)
+      setMensagemErroOverlay('Confirmação da senha não confere')
+      setSnackErroOverlayVisible(true)
     }
     else {
       var userData = {
@@ -195,7 +197,7 @@ const  Login = () => {
           }
     
         } catch (error) {
-          console.log('Deu Errado')
+          console.log('Algo saiu errado')
           setMensagemErro(error.response.data.error)
           setSnackErroVisible(true)
         }
@@ -323,6 +325,19 @@ const  Login = () => {
           <View style={styles.overlay_criar_conta_view_button} onTouchEnd={CriarConta}>
             <Text style={{textAlign: 'center', fontSize: 25, fontWeight: 'bold'}}>Criar conta</Text>
           </View>
+
+          <View >
+            <Snackbar
+                visible={snackErroOverlayVisible}
+                onDismiss={() => setSnackErroOverlayVisible(false)}
+                action={{
+                  label: 'Ok',
+                  onPress: () => {},
+                }}>
+                {mensagemErroOverlay}
+              </Snackbar>
+          </View>
+
         </Provider>
       </Overlay>
 
@@ -344,7 +359,7 @@ const  Login = () => {
         </Provider>
       </Overlay>
 
-      <View style={{marginTop: 50}} >
+      <View style={{marginTop: 100}} >
         <Snackbar
             visible={snackErroVisible}
             onDismiss={() => setSnackErroVisible(false)}

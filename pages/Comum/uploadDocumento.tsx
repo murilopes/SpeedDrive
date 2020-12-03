@@ -174,7 +174,7 @@ export default class uploadDocumento extends React.Component {
           onDismiss={() => this.setState({snackMensagemVisible: false})}
           action={{
             label: 'OK',
-            onPress: () => {},
+            onPress: () => _goBack(),
           }}>
           {this.state.snackMensagem}
         </Snackbar>
