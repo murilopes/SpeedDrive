@@ -10,6 +10,9 @@ import { Appbar, Snackbar, Text } from 'react-native-paper';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { RectButton } from 'react-native-gesture-handler';
 import * as ImagePicker from 'expo-image-picker';
+import * as userLib from '../../lib/user'
+import ConfigFile from "../../config.json"
+import axios from "axios";
 
 export default class uploadDocumento extends React.Component {
   constructor(props: any) {
@@ -17,10 +20,12 @@ export default class uploadDocumento extends React.Component {
 
     this.state = {
       nomeDocumento: props.route.params.nomeDocumento,
-      imagemUri: '',
+      metodoAPI: props.route.params.metodoAPI,
+      imagemUri: props.route.params.imagemUri,
       imagemHeight: 300,
       imagemWidth:300,
-      snackSalvarVisible: false,      
+      snackMensagemVisible: false,
+      snackMensagem: false,     
     };
     
   }  
@@ -35,7 +40,12 @@ export default class uploadDocumento extends React.Component {
 
     const onToggleSnackSalvar = () => this.setState({snackSalvarVisible: !this.state.snackSalvarVisible})
 
-    const ipickImageFromLibrary = async () => {
+    const API = axios.create({
+      baseURL: ConfigFile.API_SERVER_URL,
+    });
+
+
+    const pickImageFromLibrary = async () => {
 
       if (Platform.OS !== 'web') {
         const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
@@ -62,7 +72,7 @@ export default class uploadDocumento extends React.Component {
       }
     };
 
-    const ipickImageFromCamera = async () => {
+    const pickImageFromCamera = async () => {
 
       if (Platform.OS !== 'web') {
         const { status } = await ImagePicker.requestCameraPermissionsAsync();
@@ -89,6 +99,39 @@ export default class uploadDocumento extends React.Component {
       }
     };
 
+    const SalvarFoto = async () => {
+
+      const { token } = JSON.parse(await userLib.getUserAuthData())
+
+      const bodyFormData = new FormData();
+      bodyFormData.append('imagem',  {
+        uri: this.state.imagemUri,
+        type: 'image/jpeg',
+        name: `${this.state.nomeDocumento}.jpg`
+      });
+
+      try {
+        const resp = await API.put(this.state.metodoAPI,
+        bodyFormData, 
+        {
+        headers: 
+          {
+            Authorization: 'Bearer ' + token,
+          }
+        })
+
+        if(resp.status == 200)
+        {
+          this.setState({snackMensagem: 'Documento salvo'})
+          this.setState({snackMensagemVisible: true})     
+        }  
+
+      } catch (error) {
+        this.setState({snackMensagem: 'Erro ao salvar documento'})
+        this.setState({snackMensagemVisible: true})   
+      }
+    }
+
     return (
       <KeyboardAwareScrollView
         style={styles.container_principal}
@@ -108,35 +151,33 @@ export default class uploadDocumento extends React.Component {
         </View>
 
         <View style={styles.buttonView}>
-          <RectButton style={styles.button} onPress={ipickImageFromLibrary}>
+          <RectButton style={styles.button} onPress={pickImageFromLibrary}>
             <Text style={styles.buttonText}>Escolher imagem do álbum</Text>
           </RectButton>
         </View>
 
         <View style={styles.buttonView}>
-          <RectButton style={styles.button} onPress={ipickImageFromCamera}>
+          <RectButton style={styles.button} onPress={pickImageFromCamera}>
             <Text style={styles.buttonText}>Usar câmera</Text>
           </RectButton>
         </View>
 
         <View style={styles.buttonView}>
-          <RectButton style={styles.button} onPress={onToggleSnackSalvar}>
+          <RectButton style={styles.button} onPress={() => SalvarFoto()}>
             <Text style={styles.buttonTextBold}>Salvar</Text>
           </RectButton>
         </View>
 
 
-        <View style={{marginTop: 50}} >
-          <Snackbar 
-            visible={this.state.snackSalvarVisible}
-            onDismiss={onToggleSnackSalvar}
-            action={{
-              label: 'Ok',
-              onPress: _goBack,
-            }}>
-            Dados salvos com sucesso!
-          </Snackbar>
-        </View>
+        <Snackbar
+          visible={this.state.snackMensagemVisible}
+          onDismiss={() => this.setState({snackMensagemVisible: false})}
+          action={{
+            label: 'OK',
+            onPress: () => {},
+          }}>
+          {this.state.snackMensagem}
+        </Snackbar>
 
       </KeyboardAwareScrollView>
     );

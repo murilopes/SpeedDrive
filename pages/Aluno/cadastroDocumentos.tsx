@@ -4,9 +4,17 @@ import {
   Dimensions, StyleSheet, View, Text
 } from 'react-native';
 import { Appbar, Chip, Snackbar } from 'react-native-paper';
+import useStateWithCallback from 'use-state-with-callback';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import IconEntypo from 'react-native-vector-icons/Entypo';
+import * as userLib from '../../lib/user'
+import ConfigFile from "../../config.json"
+import axios from "axios";
+
+interface IAlunoDocumentos {
+  urlCarteiraHabilitacao?: string,  
+}
 
 
 const cadastroDocumentosAluno = () => {
@@ -17,15 +25,75 @@ const cadastroDocumentosAluno = () => {
   };
 
   const _handleUploadDocumento = () => {
-    navigation.navigate('UploadDocumento', {nomeDocumento: 'Carteira de Habilitação'});
+    navigation.navigate('UploadDocumento', 
+    {
+      nomeDocumento: 'Carteira de Habilitação', 
+      metodoAPI: '/aluno/alterarFotoCarteiraHabilitacao',
+      imagemUri: objAlunoDocumentos.urlCarteiraHabilitacao
+    });
   };
 
+  let alunoDocumentosVazio: IAlunoDocumentos = {}
+
+  const [count, setCount] = React.useState(0)
+  const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
+  const [snackMensagem, setSnackMensagem] = React.useState('');
   const [qtdDoctosOk, setQtdDoctosOk] = React.useState(0)
-  const [statusDoctoCNH, setStatusDoctoCNH] = React.useState(false)
+  const [objAlunoDocumentos, setObjAlunoDocumentos] = useStateWithCallback(alunoDocumentosVazio, 
+    () => {
+      setQtdDoctosOk(calculaQtdDoctosOK());
+    }
+  )
+
+  const calculaQtdDoctosOK = () : number => {
+    let contagemTotalPreenchido = 0
+    if (objAlunoDocumentos.urlCarteiraHabilitacao != undefined && objAlunoDocumentos.urlCarteiraHabilitacao != '') contagemTotalPreenchido++
+    return contagemTotalPreenchido
+  }
+
+  const API = axios.create({
+    baseURL: ConfigFile.API_SERVER_URL,
+  });
+
+  const getAluno = async () => {
+
+    try {
+
+      const { id, token } = JSON.parse(await userLib.getUserAuthData())
+      const resp = await API.get('/aluno/' + id, 
+      {
+        headers: 
+        {
+          Authorization: 'Bearer ' + token,
+        }
+      })
+
+      if(resp.status == 200)
+      {
+        console.log('Conseguiu carregar aluno')
+        return  resp.data.aluno
+      }
+    } catch (error) {
+      console.log('Não conseguiu carregar aluno')
+      console.log('erro:' , error.response.data.error)
+      setSnackMensagem(error.response.data.error)
+      setSnackMensagemVisible(true)
+    } 
+  }
+
+  navigation.addListener('focus', () => {
+    setCount(count+1)
+  })
 
   React.useEffect(() => {
-
-  }, [])
+    getAluno().then(
+      (aluno) => {
+        if (aluno)
+        setObjAlunoDocumentos(aluno)
+      }
+    )
+    
+  }, [count])
 
   return (
     <KeyboardAwareScrollView
@@ -57,7 +125,7 @@ const cadastroDocumentosAluno = () => {
         <View style={styles.item} onTouchEnd={_handleUploadDocumento}>
           <View style={styles.item_interno}>
             <View style={styles.item_status}>
-              <Icon name= 'check-circle' color= {statusDoctoCNH ? 'green' : 'grey'} size={30} style={{flex: 1}} />
+              <Icon name= 'check-circle' color= {objAlunoDocumentos.urlCarteiraHabilitacao ? 'green' : 'grey'} size={30} style={{flex: 1}} />
             </View>
             <View style={styles.item_detalhes}>
               <View style={styles.item_text_superior}>
@@ -73,6 +141,16 @@ const cadastroDocumentosAluno = () => {
         <View style={styles.divider} />
 
       </View>
+
+      <Snackbar
+          visible={snackMensagemVisible}
+          onDismiss={() => setSnackMensagemVisible(false)}
+          action={{
+            label: 'OK',
+            onPress: () => {},
+          }}>
+          {snackMensagem}
+        </Snackbar>
 
     </KeyboardAwareScrollView>
   );
