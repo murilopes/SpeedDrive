@@ -31,7 +31,7 @@ const InstrutorDashboard = (props: any) => {
     if (origemMenuLateral || !menuOpened)     
       navigation.navigate('InstrutorProximas');
   }
-  const _handleAulasPendenteAprovacao = (origemMenuLateral: boolean) => {
+  const _handleAulasPendentesAprovacao = (origemMenuLateral: boolean) => {
     setMenuOpened(false)
     if (origemMenuLateral || !menuOpened)     
       navigation.navigate('InstrutorPendentes');
@@ -109,8 +109,9 @@ const InstrutorDashboard = (props: any) => {
         </View>
 
         <SideMenuItem icon='cogs' text='Cadastro' onAction={() => _handleInstrutorCadastro(true)}/>
-        <SideMenuItem icon='check-circle' text='Aulas Realizada' onAction={() => _handleAulasRealizadas(true)}/>
+        <SideMenuItem icon='check-circle' text='Aulas Realizadas' onAction={() => _handleAulasRealizadas(true)}/>
         <SideMenuItem icon='exclamation-circle' text='Próximas Aulas' onAction={() => _handleProximasAulas(true)}/>
+        <SideMenuItem icon='list' text='Aprovações Pendentes' onAction={() => _handleAulasPendentesAprovacao(true)}/>
         <SideMenuItem icon='car' text='Agendar Aulas' onAction={() => _handleAgendar(true)}/>
         <SideMenuItem icon='envelope' text='Notificações' onAction={() => _handleNotificacoes(true)}/>
         <SideMenuItem icon='comments' text='Contato' onAction={() => {}}/>

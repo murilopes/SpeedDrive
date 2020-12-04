@@ -14,22 +14,22 @@ interface IAula {
   horarioInicio: string,
   horarioFim: string,
   status: string,
-  instrutor: IInstrutor,
+  aluno: IAluno,
 }
 
-interface IInstrutor {
+interface IAluno {
   nome: string
 }
 
-const  AlunoRealizadas = () => {
+const  InstrutorRealizadas = () => {
 
   const navigation = useNavigation();
 
   const _goBack = () => {
     navigation.goBack()
   }
-  const _handleAulaDetalheInstrutor = (idAgendamento: string) => {
-    navigation.navigate('AulaDetalheInstrutor', {idAgendamento});
+  const _handleAulaDetalheAluno = (idAgendamento: string) => {
+    navigation.navigate('AulaDetalheAluno', {idAgendamento});
   }
 
   const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
@@ -49,7 +49,7 @@ const  AlunoRealizadas = () => {
         idUsuario: id,
       };
 
-      const resp = await API.get('/agendamento/realizadas/' + reqData.idUsuario, 
+      const resp = await API.get('/agendamento/realizadasInstrutor/' + reqData.idUsuario, 
       {
         headers: 
         {
@@ -112,8 +112,8 @@ const  AlunoRealizadas = () => {
                     <Text>{ item.horarioInicio ? utilLib.formataDataParaExibicaoHorarioFriendly(item.horarioInicio) : ''}</Text>
                   </Text>
                   <Text style={styles.item_text_line}>
-                    <Text style={styles.item_text_title}>Instrutor: </Text>
-                    <Text>{(item.instrutor) ? item.instrutor.nome: ''}</Text>
+                    <Text style={styles.item_text_title}>Aluno: </Text>
+                    <Text>{(item.aluno) ? item.aluno.nome : ''}</Text>
                   </Text>
                 </View>
                 <View style={styles.item_action}>
@@ -143,7 +143,7 @@ const  AlunoRealizadas = () => {
   );
 }
 
-export default AlunoRealizadas;
+export default InstrutorRealizadas;
 
 const styles = StyleSheet.create({
   container_principal: {
