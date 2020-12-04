@@ -27,6 +27,13 @@ export default class uploadDocumento extends React.Component {
       snackMensagemVisible: false,
       snackMensagem: false,     
     };
+
+    /* ToDo: salvar height e width pra poder definir aqui quando for abrir a imagem
+    if (result.height > result.width) {      
+      this.setState({imagemHeight: 300, imagemWidth: 300 * result.width / result.height})
+    } else {
+      this.setState({imagemHeight: 300 * result.height / result.width, imagemWidth: 300})
+    }   */
     
   }  
 

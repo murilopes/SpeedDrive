@@ -31,17 +31,12 @@ const InstrutorDashboard = (props: any) => {
     if (origemMenuLateral || !menuOpened)     
       navigation.navigate('InstrutorProximas');
   }
-  const _handleAgendar = (origemMenuLateral: boolean) => {
+  const _handleAulasPendenteAprovacao = (origemMenuLateral: boolean) => {
     setMenuOpened(false)
-    if (origemMenuLateral || !menuOpened){
-      if (statusCadastroOk)
-        navigation.navigate('AlunoAgendar');
-      else{
-        setSnackMensagem('Cadastro Pendente!')
-        setSnackMensagemVisible(true)
-      }        
-    }
+    if (origemMenuLateral || !menuOpened)     
+      navigation.navigate('InstrutorPendentes');
   }
+  
   const _handleInstrutorCadastro = (origemMenuLateral: boolean) => {
     setMenuOpened(false)
     if (origemMenuLateral || !menuOpened)     

@@ -166,7 +166,7 @@ const InstrutorCadastro = () => {
     let contagemTotalCampos = 7
     let contagemTotalPreenchido = 0
 
-    if (objInstrutor.urlCarteiraHabilitacao != undefined && objInstrutor.urlCarteiraHabilitacao != '') contagemTotalPreenchido++
+    if (objInstrutor.urlFotoCarteiraHabilitacao != undefined && objInstrutor.urlFotoCarteiraHabilitacao != '') contagemTotalPreenchido++
     if (objInstrutor.urlFotoDuploComando != undefined && objInstrutor.urlFotoDuploComando != '') contagemTotalPreenchido++
     if (objInstrutor.urlFotoFrenteVeiculo != undefined && objInstrutor.urlFotoFrenteVeiculo != '') contagemTotalPreenchido++
     if (objInstrutor.urlFotoTraseiraVeiculo != undefined && objInstrutor.urlFotoTraseiraVeiculo != '') contagemTotalPreenchido++

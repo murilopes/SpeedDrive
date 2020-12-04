@@ -9,7 +9,10 @@ import Login from './pages/Login';
 import AlunoDashboard from './pages/Aluno';
 import InstrutorDashboard from './pages/Instrutor';
 import AlunoRealizadas from './pages/Aluno/realizadas';
+import InstrutorRealizadas from './pages/Instrutor/realizadas';
 import AlunoProximas from './pages/Aluno/proximas';
+import InstrutorProximas from './pages/Instrutor/proximas';
+import InstrutorPendentes from './pages/Instrutor/pendentes';
 import AlunoAgendar from './pages/Aluno/agendar';
 import AlunoCadastro from './pages/Aluno/cadastro';
 import InstrutorCadastro from './pages/Instrutor/cadastro';
@@ -41,7 +44,10 @@ const Routes = () => {
         <AppStack.Screen name="AlunoDashboard" component={AlunoDashboard} />
         <AppStack.Screen name="InstrutorDashboard" component={InstrutorDashboard} />
         <AppStack.Screen name="AlunoRealizadas" component={AlunoRealizadas} />
+        <AppStack.Screen name="InstrutorRealizadas" component={InstrutorRealizadas} />
         <AppStack.Screen name="AlunoProximas" component={AlunoProximas} />
+        <AppStack.Screen name="InstrutorProximas" component={InstrutorProximas} />
+        <AppStack.Screen name="InstrutorPendentes" component={InstrutorPendentes} />
         <AppStack.Screen name="AlunoAgendar" component={AlunoAgendar} />
         <AppStack.Screen name="AlunoCadastro" component={AlunoCadastro} />
         <AppStack.Screen name="InstrutorCadastro" component={InstrutorCadastro} />
