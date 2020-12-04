@@ -16,16 +16,18 @@ interface IAulaDetalhe {
   status?: string,
   horarioInicio?: string,
   horarioFim?: string,
-  valor?: string,
-  instrutor?: IInstrutor,
+  aluno?: IAluno,
 }
 
-interface IInstrutor {
+interface IAluno {
   nome?: string,
-  sobrenome?: string,
-  dataNascimento?: string,
-  veiculo?: string,
-  urlFotoPerfil?: string,
+  CEP?: string,
+  endereco?: string,
+  numero?: string,
+  complemento?: string,
+  bairro?: string,
+  cidade?: string,
+  estado?: string,
 }
 
 const AulaDetalhe = (props: object) => {
@@ -103,25 +105,7 @@ const AulaDetalhe = (props: object) => {
       </Appbar.Header>
 
       <View style={styles.view_principal}>
-        <View style={styles.view_instrutor}>
-
-          <View style={styles.view_intrutor_foto}>
-            <Avatar.Image
-              size={150}
-              source={{ uri: objAulaDetalhe.instrutor?.urlFotoPerfil ? objAulaDetalhe.instrutor.urlFotoPerfil : ConfigFile.URL_IMAGEM_NAO_ENCONTRADA }}
-              style={{ marginTop: 15, marginBottom: 15 }}
-            />
-          </View>
-          <View style={styles.view_intrutor_detalhe}>
-            <View style={styles.view_instrutor_detalhe_interno}>
-              <Text style={styles.instrutor_titulo}>Instrutor:</Text>
-              <Text style={styles.instrutor_info_principal}>{objAulaDetalhe.instrutor?.nome} {utilLib.retornaUltimoNome(objAulaDetalhe.instrutor?.sobrenome)}</Text>
-              <Text style={styles.instrutor_info_secundaria}>{objAulaDetalhe.instrutor?.dataNascimento ? `${utilLib.retornaIdade(objAulaDetalhe.instrutor?.dataNascimento)} anos` : ''}</Text>
-              <Text style={styles.instrutor_info_secundaria}>{objAulaDetalhe.instrutor?.veiculo}</Text>
-            </View>
-          </View>
-        </View>
-
+        
         <View style={styles.view_items}>
 
           <View style={styles.item}>
@@ -175,22 +159,6 @@ const AulaDetalhe = (props: object) => {
           <View style={styles.item}>
             <View style={styles.item_interno}>
               <View style={styles.item_status}>
-                <IconMaterial name="currency-usd" size={20} />
-              </View>
-              <View style={styles.item_detalhes}>
-                <View style={styles.item_text_superior}>
-                  <Text style={styles.item_text_value}>{objAulaDetalhe.valor ? textoValorAula(objAulaDetalhe.valor) : ''}</Text>
-                </View>
-                <View style={styles.item_text_inferior}>
-                  <Text style={styles.item_text_title}>Valor</Text>
-                </View>
-              </View>
-            </View>
-          </View>
-
-          <View style={styles.item}>
-            <View style={styles.item_interno}>
-              <View style={styles.item_status}>
                 <Icon name="rocket" size={20} />
               </View>
               <View style={styles.item_detalhes}>
@@ -204,6 +172,85 @@ const AulaDetalhe = (props: object) => {
             </View>
           </View>
 
+          <View style={styles.item}>
+            <View style={styles.item_interno}>
+              <View style={styles.item_status}>
+                <Icon name="user" size={20} />
+              </View>
+              <View style={styles.item_detalhes}>
+                <View style={styles.item_text_superior}>
+                  <Text style={styles.item_text_value}>{objAulaDetalhe.aluno ? objAulaDetalhe.aluno.nome : ''}</Text>
+                </View>
+                <View style={styles.item_text_inferior}>
+                  <Text style={styles.item_text_title}>Aluno</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.item}>
+            <View style={styles.item_interno}>
+              <View style={styles.item_status}>
+                <Icon name="map-marker" size={20} />
+              </View>
+              <View style={styles.item_detalhes}>
+                <View style={styles.item_text_superior}>
+                  <Text style={styles.item_text_value}>{objAulaDetalhe.aluno ? objAulaDetalhe.aluno.CEP : ''}</Text>
+                </View>
+                <View style={styles.item_text_inferior}>
+                  <Text style={styles.item_text_title}>CEP</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.item}>
+            <View style={styles.item_interno}>
+              <View style={styles.item_status}>
+                <Icon name="road" size={20} />
+              </View>
+              <View style={styles.item_detalhes}>
+                <View style={styles.item_text_superior}>
+                  <Text style={styles.item_text_value}>{objAulaDetalhe.aluno ? `${objAulaDetalhe.aluno.endereco}, ${objAulaDetalhe.aluno.numero} - ${objAulaDetalhe.aluno.complemento}` : ''}</Text>
+                </View>
+                <View style={styles.item_text_inferior}>
+                  <Text style={styles.item_text_title}>Endereco</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.item}>
+            <View style={styles.item_interno}>
+              <View style={styles.item_status}>
+                <Icon name="map-signs" size={20} />
+              </View>
+              <View style={styles.item_detalhes}>
+                <View style={styles.item_text_superior}>
+                  <Text style={styles.item_text_value}>{objAulaDetalhe.aluno ? objAulaDetalhe.aluno.bairro : ''}</Text>
+                </View>
+                <View style={styles.item_text_inferior}>
+                  <Text style={styles.item_text_title}>Bairro</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.item}>
+            <View style={styles.item_interno}>
+              <View style={styles.item_status}>
+                <Icon name="map" size={20} />
+              </View>
+              <View style={styles.item_detalhes}>
+                <View style={styles.item_text_superior}>
+                  <Text style={styles.item_text_value}>{objAulaDetalhe.aluno ? `${objAulaDetalhe.aluno.cidade} / ${objAulaDetalhe.aluno.estado}` : ''}</Text>
+                </View>
+                <View style={styles.item_text_inferior}>
+                  <Text style={styles.item_text_title}>Cidade/Estado</Text>
+                </View>
+              </View>
+            </View>
+          </View>
         </View>
 
         {/* <View style={styles.item_action}>
@@ -239,6 +286,7 @@ const styles = StyleSheet.create({
   view_principal: {
     flex: 1,
     alignItems: 'center',
+    paddingTop: 20
   },
 
   view_instrutor: {

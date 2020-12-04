@@ -14,22 +14,22 @@ interface IAula {
   horarioInicio: string,
   horarioFim: string,
   status: string,
-  instrutor: IInstrutor,
+  aluno: IAluno,
 }
 
-interface IInstrutor {
+interface IAluno {
   nome: string
 }
 
-const  AlunoProximas = () => {
+const  InstrutorProximas = () => {
 
   const navigation = useNavigation();
 
   const _goBack = () => {
     navigation.goBack()
   }
-  const _handleAulaDetalheInstrutor = (idAgendamento: string) => {
-    navigation.navigate('AulaDetalheInstrutor', {idAgendamento});
+  const _handleAulaDetalheAluno = (idAgendamento: string) => {
+    navigation.navigate('AulaDetalheAluno', {idAgendamento});
   }
 
   const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
@@ -66,7 +66,7 @@ const  AlunoProximas = () => {
         idUsuario: id,
       };
 
-      const resp = await API.get('/agendamento/proximas/' + reqData.idUsuario, 
+      const resp = await API.get('/agendamento/proximasInstrutor/' + reqData.idUsuario, 
       {
         headers: 
         {
@@ -129,12 +129,12 @@ const  AlunoProximas = () => {
                     <Text>{ item.horarioInicio ? utilLib.formataDataParaExibicaoHorarioFriendly(item.horarioInicio) : ''}</Text>
                   </Text>
                   <Text style={styles.item_text_line}>
-                    <Text style={styles.item_text_title}>Instrutor: </Text>
-                    <Text>{(item.instrutor) ? item.instrutor.nome: 'Não definido'}</Text>
+                    <Text style={styles.item_text_title}>Aluno: </Text>
+                    <Text>{(item.aluno) ? item.aluno.nome: ''}</Text>
                   </Text>
                 </View>
                 <View style={styles.item_action}>
-                  <RectButton style={styles.button} onPress={() => _handleAulaDetalheInstrutor(item._id)}>
+                  <RectButton style={styles.button} onPress={() => _handleAulaDetalheAluno(item._id)}>
                     <Text style={styles.buttonText}>Detalhe</Text>
                   </RectButton>
                 </View >
@@ -160,7 +160,7 @@ const  AlunoProximas = () => {
   );
 }
 
-export default AlunoProximas;
+export default InstrutorProximas;
 
 const styles = StyleSheet.create({
   container_principal: {
