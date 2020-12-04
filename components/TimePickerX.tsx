@@ -1,8 +1,7 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, Platform, Text, View } from 'react-native';
+import { TouchableOpacity, Platform, Text } from 'react-native';
 import styled from 'styled-components';
 import DateTimePicker from '@react-native-community/datetimepicker';
-/* 
 const Container = styled.TouchableOpacity`
   background-color: ${Platform.OS === 'ios' ? '#00000066' : 'transparent'};
   position: absolute;
@@ -17,7 +16,7 @@ const Header = styled.View`
   align-items: flex-end;
   background-color: white;
   border-bottom-width: 1px;
-`; */
+`;
 export default class TimePickerX extends React.Component {
   constructor(props) {
     super(props);
@@ -31,18 +30,18 @@ export default class TimePickerX extends React.Component {
     const { onClose, onChange } = this.props;
     const { date } = this.state;
     return (
-      <TouchableOpacity onPress={onClose} style={styles.touchable_style}>
+      <Container onPress={onClose} >
         {Platform.OS === 'ios' && (
-          <View style={styles.view_style}>
+          <Header>
             <TouchableOpacity onPress={onClose}>
               <Text>Done</Text>
             </TouchableOpacity>
-          </View>
+          </Header>
         )}
         <DateTimePicker
           value={date}
           mode="time"
-          display="default"
+          display="spinner"
           onChange={(e, d) => {
             if (Platform.OS === 'ios') {
               this.setState({ date: d });
@@ -54,29 +53,7 @@ export default class TimePickerX extends React.Component {
          
          style={{ backgroundColor: 'white'}}
        />
-     </TouchableOpacity>
+     </Container>
    );
   }
 }
-
-
-
-const styles = StyleSheet.create({
-  touchable_style: {
-  backgroundColor: Platform.OS === 'ios' ? '#00000066' : 'transparent',
-  position: 'absolute',
-  justifyContent: 'flex-end',
-  width: '120%',
-  height: '100%',
-  },
-
-  view_style: {
-    width: '100%',
-    padding: '16',
-    justifyContent: 'flex-end',
-    alignItems: 'flex-end',
-    backgroundColor: 'white',
-    borderBottomWidth: 1
-  }
-
-});

@@ -1,14 +1,17 @@
 import React, {useState, useEffect} from 'react';
 import { Button, Overlay } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
-import { StyleSheet, Text, View, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
-import { Appbar } from 'react-native-paper';
+import { StyleSheet, Text, View, TextInput, Image, ImageBackground, KeyboardAvoidingView, Platform, ScrollView, RefreshControl } from 'react-native';
+import { Appbar, Avatar, Snackbar } from 'react-native-paper';
 import { RectButton } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import DatePicker from '../../components/DatePickerX';
 import TimePicker from '../../components/TimePickerX';
 import moment from 'moment';
+import * as userLib from '../../lib/user'
+import ConfigFile from "../../config.json"
+import axios from "axios";
 
 const  AlunoAgendar = () => {
 
@@ -18,6 +21,9 @@ const  AlunoAgendar = () => {
     navigation.goBack()
   }
 
+  const API = axios.create({
+      baseURL: ConfigFile.API_SERVER_URL,
+    });
   
   type AulaType = { id: number, data: Date, horario: Date};  
   const aulaInitialValue:Array<AulaType> = []
@@ -34,6 +40,16 @@ const  AlunoAgendar = () => {
   const [actualTimeOverlay, setActualTimeOverlay] = useState(timeInitialValue);
   const [actualTimeExactOverlay, setActualTimeExactOverlay] = useState(horaInicial);
   const [valorFinal, setValorFinal] = useState(0);
+  
+  const [aulaSelecionadaRemocao, setAulaSelecionadaRemocao] = useState(0);
+  const [overlayRemoverAulaVisibility, setOverlayRemoverAulaVisibility] = useState(false);  
+
+  //Configurações para o DatePicker do Overlay
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
+
+  const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
+  const [snackMensagem, setSnackMensagem] = React.useState('');
 
   const toggleOverlayVisibility = () => {
     setoverlayVisibility(!overlayVisibility);
@@ -49,14 +65,10 @@ const  AlunoAgendar = () => {
   const addAula = (data: Date, horario: Date) => {    
     setListAulas(listAulas.concat({id: count, data, horario}));
     toggleOverlayVisibility();
-    console.log('adicionando aula')  
     setShowDatePicker(false);
     setShowTimePicker(false);
     setcount(count+1);
   };
-
-  const [aulaSelecionadaRemocao, setAulaSelecionadaRemocao] = useState(0);
-  const [overlayRemoverAulaVisibility, setOverlayRemoverAulaVisibility] = useState(false);
 
   const handleDelete = (id: number) => {
     setOverlayRemoverAulaVisibility(true)
@@ -70,9 +82,46 @@ const  AlunoAgendar = () => {
     setOverlayRemoverAulaVisibility(false)  
   }
 
-  //Configurações para o DatePicker do Overlay
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [showTimePicker, setShowTimePicker] = useState(false);
+  const AgendarAulas = async () => {
+
+    const { token } = JSON.parse(await userLib.getUserAuthData())
+
+    const objAulas = {
+      aulas: []
+    };
+
+    listAulas.map((item, i) => (
+      objAulas.aulas.push({
+        data: item.data.toISOString().replace(/T.*/,'').split('-').join('-'),
+        hora: dataBonita(item.horario)
+      })
+    ))
+
+    console.log(objAulas)
+
+    try {
+      const resp = await API.post('/agendamento', 
+      objAulas, 
+      {
+       headers: 
+        {
+          Authorization: 'Bearer ' + token,
+        }
+      })
+
+      if(resp.status == 200)
+      {
+        setOverlayAgendarVisibility(false)
+        setSnackMensagem('Aulas agendadas com sucesso!')
+        setSnackMensagemVisible(true)                    
+      }  
+
+    } catch (error) {
+      console.log('Erro ao agendar aulas')
+      setSnackMensagem(error.response.data.error)
+      setSnackMensagemVisible(true)
+    }
+  }
 
   return (
     <KeyboardAvoidingView style={styles.container_principal} 
@@ -90,7 +139,7 @@ const  AlunoAgendar = () => {
         <View style={styles.item_detalhes}>
           <Text style={styles.item_text_line}>
             <Text style={styles.item_text_title}>Aula Individual: </Text>
-            <Text>50 reais</Text>
+            <Text>60 reais</Text>
           </Text>
           <Text style={styles.item_text_line}>
             <Text style={styles.item_text_title}>Pacote com 10 aulas: </Text>
@@ -138,77 +187,77 @@ const  AlunoAgendar = () => {
             <View style={{alignItems: 'center', margin: 10}}>
               <Icon name='plus-circle' size={60} color='green' onPress={toggleOverlayVisibility}/>
               <Overlay isVisible={overlayVisibility} overlayStyle={styles.overlay_add}>
-                <>
-                  <View style={styles.overlay_titulo}>
-                    <View style={{flex: 1}}>
-                      <MaterialIcon name='arrow-back' size={25} onPress={toggleOverlayVisibility}/>
-                    </View>
-                    <View style={{flex: 6}}>
-                      <Text style={{textAlign: 'center', fontSize: 18}}>Nova Aula</Text>
-                    </View>
+              <>
+                <View style={styles.overlay_titulo}>
+                  <View style={{flex: 1}}>
+                    <MaterialIcon name='arrow-back' size={25} onPress={toggleOverlayVisibility}/>
                   </View>
+                  <View style={{flex: 6}}>
+                    <Text style={{textAlign: 'center', fontSize: 18}}>Nova Aula</Text>
+                  </View>
+                </View>
+                
+                <View style={styles.overlay_data}>
+                  <Text style={{fontSize: 18}}>Data</Text>
+                    <Button onPressOut={()=>setShowDatePicker(true)} title={actualDateOverlay.toLocaleDateString()} />  
+                    {showDatePicker && (
+                      <DatePicker
+                        date={actualDateOverlay}
+                        onClose={date => {
+                          if (date && Platform.OS !== 'iOS') {
+                            setShowDatePicker(false)
+                          } else {
+                            setShowDatePicker(false)
+                            setActualDateOverlay(date);
+                          }
+                          
+                        }}
+                        onChange={date => {
+                          if (date && Platform.OS !== 'iOS') {
+                            setActualDateOverlay(date);
+                          } else {
+                            setActualDateOverlay(date);
+                          }
+                          
+                        }}                     
+                      />
+                    )}                
+                </View>
                   
-                  <View style={styles.overlay_data}>
-                    <Text style={{fontSize: 18}}>Data</Text>
-                      <Button onPressOut={()=>setShowDatePicker(true)} title={actualDateOverlay.toLocaleDateString()} />  
-                      {showDatePicker && (
-                        <DatePicker
-                          date={actualDateOverlay}
-                          onClose={date => {
-                            if (date && Platform.OS !== 'iOS') {
-                              setShowDatePicker(false)
-                            } else {
-                              setShowDatePicker(false)
-                              setActualDateOverlay(date);
-                            }
-                            
-                          }}
-                          onChange={date => {
-                            if (date && Platform.OS !== 'iOS') {
-                              setActualDateOverlay(date);
-                            } else {
-                              setActualDateOverlay(date);
-                            }
-                            
-                          }}                     
-                        />
-                      )}                
-                  </View>
-                    
-                  <View style={styles.overlay_hora}>
-                    <Text style={{ fontSize: 18}}>Horário de início</Text>
-                    <Button onPressOut={()=>setShowTimePicker(true)} title={dataBonita(actualTimeExactOverlay)} />  
-                      {showTimePicker && (
-                        <TimePicker
-                          date={actualTimeExactOverlay}
-                          onClose={time => {
-                            if (time && Platform.OS !== 'iOS') {
-                              setShowTimePicker(false)
-                            } else {
-                              setShowTimePicker(false)
-                              setActualTimeExactOverlay(time)
-                              //setActualTimeOverlay(moment(time).toDate().getHours().toString().padStart(2, '0') + ':' + moment(time).toDate().getMinutes().toString().padStart(2, '0'));
-                            }
-                            
-                          }}
-                          onChange={time => {
-                            if (time && Platform.OS !== 'iOS') {
-                              setActualTimeExactOverlay(time)
-                              //setActualTimeOverlay(moment(time).toDate().getHours().toString().padStart(2, '0') + ':' + moment(time).toDate().getMinutes().toString().padStart(2, '0'));
-                            } else {
-                              setActualTimeExactOverlay(time)
-                              //setActualTimeOverlay(moment(time).toDate().getHours().toString().padStart(2, '0') + ':' + moment(time).toDate().getMinutes().toString().padStart(2, '0'));
-                            }
-                            
-                          }}                     
-                        />
-                      )}
-                  </View>
-                              
-                  <View style={styles.overlay_button} onTouchEnd={()=>addAula(actualDateOverlay, actualTimeExactOverlay)}>
-                    <Text style={{textAlign: 'center', fontSize: 25}}>Adicionar</Text>
-                  </View>
-                </>
+                <View style={styles.overlay_hora}>
+                  <Text style={{ fontSize: 18}}>Horário de início</Text>
+                  <Button onPressOut={()=>setShowTimePicker(true)} title={dataBonita(actualTimeExactOverlay)} />  
+                    {showTimePicker && (
+                      <TimePicker
+                        date={actualTimeExactOverlay}
+                        onClose={time => {
+                          if (time && Platform.OS !== 'iOS') {
+                            setShowTimePicker(false)
+                          } else {
+                            setShowTimePicker(false)
+                            setActualTimeExactOverlay(time)
+                            //setActualTimeOverlay(moment(time).toDate().getHours().toString().padStart(2, '0') + ':' + moment(time).toDate().getMinutes().toString().padStart(2, '0'));
+                          }
+                          
+                        }}
+                        onChange={time => {
+                          if (time && Platform.OS !== 'iOS') {
+                            setActualTimeExactOverlay(time)
+                            //setActualTimeOverlay(moment(time).toDate().getHours().toString().padStart(2, '0') + ':' + moment(time).toDate().getMinutes().toString().padStart(2, '0'));
+                          } else {
+                            setActualTimeExactOverlay(time)
+                            //setActualTimeOverlay(moment(time).toDate().getHours().toString().padStart(2, '0') + ':' + moment(time).toDate().getMinutes().toString().padStart(2, '0'));
+                          }
+                          
+                        }}                     
+                      />
+                    )}
+                </View>
+
+                <View style={styles.overlay_button} onTouchEnd={()=>addAula(actualDateOverlay, actualTimeExactOverlay)}>
+                  <Text style={{textAlign: 'center', fontSize: 25}}>Adicionar</Text>
+                </View>
+              </>
               </Overlay>
              
             </View>
@@ -231,46 +280,56 @@ const  AlunoAgendar = () => {
       </View>
 
       <Overlay isVisible={overlayAgendarVisibility} overlayStyle={styles.overlay_agendar}>
-        <>
-          <View style={{flex: 1, alignItems: 'center'}}>
-            <Text style={{fontSize: 20, fontWeight: 'bold'}}>Confirma efetuar os</Text>
-            <Text style={{fontSize: 20, fontWeight: 'bold'}}>agendamentos?</Text>
+      <>
+        <View style={{flex: 1, alignItems: 'center'}}>
+          <Text style={{fontSize: 20, fontWeight: 'bold'}}>Confirma efetuar os</Text>
+          <Text style={{fontSize: 20, fontWeight: 'bold'}}>agendamentos?</Text>
+        </View>
+        <View style={{flex: 1, flexDirection:'row', alignItems: 'center'}}>
+          <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', }}>
+            <RectButton style={styles.buttonNao} onPress={()=> setOverlayAgendarVisibility(false)} >
+              <Text style={styles.buttonNaoText}>Não</Text>
+            </RectButton>
           </View>
-          <View style={{flex: 1, flexDirection:'row', alignItems: 'center'}}>
-            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', }}>
-              <RectButton style={styles.buttonNao} onPress={()=> setOverlayAgendarVisibility(false)} >
-                <Text style={styles.buttonNaoText}>Não</Text>
-              </RectButton>
-            </View>
-            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', }}>
-              <RectButton style={styles.buttonSim} onPress={()=> _goBack()}>
-                <Text style={styles.buttonSimText}>Sim</Text>
-              </RectButton>
-            </View>
+          <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', }}>
+            <RectButton style={styles.buttonSim} onPress={()=> AgendarAulas()}>
+              <Text style={styles.buttonSimText}>Sim</Text>
+            </RectButton>
           </View>
-        </>
+        </View>
+      </>
       </Overlay>
 
       <Overlay isVisible={overlayRemoverAulaVisibility} overlayStyle={styles.overlay_agendar}>
-        <>
-          <View style={{flex: 1, alignItems: 'center'}}>
-            <Text style={{fontSize: 20, fontWeight: 'bold'}}>Confirma remover</Text>
-            <Text style={{fontSize: 20, fontWeight: 'bold'}}>a aula?</Text>
+      <>
+        <View style={{flex: 1, alignItems: 'center'}}>
+          <Text style={{fontSize: 20, fontWeight: 'bold'}}>Confirma remover</Text>
+          <Text style={{fontSize: 20, fontWeight: 'bold'}}>a aula?</Text>
+        </View>
+        <View style={{flex: 1, flexDirection:'row', alignItems: 'center'}}>
+          <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', }}>
+            <RectButton style={styles.buttonNao} onPress={()=> setOverlayRemoverAulaVisibility(false)} >
+              <Text style={styles.buttonNaoText}>Não</Text>
+            </RectButton>
           </View>
-          <View style={{flex: 1, flexDirection:'row', alignItems: 'center'}}>
-            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', }}>
-              <RectButton style={styles.buttonNao} onPress={()=> setOverlayRemoverAulaVisibility(false)} >
-                <Text style={styles.buttonNaoText}>Não</Text>
-              </RectButton>
-            </View>
-            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', }}>
-              <RectButton style={styles.buttonSimDelete} onPress={()=> removeAula(aulaSelecionadaRemocao)}>
-                <Text style={styles.buttonSimText}>Sim</Text>
-              </RectButton>
-            </View>
+          <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', }}>
+            <RectButton style={styles.buttonSimDelete} onPress={()=> removeAula(aulaSelecionadaRemocao)}>
+              <Text style={styles.buttonSimText}>Sim</Text>
+            </RectButton>
           </View>
-        </>
+        </View>
+      </>
       </Overlay>
+
+      <Snackbar
+        visible={snackMensagemVisible}
+        onDismiss={() => setSnackMensagemVisible(false)}
+        action={{
+          label: 'OK',
+          onPress: _goBack,
+        }}>
+        {snackMensagem}
+      </Snackbar>
       
     </KeyboardAvoidingView>
 
