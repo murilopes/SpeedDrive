@@ -10,7 +10,7 @@ import { RectButton } from 'react-native-gesture-handler';
 import * as userLib from '../../lib/user'
 import * as utilLib from '../../lib/util'
 import ConfigFile from "../../config.json"
-import { IAlunoTelaDadosPessoais } from '../../interfaces/interfaces'
+import { IPessoaTelaDadosPessoais } from '../../interfaces/interfaces'
 import axios from "axios";
 
 const cadastroDadosPessoais = (props: object) => {
@@ -20,8 +20,8 @@ const cadastroDadosPessoais = (props: object) => {
     navigation.goBack();
   };
 
-  let alunoVazio: IAlunoTelaDadosPessoais = {}
-  const [objAluno, setObjAluno] = React.useState(alunoVazio)
+  let pessoaVazio: IPessoaTelaDadosPessoais = {}
+  const [objPessoa, setObjPessoa] = React.useState(pessoaVazio)
 
   const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
   const [snackMensagem, setSnackMensagem] = React.useState('');
@@ -29,15 +29,15 @@ const cadastroDadosPessoais = (props: object) => {
   const handleSelecaoGenero = (genero: string) => {
     if(genero.includes('Masculino'))
     {
-        setObjAluno({...objAluno, sexo: objAluno.sexo == 'M' ? '' : 'M'})   
+        setObjPessoa({...objPessoa, sexo: objPessoa.sexo == 'M' ? '' : 'M'})   
     }
     else if(genero.includes('Feminino'))
     {
-      setObjAluno({...objAluno, sexo: objAluno.sexo == 'F' ? '' : 'F'})   
+      setObjPessoa({...objPessoa, sexo: objPessoa.sexo == 'F' ? '' : 'F'})   
     }
     else if(genero.includes('Outros'))
     {
-      setObjAluno({...objAluno, sexo: objAluno.sexo == 'O' ? '' : 'O'}) 
+      setObjPessoa({...objPessoa, sexo: objPessoa.sexo == 'O' ? '' : 'O'}) 
     }
   }
 
@@ -47,22 +47,22 @@ const cadastroDadosPessoais = (props: object) => {
 
   const SalvarDados = async () => {
 
-    const { token } = JSON.parse(await userLib.getUserAuthData())
+    const { token, tipoUsuario } = JSON.parse(await userLib.getUserAuthData())
 
-    const alunoDadosPessoasData = {
-      nome: objAluno.nome || '',
-      sobrenome: objAluno.sobrenome || '',
-      CPF: objAluno.CPF?.replaceAll('.', '').replaceAll('-', '') || '',
-      dataNascimento: utilLib.formataDataFriendlyParaDataSistema(objAluno.dataNascimentoFormatada) || '',
-      whatsapp: objAluno.whatsapp?.replaceAll(' ', '').replaceAll('(', '').replaceAll(')', '').replaceAll('-', '') || '',
-      sexo: objAluno.sexo || '',
-      email: objAluno.email || '',
-      observacoes: objAluno.observacoes || '',
+    const pessoaDadosPessoaisData = {
+      nome: objPessoa.nome || '',
+      sobrenome: objPessoa.sobrenome || '',
+      CPF: objPessoa.CPF?.replaceAll('.', '').replaceAll('-', '') || '',
+      dataNascimento: utilLib.formataDataFriendlyParaDataSistema(objPessoa.dataNascimentoFormatada) || '',
+      whatsapp: objPessoa.whatsapp?.replaceAll(' ', '').replaceAll('(', '').replaceAll(')', '').replaceAll('-', '') || '',
+      sexo: objPessoa.sexo || '',
+      email: objPessoa.email || '',
+      observacoes: objPessoa.observacoes || '',
     };
 
     try {
-      const resp = await API.put('/aluno/alterarDadosPrincipais', 
-      alunoDadosPessoasData, 
+      const resp = await API.put(`/${tipoUsuario}/alterarDadosPrincipais`, 
+      pessoaDadosPessoaisData, 
       {
        headers: 
         {
@@ -77,17 +77,17 @@ const cadastroDadosPessoais = (props: object) => {
       }  
 
     } catch (error) {
-      console.log('Erro ao salvar dados do Aluno')
+      console.log('Erro ao salvar dados da Pessoa')
       setSnackMensagem(error.response.data.error)
       setSnackMensagemVisible(true)
     }
   }
 
   React.useEffect(() => {
-    let aluno = props.route.params.aluno as IAlunoTelaDadosPessoais
-    const dataNascimentoFormatada = utilLib.formataDataParaExibicaoDataFriendly(aluno.dataNascimento)
+    let pessoa = props.route.params.pessoa as IPessoaTelaDadosPessoais
+    const dataNascimentoFormatada = utilLib.formataDataParaExibicaoDataFriendly(pessoa.dataNascimento)   
 
-    setObjAluno({...aluno, dataNascimentoFormatada})
+    setObjPessoa({...pessoa, dataNascimentoFormatada})
   }, [])
 
   const theme = {
@@ -114,27 +114,27 @@ const cadastroDadosPessoais = (props: object) => {
         <Appbar.Content title="Dados Pessoais" />
       </Appbar.Header>
 
-      <TextInput theme={theme} label="Nome" value={objAluno.nome} onChangeText={text => setObjAluno({...objAluno, nome: text})}/>
+      <TextInput theme={theme} label="Nome" value={objPessoa.nome} onChangeText={text => setObjPessoa({...objPessoa, nome: text})}/>
       
-      <TextInput theme={theme} label="Sobrenome" value={objAluno.sobrenome} onChangeText={text => setObjAluno({...objAluno, sobrenome: text})}/>
+      <TextInput theme={theme} label="Sobrenome" value={objPessoa.sobrenome} onChangeText={text => setObjPessoa({...objPessoa, sobrenome: text})}/>
       
-      <Text  style={{color: '#A79898', marginStart: 12, marginTop: 10, marginBottom: 10, fontSize: objAluno.sexo != '' ? 12 : 16}}>Gênero</Text>
+      <Text  style={{color: '#A79898', marginStart: 12, marginTop: 10, marginBottom: 10, fontSize: objPessoa.sexo != '' ? 12 : 16}}>Gênero</Text>
       <View style={{flexDirection: 'row'}}>
-        <Chip selected={objAluno.sexo == 'M'} selectedColor={objAluno.sexo == 'M' ? 'blue' : 'black'} onPress={() => {handleSelecaoGenero('Masculino')}} style={{width: 110, marginStart: 10, marginEnd: 10}}>Masculino</Chip>
-        <Chip selected={objAluno.sexo == 'F'} selectedColor={objAluno.sexo == 'F' ? 'blue' : 'black'} onPress={() => {handleSelecaoGenero('Feminino')}} style={{width: 100, marginEnd: 10}}>Feminino</Chip>
-        <Chip selected={objAluno.sexo == 'O'} selectedColor={objAluno.sexo == 'O' ? 'blue' : 'black'} onPress={() => {handleSelecaoGenero('Outros')}} style={{width: 100}}>Outros</Chip>
+        <Chip selected={objPessoa.sexo == 'M'} selectedColor={objPessoa.sexo == 'M' ? 'blue' : 'black'} onPress={() => {handleSelecaoGenero('Masculino')}} style={{width: 110, marginStart: 10, marginEnd: 10}}>Masculino</Chip>
+        <Chip selected={objPessoa.sexo == 'F'} selectedColor={objPessoa.sexo == 'F' ? 'blue' : 'black'} onPress={() => {handleSelecaoGenero('Feminino')}} style={{width: 100, marginEnd: 10}}>Feminino</Chip>
+        <Chip selected={objPessoa.sexo == 'O'} selectedColor={objPessoa.sexo == 'O' ? 'blue' : 'black'} onPress={() => {handleSelecaoGenero('Outros')}} style={{width: 100}}>Outros</Chip>
       </View>
 
-      <TextInput theme={theme} label="CPF" value={objAluno.CPF} returnKeyType={ 'done' }
+      <TextInput theme={theme} label="CPF" value={objPessoa.CPF} returnKeyType={ 'done' }
         render={props =><TextInputMask
           {...props}
           type={'cpf'}
-          value={objAluno.CPF}
-          onChangeText={text => setObjAluno({...objAluno, CPF: text})}
+          value={objPessoa.CPF}
+          onChangeText={text => setObjPessoa({...objPessoa, CPF: text})}
         />}
       />
 
-      <TextInput theme={theme} label="WhatsApp/Celular" value={objAluno.whatsapp} returnKeyType={ 'done' }
+      <TextInput theme={theme} label="WhatsApp/Celular" value={objPessoa.whatsapp} returnKeyType={ 'done' }
         render={props =><TextInputMask
           {...props}
           type={'cel-phone'}
@@ -143,29 +143,30 @@ const cadastroDadosPessoais = (props: object) => {
             withDDD: true,
             dddMask: '(99) '
           }}
-          value={objAluno.whatsapp}
-          onChangeText={text => setObjAluno({...objAluno, whatsapp: text})}
+          value={objPessoa.whatsapp}
+          onChangeText={text => setObjPessoa({...objPessoa, whatsapp: text})}
         />}
       />
 
-      <TextInput theme={theme} label="Data de Nascimento" value={objAluno.dataNascimento} returnKeyType={ 'done' }
+      <TextInput theme={theme} label="Data de Nascimento" value={objPessoa.dataNascimento} returnKeyType={ 'done' }
         render={props =><TextInputMask
           {...props}
           type={'datetime'}
           options={{format: 'DD/MM/YYYY'}}
-          value={objAluno.dataNascimentoFormatada}
-          onChangeText={text => setObjAluno({...objAluno, dataNascimentoFormatada: text})}
+          value={objPessoa.dataNascimentoFormatada}
+          onChangeText={text => setObjPessoa({...objPessoa, dataNascimentoFormatada: text})}
         />}
       />
 
-      <TextInput theme={theme} label="Email" value={objAluno.email} onChangeText={text => setObjAluno({...objAluno, email: text})} keyboardType='email-address'/>
+      <TextInput theme={theme} label="Email" value={objPessoa.email} onChangeText={text => setObjPessoa({...objPessoa, email: text})} keyboardType='email-address'/>
 
-      <TextInput  theme={theme} 
+      {(props.route.params.tipoUsuario == 'aluno') && (<TextInput
+                  theme={theme} 
                   label="Observações" 
-                  value={objAluno.observacoes} 
+                  value={objPessoa.observacoes} 
                   placeholder='Ex: preferência de aula com instrutor do mesmo sexo' 
-                  onChangeText={text => setObjAluno({...objAluno, observacoes: text})}/
-      >
+                  onChangeText={text => setObjPessoa({...objPessoa, observacoes: text})}/
+      >)}
 
       <View style={styles.buttonView}>
         <RectButton style={styles.button} onPress={() => SalvarDados()}>

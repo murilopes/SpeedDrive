@@ -12,7 +12,7 @@ import { RectButton } from 'react-native-gesture-handler';
 import * as userLib from '../../lib/user'
 import * as utilLib from '../../lib/util'
 import ConfigFile from "../../config.json"
-import { IAluno } from '../../interfaces/interfaces'
+import { IPessoa } from '../../interfaces/interfaces'
 import axios from "axios";
 
 const cadastroEndereco = (props: object) => {
@@ -22,8 +22,8 @@ const cadastroEndereco = (props: object) => {
     navigation.goBack();
   };
 
-  let alunoVazio: IAluno = {}
-  const [objAluno, setObjAluno] = React.useState(alunoVazio)
+  let pessoaVazio: IPessoa = {}
+  const [objPessoa, setObjPessoa] = React.useState(pessoaVazio)
 
   const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
   const [snackMensagem, setSnackMensagem] = React.useState('');
@@ -36,21 +36,21 @@ const cadastroEndereco = (props: object) => {
 
   const SalvarDados = async () => {
 
-    const { token } = JSON.parse(await userLib.getUserAuthData())
+    const { token, tipoUsuario } = JSON.parse(await userLib.getUserAuthData())
 
-    const alunoDadosPessoasData = {
-      CEP: objAluno.CEP || '',
-      endereco: objAluno.endereco || '',
-      numero: objAluno.numero || '',
-      complemento: objAluno.complemento || '',
-      bairro: objAluno.bairro || '',
-      cidade: objAluno.cidade || '',
-      estado: objAluno.estado || '',
+    const pessoaDadosPessoasData = {
+      CEP: objPessoa.CEP || '',
+      endereco: objPessoa.endereco || '',
+      numero: objPessoa.numero || '',
+      complemento: objPessoa.complemento || '',
+      bairro: objPessoa.bairro || '',
+      cidade: objPessoa.cidade || '',
+      estado: objPessoa.estado || '',
     };
 
     try {
-      const resp = await API.put('/aluno/alterarEndereco', 
-      alunoDadosPessoasData, 
+      const resp = await API.put(`/${tipoUsuario}/alterarEndereco`, 
+      pessoaDadosPessoasData, 
       {
        headers: 
         {
@@ -65,7 +65,7 @@ const cadastroEndereco = (props: object) => {
       }  
 
     } catch (error) {
-      console.log('Erro ao salvar dados do Aluno')
+      console.log('Erro ao salvar dados do Pessoa')
       setSnackMensagem(error.response.data.error)
       setSnackMensagemVisible(true)
     }
@@ -74,12 +74,12 @@ const cadastroEndereco = (props: object) => {
   const BuscaCEP = async () => {
 
     try {
-      const cep = objAluno.CEP
+      const cep = objPessoa.CEP
       const resp = await API.get(`https://viacep.com.br/ws/${cep}/json/`)
       if(resp.status == 200 && !resp.data.erro)
       {
-        setObjAluno({
-          ...objAluno,
+        setObjPessoa({
+          ...objPessoa,
           endereco: resp.data.logradouro,
           bairro: resp.data.bairro,
           cidade: resp.data.localidade,
@@ -92,9 +92,9 @@ const cadastroEndereco = (props: object) => {
   }
 
   React.useEffect(() => {
-    let aluno = props.route.params.aluno as IAluno
+    let pessoa = props.route.params.pessoa as IPessoa
 
-    setObjAluno(aluno)
+    setObjPessoa(pessoa)
   }, [])
 
   const theme = {
@@ -121,25 +121,25 @@ const cadastroEndereco = (props: object) => {
         <Appbar.Content title="Endereço" />
       </Appbar.Header>
 
-      <TextInput theme={theme} label="CEP" value={objAluno.CEP} returnKeyType={ 'done' } onBlur={BuscaCEP}
+      <TextInput theme={theme} label="CEP" value={objPessoa.CEP} returnKeyType={ 'done' } onBlur={BuscaCEP}
         render={props =><TextInputMask
           {...props}
           type={'zip-code'}
-          value={objAluno.CEP}
-          onChangeText={text => setObjAluno({...objAluno, CEP: text})}
+          value={objPessoa.CEP}
+          onChangeText={text => setObjPessoa({...objPessoa, CEP: text})}
         />}
       />
-      <TextInput theme={theme} label="Endereço" value={objAluno.endereco} onChangeText={text => setObjAluno({...objAluno, endereco: text})}/>
-      <TextInput theme={theme} label="Número" value={objAluno.numero} onChangeText={text => setObjAluno({...objAluno, numero: text})} keyboardType='numeric' returnKeyType='done'/>
-      <TextInput theme={theme} label="Complemento" value={objAluno.complemento} onChangeText={text => setObjAluno({...objAluno, complemento: text})}/>
-      <TextInput theme={theme} label="Bairro" value={objAluno.bairro} onChangeText={text => setObjAluno({...objAluno, bairro: text})}/>
-      <TextInput theme={theme} label="Cidade" value={objAluno.cidade} onChangeText={text => setObjAluno({...objAluno, cidade: text})}/>
+      <TextInput theme={theme} label="Endereço" value={objPessoa.endereco} onChangeText={text => setObjPessoa({...objPessoa, endereco: text})}/>
+      <TextInput theme={theme} label="Número" value={objPessoa.numero} onChangeText={text => setObjPessoa({...objPessoa, numero: text})} keyboardType='numeric' returnKeyType='done'/>
+      <TextInput theme={theme} label="Complemento" value={objPessoa.complemento} onChangeText={text => setObjPessoa({...objPessoa, complemento: text})}/>
+      <TextInput theme={theme} label="Bairro" value={objPessoa.bairro} onChangeText={text => setObjPessoa({...objPessoa, bairro: text})}/>
+      <TextInput theme={theme} label="Cidade" value={objPessoa.cidade} onChangeText={text => setObjPessoa({...objPessoa, cidade: text})}/>
       <DropDown
         theme={theme}
         label={'Estado'}
         mode={'flat'}
-        value={objAluno.estado}
-        setValue={text => setObjAluno({...objAluno, estado: text.toString()})}
+        value={objPessoa.estado}
+        setValue={text => setObjPessoa({...objPessoa, estado: text.toString()})}
         list={utilLib.estadoList}
         visible={showDropDownEstado}
         showDropDown={() => setShowDropDownEstado(true)}

@@ -15,8 +15,12 @@ const  SplashScreen = () => {
     navigation.navigate('Onboarding');
   }
 
-  function handleNavigateToDashboard() {
+  function handleNavigateToAlunoDashboard() {
     navigation.navigate('AlunoDashboard');
+  }
+
+  function handleNavigateToInstrutorDashboard() {
+    navigation.navigate('InstrutorDashboard');
   }
 
   let [fontsLoaded] = useFonts({
@@ -55,8 +59,11 @@ const  SplashScreen = () => {
 
   useEffect(() => {
     setTimeout(async () => {
-      if (await usuarioEstaAutenticado())
-        handleNavigateToDashboard()
+      if (await usuarioEstaAutenticado()) {
+        const {tipoUsuario} = JSON.parse(await userLib.getUserAuthData())
+        if (tipoUsuario == 'aluno') handleNavigateToAlunoDashboard()
+        if (tipoUsuario == 'instrutor') handleNavigateToInstrutorDashboard()
+      }        
       else
         handleNavigateToOnboarding()
     }, 3000);

@@ -7,12 +7,15 @@ import SplashScreen from './pages/Login/splashScreen';
 import Onboarding from './pages/Onboarding';
 import Login from './pages/Login';
 import AlunoDashboard from './pages/Aluno';
+import InstrutorDashboard from './pages/Instrutor';
 import AlunoRealizadas from './pages/Aluno/realizadas';
 import AlunoProximas from './pages/Aluno/proximas';
 import AlunoAgendar from './pages/Aluno/agendar';
 import AlunoCadastro from './pages/Aluno/cadastro';
+import InstrutorCadastro from './pages/Instrutor/cadastro';
 import CadastroDadosPessoais from './pages/Comum/cadastroDadosPessoais';
 import CadastroEndereco from './pages/Comum/cadastroEndereco';
+import CadastroVeiculoInstrutor from './pages/Instrutor/cadastroVeiculo';
 import CadastroDocumentosAluno from './pages/Aluno/cadastroDocumentos';
 import AulaDetalheInstrutor from './pages/Aluno/aulaDetalhe';
 import UploadDocumento from './pages/Comum/uploadDocumento';
@@ -35,12 +38,15 @@ const Routes = () => {
         <AppStack.Screen name="Onboarding" component={Onboarding} />
         <AppStack.Screen name="Login" component={Login} />
         <AppStack.Screen name="AlunoDashboard" component={AlunoDashboard} />
+        <AppStack.Screen name="InstrutorDashboard" component={InstrutorDashboard} />
         <AppStack.Screen name="AlunoRealizadas" component={AlunoRealizadas} />
         <AppStack.Screen name="AlunoProximas" component={AlunoProximas} />
         <AppStack.Screen name="AlunoAgendar" component={AlunoAgendar} />
         <AppStack.Screen name="AlunoCadastro" component={AlunoCadastro} />
+        <AppStack.Screen name="InstrutorCadastro" component={InstrutorCadastro} />
         <AppStack.Screen name="CadastroDadosPessoais" component={CadastroDadosPessoais} />
         <AppStack.Screen name="CadastroEndereco" component={CadastroEndereco} />
+        <AppStack.Screen name="CadastroVeiculoInstrutor" component={CadastroVeiculoInstrutor} />
         <AppStack.Screen name="CadastroDocumentosAluno" component={CadastroDocumentosAluno} />
         <AppStack.Screen name="AulaDetalheInstrutor" component={AulaDetalheInstrutor} />
         <AppStack.Screen name="UploadDocumento" component={UploadDocumento} />

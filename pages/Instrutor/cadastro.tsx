@@ -11,7 +11,7 @@ import * as userLib from '../../lib/user'
 import ConfigFile from "../../config.json"
 import axios from "axios";
 
-interface IAluno {
+interface IInstrutor {
   _id?: string,
   nome?: string,
   sobrenome?: string,
@@ -20,19 +20,27 @@ interface IAluno {
   whatsapp?: string,
   sexo?: string,
   email?: string,
-  observacoes?: string,
   CEP?: string,
   endereco?: string,
   numero?: string,
   complemento?: string,
   bairro?: string,  
   cidade?: string,  
-  estado?: string,  
+  estado?: string,
+  marcaVeiculo?: string,
+  modeloVeiculo?: string,
+  anoFabricacaoVeiculo?: string,
   urlFotoPerfil?: string,  
-  urlCarteiraHabilitacao?: string,  
+  urlFotoCarteiraHabilitacao?: string,
+  urlFotoDuploComando?: string,  
+  urlFotoFrenteVeiculo?: string,  
+  urlFotoTraseiraVeiculo?: string,  
+  urlFotoLatEsquerdaVeiculo?: string,  
+  urlFotoLatDireitaVeiculo?: string,  
+  urlFotoPlacaVeiculo?: string,  
 }
 
-const AlunoCadastro = () => {
+const InstrutorCadastro = () => {
   const navigation = useNavigation();
 
   const _goBack = () => {
@@ -40,18 +48,22 @@ const AlunoCadastro = () => {
   };
 
   const _handleCadastroDadosPessoais = () => {
-    navigation.navigate('CadastroDadosPessoais', {pessoa: objAluno, tipoUsuario: 'aluno'});
+    navigation.navigate('CadastroDadosPessoais', {pessoa: objInstrutor, tipoUsuario: 'instrutor'});
   };
 
   const _handleCadastroEndereco = () => {
-    navigation.navigate('CadastroEndereco', {pessoa: objAluno});
+    navigation.navigate('CadastroEndereco', {pessoa: objInstrutor});
+  };
+
+  const _handleDadosVeiculo = () => {
+    navigation.navigate('CadastroVeiculoInstrutor', {pessoa: objInstrutor});
   };
 
   const _handleCadastroDocumentos = () => {
-    navigation.navigate('CadastroDocumentosAluno', {pessoa: objAluno});
+    navigation.navigate('CadastroDocumentosInstrutor', {pessoa: objInstrutor});
   };
 
-  let alunoVazio: IAluno = {}
+  let instrutorVazio: IInstrutor = {}
 
   const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
   const [snackMensagem, setSnackMensagem] = React.useState('');
@@ -59,15 +71,18 @@ const AlunoCadastro = () => {
 
   const [iconeDadosPessoais, setIconeDadosPessoais] = React.useState('')
   const [iconeEndereco, setIconeEndereco] = React.useState('')
+  const [iconeVeiculo, setIconeVeiculo] = React.useState('')
   const [iconeDocumentos, setIconeDocumentos] = React.useState('')
   const [corIconeDadosPessoais, setCorIconeDadosPessoais] = React.useState('')
   const [corIconeEndereco, setCorIconeEndereco] = React.useState('')
+  const [corIconeVeiculo, setCorIconeVeiculo] = React.useState('')
   const [corIconeDocumentos, setCorIconeDocumentos] = React.useState('')
 
-  const [objAluno, setObjAluno] = useStateWithCallback(alunoVazio, 
+  const [objInstrutor, setObjInstrutor] = useStateWithCallback(instrutorVazio, 
     () => {
       setPercentDadosPessoais(calculaPercentDadosPessoais());
       setPercentEndereco(calculaPercentEndereco());
+      setPercentVeiculo(calculaPercentVeiculo());
       setPercentDocumentos(calculaPercentDocumentos());
     }
   )
@@ -92,19 +107,26 @@ const AlunoCadastro = () => {
     }
   )
 
+  const [percentVeiculo, setPercentVeiculo] = useStateWithCallback(0,     
+    () => {
+      setIconeVeiculo(defineIconeDeProgresso(percentVeiculo))
+      setCorIconeVeiculo(defineCorIconeDeProgresso(percentVeiculo))
+    }
+  )
+
   const calculaPercentDadosPessoais = () : number => {
     let contagemTotalCampos = 7
     let contagemTotalPreenchido = 0
 
-    console.log(objAluno)
+    console.log(objInstrutor)
 
-    if (objAluno.nome != undefined && objAluno.nome != '') contagemTotalPreenchido++
-    if (objAluno.sobrenome != undefined && objAluno.sobrenome != '') contagemTotalPreenchido++
-    if (objAluno.sexo != undefined && objAluno.sexo != '') contagemTotalPreenchido++
-    if (objAluno.CPF != undefined && objAluno.CPF != '') contagemTotalPreenchido++
-    if (objAluno.whatsapp != undefined && objAluno.whatsapp != '') contagemTotalPreenchido++
-    if (objAluno.dataNascimento != undefined && objAluno.dataNascimento != '') contagemTotalPreenchido++
-    if (objAluno.email != undefined && objAluno.email != '') contagemTotalPreenchido++
+    if (objInstrutor.nome != undefined && objInstrutor.nome != '') contagemTotalPreenchido++
+    if (objInstrutor.sobrenome != undefined && objInstrutor.sobrenome != '') contagemTotalPreenchido++
+    if (objInstrutor.sexo != undefined && objInstrutor.sexo != '') contagemTotalPreenchido++
+    if (objInstrutor.CPF != undefined && objInstrutor.CPF != '') contagemTotalPreenchido++
+    if (objInstrutor.whatsapp != undefined && objInstrutor.whatsapp != '') contagemTotalPreenchido++
+    if (objInstrutor.dataNascimento != undefined && objInstrutor.dataNascimento != '') contagemTotalPreenchido++
+    if (objInstrutor.email != undefined && objInstrutor.email != '') contagemTotalPreenchido++
 
     const percentObtido = contagemTotalPreenchido/contagemTotalCampos * 100
     
@@ -115,12 +137,25 @@ const AlunoCadastro = () => {
     let contagemTotalCampos = 6
     let contagemTotalPreenchido = 0
 
-    if (objAluno.CEP != undefined && objAluno.CEP != '') contagemTotalPreenchido++
-    if (objAluno.endereco != undefined && objAluno.endereco != '') contagemTotalPreenchido++
-    if (objAluno.numero != undefined && objAluno.numero != '') contagemTotalPreenchido++
-    if (objAluno.bairro != undefined && objAluno.bairro != '') contagemTotalPreenchido++
-    if (objAluno.cidade != undefined && objAluno.cidade != '') contagemTotalPreenchido++
-    if (objAluno.estado != undefined && objAluno.estado != '') contagemTotalPreenchido++
+    if (objInstrutor.CEP != undefined && objInstrutor.CEP != '') contagemTotalPreenchido++
+    if (objInstrutor.endereco != undefined && objInstrutor.endereco != '') contagemTotalPreenchido++
+    if (objInstrutor.numero != undefined && objInstrutor.numero != '') contagemTotalPreenchido++
+    if (objInstrutor.bairro != undefined && objInstrutor.bairro != '') contagemTotalPreenchido++
+    if (objInstrutor.cidade != undefined && objInstrutor.cidade != '') contagemTotalPreenchido++
+    if (objInstrutor.estado != undefined && objInstrutor.estado != '') contagemTotalPreenchido++
+
+    const percentObtido = contagemTotalPreenchido/contagemTotalCampos * 100
+
+    return Math.floor(percentObtido)
+  }
+
+  const calculaPercentVeiculo = () : number => {
+    let contagemTotalCampos = 3
+    let contagemTotalPreenchido = 0
+
+    if (objInstrutor.marcaVeiculo != undefined && objInstrutor.marcaVeiculo != '') contagemTotalPreenchido++
+    if (objInstrutor.modeloVeiculo != undefined && objInstrutor.modeloVeiculo != '') contagemTotalPreenchido++
+    if (objInstrutor.anoFabricacaoVeiculo != undefined && objInstrutor.anoFabricacaoVeiculo != '') contagemTotalPreenchido++
 
     const percentObtido = contagemTotalPreenchido/contagemTotalCampos * 100
 
@@ -128,10 +163,16 @@ const AlunoCadastro = () => {
   }
 
   const calculaPercentDocumentos = () : number => {
-    let contagemTotalCampos = 1
+    let contagemTotalCampos = 7
     let contagemTotalPreenchido = 0
 
-    if (objAluno.urlCarteiraHabilitacao != undefined && objAluno.urlCarteiraHabilitacao != '') contagemTotalPreenchido++
+    if (objInstrutor.urlCarteiraHabilitacao != undefined && objInstrutor.urlCarteiraHabilitacao != '') contagemTotalPreenchido++
+    if (objInstrutor.urlFotoDuploComando != undefined && objInstrutor.urlFotoDuploComando != '') contagemTotalPreenchido++
+    if (objInstrutor.urlFotoFrenteVeiculo != undefined && objInstrutor.urlFotoFrenteVeiculo != '') contagemTotalPreenchido++
+    if (objInstrutor.urlFotoTraseiraVeiculo != undefined && objInstrutor.urlFotoTraseiraVeiculo != '') contagemTotalPreenchido++
+    if (objInstrutor.urlFotoLatEsquerdaVeiculo != undefined && objInstrutor.urlFotoLatEsquerdaVeiculo != '') contagemTotalPreenchido++
+    if (objInstrutor.urlFotoLatDireitaVeiculo != undefined && objInstrutor.urlFotoLatDireitaVeiculo != '') contagemTotalPreenchido++
+    if (objInstrutor.urlFotoPlacaVeiculo != undefined && objInstrutor.urlFotoPlacaVeiculo != '') contagemTotalPreenchido++
 
     const percentObtido = contagemTotalPreenchido/contagemTotalCampos * 100
 
@@ -156,7 +197,7 @@ const AlunoCadastro = () => {
         console.log(result);
     
         if (!result.cancelled) {
-          setObjAluno({...objAluno, urlFotoPerfil: result.uri})
+          setObjInstrutor({...objInstrutor, urlFotoPerfil: result.uri})
           SalvarFotoPerfil(result)
         }
       }
@@ -175,7 +216,7 @@ const AlunoCadastro = () => {
     });
 
     try {
-      const resp = await API.put('/aluno/alterarFotoPerfil',
+      const resp = await API.put('/instrutor/alterarFotoPerfil',
       bodyFormData, 
       {
        headers: 
@@ -230,12 +271,12 @@ const AlunoCadastro = () => {
     baseURL: ConfigFile.API_SERVER_URL,
   });
 
-  const getAluno = async () => {
+  const getInstrutor = async () => {
 
     try {
 
       const { id, token } = JSON.parse(await userLib.getUserAuthData())
-      const resp = await API.get('/aluno/' + id, 
+      const resp = await API.get('/instrutor/' + id, 
       {
         headers: 
         {
@@ -245,11 +286,11 @@ const AlunoCadastro = () => {
 
       if(resp.status == 200)
       {
-        console.log('Conseguiu carregar aluno')
-        return  resp.data.aluno
+        console.log('Conseguiu carregar instrutor')
+        return  resp.data.instrutor
       }
     } catch (error) {
-      console.log('Não conseguiu carregar aluno')
+      console.log('Não conseguiu carregar instrutor')
       console.log(error.response.data.error)
       setSnackMensagem(error.response.data.error)
       setSnackMensagemVisible(true)
@@ -261,10 +302,10 @@ const AlunoCadastro = () => {
   })
 
   React.useEffect(() => {
-    getAluno().then(
-      (aluno) => {
-        if (aluno)
-        setObjAluno(aluno)
+    getInstrutor().then(
+      (instrutor) => {
+        if (instrutor)
+        setObjInstrutor(instrutor)
       }
     ) 
     
@@ -283,7 +324,7 @@ const AlunoCadastro = () => {
       <View style={{alignItems: 'center', marginTop: 15, marginBottom: 20}}>
         <Avatar.Image 
           size={170} 
-          source={{uri: objAluno.urlFotoPerfil ? objAluno.urlFotoPerfil : ConfigFile.URL_IMAGEM_NAO_ENCONTRADA}}
+          source={{uri: objInstrutor.urlFotoPerfil ? objInstrutor.urlFotoPerfil : ConfigFile.URL_IMAGEM_NAO_ENCONTRADA}}
           style={{}}
         />
         <View style={{alignItems: 'center', marginTop: -30}}>
@@ -337,6 +378,25 @@ const AlunoCadastro = () => {
 
         <View style={styles.divider} />
 
+        <View style={styles.item} onTouchEnd={_handleDadosVeiculo}>
+          <View style={styles.item_interno}>
+            <View style={styles.item_status}>
+              <IconEntypo name={iconeVeiculo} color={corIconeVeiculo} size={30} style={{flex: 1}} />
+              <Text style={styles.item_text_status_preenchimento}>{percentVeiculo}%</Text>
+            </View>
+            <View style={styles.item_detalhes}>
+              <View style={styles.item_text_superior}>
+                <Text style={styles.item_text_value}>Dados do Veículo</Text>
+              </View>            
+            </View>
+            <View style={styles.item_seta}>
+              <IconEntypo name="chevron-thin-right" color='#A79898' size={30} style={{flex: 1}} />
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.divider} />
+
         <View style={styles.item}  onTouchEnd={_handleCadastroDocumentos}>
           <View style={styles.item_interno}>
             <View style={styles.item_status}>
@@ -372,7 +432,7 @@ const AlunoCadastro = () => {
   );
 };
 
-export default AlunoCadastro;
+export default InstrutorCadastro;
 
 const styles = StyleSheet.create({
   container_principal: {

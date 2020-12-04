@@ -28,6 +28,10 @@ const  Login = () => {
     navigation.navigate('AlunoDashboard');
   }
 
+  function handleNavigateToInstrutorDashboard() {
+    navigation.navigate('InstrutorDashboard');
+  }
+
   let [fontsLoaded] = useFonts({
     Roboto_400Regular,
     Roboto_500Medium,
@@ -120,6 +124,9 @@ const  Login = () => {
         if(UserAuthData.tipoUsuario == 'aluno'){
           handleNavigateToAlunoDashboard()
         }
+        if(UserAuthData.tipoUsuario == 'instrutor'){
+          handleNavigateToInstrutorDashboard()
+        }
       }
 
     } catch (error) {
@@ -193,6 +200,42 @@ const  Login = () => {
             setTimeout(() => {
               toggleOverlayCriarContaVisibility()              
               handleNavigateToAlunoDashboard()       
+            }, 2000);                 
+          }
+    
+        } catch (error) {
+          console.log('Algo saiu errado')
+          setMensagemErro(error.response.data.error)
+          setSnackErroVisible(true)
+        }
+      }
+
+      if(criarContaPapel == 'instrutor') {
+        
+        try {
+          const resp = await API.post('/auth/registrarInstrutor', userData)
+          if(resp.status == 200)
+          {
+            console.log('Cadastrou o usuario tipo instrutor')
+    
+            const UserAuthData = {
+              tipoUsuario: resp.data.tipoUsuario,
+              id: resp.data.instrutor._id,
+              nome: resp.data.instrutor.nome,
+              sobrenome: '',
+              datahoraLogin: Date.now().toString(),
+              token: resp.data.token
+            }
+            console.log(UserAuthData)
+    
+            userLib.storeUserAuthData(JSON.stringify(UserAuthData))
+
+            setMensagemErro('Conta criada com sucesso!')
+            setSnackErroVisible(true)
+            
+            setTimeout(() => {
+              toggleOverlayCriarContaVisibility()              
+              handleNavigateToInstrutorDashboard()       
             }, 2000);                 
           }
     
