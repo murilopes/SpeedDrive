@@ -12,34 +12,40 @@ import * as userLib from '../../lib/user'
 import ConfigFile from "../../config.json"
 import axios from "axios";
 
-interface IAlunoDocumentos {
-  urlCarteiraHabilitacao?: string,  
+interface IInstrutorDocumentos {
+  urlFotoCarteiraHabilitacao?: string,
+  urlFotoDuploComando?: string,  
+  urlFotoFrenteVeiculo?: string,  
+  urlFotoTraseiraVeiculo?: string,  
+  urlFotoLatEsquerdaVeiculo?: string,  
+  urlFotoLatDireitaVeiculo?: string,  
+  urlFotoPlacaVeiculo?: string,
 }
 
 
-const cadastroDocumentosAluno = () => {
+const cadastroDocumentosInstrutor = () => {
   const navigation = useNavigation();
 
   const _goBack = () => {
     navigation.goBack();
   };
 
-  const _handleUploadDocumento = () => {
+  const _handleUploadDocumento = (nomeDocumento: string, metodoAPI: string, imagemUri: string) => {
     navigation.navigate('UploadDocumento', 
     {
-      nomeDocumento: 'Carteira de Habilitação', 
-      metodoAPI: '/aluno/alterarFotoCarteiraHabilitacao',
-      imagemUri: objAlunoDocumentos.urlCarteiraHabilitacao
+      nomeDocumento,
+      metodoAPI,
+      imagemUri
     });
   };
 
-  let alunoDocumentosVazio: IAlunoDocumentos = {}
+  let instrutorDocumentosVazio: IInstrutorDocumentos = {}
 
   const [count, setCount] = React.useState(0)
   const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
   const [snackMensagem, setSnackMensagem] = React.useState('');
   const [qtdDoctosOk, setQtdDoctosOk] = React.useState(0)
-  const [objAlunoDocumentos, setObjAlunoDocumentos] = useStateWithCallback(alunoDocumentosVazio, 
+  const [objInstrutorDocumentos, setObjInstrutorDocumentos] = useStateWithCallback(instrutorDocumentosVazio, 
     () => {
       setQtdDoctosOk(calculaQtdDoctosOK());
     }
@@ -47,7 +53,13 @@ const cadastroDocumentosAluno = () => {
 
   const calculaQtdDoctosOK = () : number => {
     let contagemTotalPreenchido = 0
-    if (objAlunoDocumentos.urlCarteiraHabilitacao != undefined && objAlunoDocumentos.urlCarteiraHabilitacao != '') contagemTotalPreenchido++
+    if (objInstrutorDocumentos.urlFotoCarteiraHabilitacao != undefined && objInstrutorDocumentos.urlFotoCarteiraHabilitacao != '') contagemTotalPreenchido++
+    if (objInstrutorDocumentos.urlFotoDuploComando != undefined && objInstrutorDocumentos.urlFotoDuploComando != '') contagemTotalPreenchido++
+    if (objInstrutorDocumentos.urlFotoFrenteVeiculo != undefined && objInstrutorDocumentos.urlFotoFrenteVeiculo != '') contagemTotalPreenchido++
+    if (objInstrutorDocumentos.urlFotoTraseiraVeiculo != undefined && objInstrutorDocumentos.urlFotoTraseiraVeiculo != '') contagemTotalPreenchido++
+    if (objInstrutorDocumentos.urlFotoLatEsquerdaVeiculo != undefined && objInstrutorDocumentos.urlFotoLatEsquerdaVeiculo != '') contagemTotalPreenchido++
+    if (objInstrutorDocumentos.urlFotoLatDireitaVeiculo != undefined && objInstrutorDocumentos.urlFotoLatDireitaVeiculo != '') contagemTotalPreenchido++
+    if (objInstrutorDocumentos.urlFotoPlacaVeiculo != undefined && objInstrutorDocumentos.urlFotoPlacaVeiculo != '') contagemTotalPreenchido++
     return contagemTotalPreenchido
   }
 
@@ -55,12 +67,12 @@ const cadastroDocumentosAluno = () => {
     baseURL: ConfigFile.API_SERVER_URL,
   });
 
-  const getAluno = async () => {
+  const getInstrutor = async () => {
 
     try {
 
       const { id, token } = JSON.parse(await userLib.getUserAuthData())
-      const resp = await API.get('/aluno/' + id, 
+      const resp = await API.get('/instrutor/' + id, 
       {
         headers: 
         {
@@ -70,11 +82,11 @@ const cadastroDocumentosAluno = () => {
 
       if(resp.status == 200)
       {
-        console.log('Conseguiu carregar aluno')
-        return  resp.data.aluno
+        console.log('Conseguiu carregar instrutor')
+        return  resp.data.instrutor
       }
     } catch (error) {
-      console.log('Não conseguiu carregar aluno')
+      console.log('Não conseguiu carregar instrutor')
       console.log('erro:' , error.response.data.error)
       setSnackMensagem(error.response.data.error)
       setSnackMensagemVisible(true)
@@ -86,10 +98,10 @@ const cadastroDocumentosAluno = () => {
   })
 
   React.useEffect(() => {
-    getAluno().then(
-      (aluno) => {
-        if (aluno)
-        setObjAlunoDocumentos(aluno)
+    getInstrutor().then(
+      (instrutor) => {
+        if (instrutor)
+        setObjInstrutorDocumentos(instrutor)
       }
     )
     
@@ -113,7 +125,7 @@ const cadastroDocumentosAluno = () => {
             <Text style={styles.item_text_suave}>Faça upload dos documentos solicitados abaixo </Text>
           </Text>    
           <Text style={styles.item_text_line}>
-            <Text style={styles.item_text_bold}>Documentos enviados: {qtdDoctosOk} de 1 </Text>
+            <Text style={styles.item_text_bold}>Documentos enviados: {qtdDoctosOk} de 7 </Text>
           </Text>       
         </View>
       </View>
@@ -122,14 +134,122 @@ const cadastroDocumentosAluno = () => {
 
         <View style={styles.divider} />
 
-        <View style={styles.item} onTouchEnd={_handleUploadDocumento}>
+        <View style={styles.item} onTouchEnd={() => _handleUploadDocumento('Carteira de Habilitação', '/instrutor/alterarFotoCarteiraHabilitacao', objInstrutorDocumentos.urlFotoCarteiraHabilitacao)}>
           <View style={styles.item_interno}>
             <View style={styles.item_status}>
-              <Icon name= 'check-circle' color= {objAlunoDocumentos.urlCarteiraHabilitacao ? 'green' : 'grey'} size={30} style={{flex: 1}} />
+              <Icon name= 'check-circle' color= {objInstrutorDocumentos.urlFotoCarteiraHabilitacao ? 'green' : 'grey'} size={30} style={{flex: 1}} />
             </View>
             <View style={styles.item_detalhes}>
               <View style={styles.item_text_superior}>
                 <Text style={styles.item_text_value}>Carteira de Habilitação</Text>
+              </View>            
+            </View>
+            <View style={styles.item_seta}>
+              <IconEntypo name="chevron-thin-right" color='#A79898' size={30} style={{flex: 1}} />
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.divider} />
+
+        <View style={styles.item} onTouchEnd={() => _handleUploadDocumento('Duplo Comando Veículo', '/instrutor/alterarFotoDuploComando', objInstrutorDocumentos.urlFotoDuploComando)}>
+          <View style={styles.item_interno}>
+            <View style={styles.item_status}>
+              <Icon name= 'check-circle' color= {objInstrutorDocumentos.urlFotoDuploComando ? 'green' : 'grey'} size={30} style={{flex: 1}} />
+            </View>
+            <View style={styles.item_detalhes}>
+              <View style={styles.item_text_superior}>
+                <Text style={styles.item_text_value}>Duplo Comando Veículo</Text>
+              </View>            
+            </View>
+            <View style={styles.item_seta}>
+              <IconEntypo name="chevron-thin-right" color='#A79898' size={30} style={{flex: 1}} />
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.divider} />
+
+        <View style={styles.item} onTouchEnd={() => _handleUploadDocumento('Frente Veículo', '/instrutor/alterarFotoFrenteVeiculo', objInstrutorDocumentos.urlFotoFrenteVeiculo)}>
+          <View style={styles.item_interno}>
+            <View style={styles.item_status}>
+              <Icon name= 'check-circle' color= {objInstrutorDocumentos.urlFotoFrenteVeiculo ? 'green' : 'grey'} size={30} style={{flex: 1}} />
+            </View>
+            <View style={styles.item_detalhes}>
+              <View style={styles.item_text_superior}>
+                <Text style={styles.item_text_value}>Frente Veículo</Text>
+              </View>            
+            </View>
+            <View style={styles.item_seta}>
+              <IconEntypo name="chevron-thin-right" color='#A79898' size={30} style={{flex: 1}} />
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.divider} />
+
+        <View style={styles.item} onTouchEnd={() => _handleUploadDocumento('Traseira Veículo', '/instrutor/alterarFotoTraseiraVeiculo', objInstrutorDocumentos.urlFotoTraseiraVeiculo)}>
+          <View style={styles.item_interno}>
+            <View style={styles.item_status}>
+              <Icon name= 'check-circle' color= {objInstrutorDocumentos.urlFotoTraseiraVeiculo ? 'green' : 'grey'} size={30} style={{flex: 1}} />
+            </View>
+            <View style={styles.item_detalhes}>
+              <View style={styles.item_text_superior}>
+                <Text style={styles.item_text_value}>Traseira Veículo</Text>
+              </View>            
+            </View>
+            <View style={styles.item_seta}>
+              <IconEntypo name="chevron-thin-right" color='#A79898' size={30} style={{flex: 1}} />
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.divider} />
+
+        <View style={styles.item} onTouchEnd={() => _handleUploadDocumento('Lateral Esq. Veículo', '/instrutor/alterarFotoLatEsquerdaVeiculo', objInstrutorDocumentos.urlFotoLatEsquerdaVeiculo)}>
+          <View style={styles.item_interno}>
+            <View style={styles.item_status}>
+              <Icon name= 'check-circle' color= {objInstrutorDocumentos.urlFotoLatEsquerdaVeiculo ? 'green' : 'grey'} size={30} style={{flex: 1}} />
+            </View>
+            <View style={styles.item_detalhes}>
+              <View style={styles.item_text_superior}>
+                <Text style={styles.item_text_value}>Lateral Esq. Veículo</Text>
+              </View>            
+            </View>
+            <View style={styles.item_seta}>
+              <IconEntypo name="chevron-thin-right" color='#A79898' size={30} style={{flex: 1}} />
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.divider} />
+
+        <View style={styles.item} onTouchEnd={() => _handleUploadDocumento('Lateral Dir. Veículo', '/instrutor/alterarFotoLatDireitaVeiculo', objInstrutorDocumentos.urlFotoLatDireitaVeiculo)}>
+          <View style={styles.item_interno}>
+            <View style={styles.item_status}>
+              <Icon name= 'check-circle' color= {objInstrutorDocumentos.urlFotoLatDireitaVeiculo ? 'green' : 'grey'} size={30} style={{flex: 1}} />
+            </View>
+            <View style={styles.item_detalhes}>
+              <View style={styles.item_text_superior}>
+                <Text style={styles.item_text_value}>Lateral Dir. Veículo</Text>
+              </View>            
+            </View>
+            <View style={styles.item_seta}>
+              <IconEntypo name="chevron-thin-right" color='#A79898' size={30} style={{flex: 1}} />
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.divider} />
+
+        <View style={styles.item} onTouchEnd={() => _handleUploadDocumento('Placa Veículo', '/instrutor/alterarFotoPlacaVeiculo', objInstrutorDocumentos.urlFotoPlacaVeiculo)}>
+          <View style={styles.item_interno}>
+            <View style={styles.item_status}>
+              <Icon name= 'check-circle' color= {objInstrutorDocumentos.urlFotoPlacaVeiculo ? 'green' : 'grey'} size={30} style={{flex: 1}} />
+            </View>
+            <View style={styles.item_detalhes}>
+              <View style={styles.item_text_superior}>
+                <Text style={styles.item_text_value}>Placa Veículo</Text>
               </View>            
             </View>
             <View style={styles.item_seta}>
@@ -156,7 +276,7 @@ const cadastroDocumentosAluno = () => {
   );
 };
 
-export default cadastroDocumentosAluno;
+export default cadastroDocumentosInstrutor;
 
 const styles = StyleSheet.create({
   container_principal: {
