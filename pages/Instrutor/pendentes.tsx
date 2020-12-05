@@ -14,10 +14,10 @@ interface IAula {
   horarioInicio: string,
   horarioFim: string,
   status: string,
-  instrutor: IInstrutor,
+  instrutor: IAluno,
 }
 
-interface IInstrutor {
+interface IAluno {
   nome: string
 }
 
@@ -28,13 +28,13 @@ const  InstrutorPendentes = () => {
   const _goBack = () => {
     navigation.goBack()
   }
-  const _handleAulaDetalheInstrutor = (idAgendamento: string) => {
-    navigation.navigate('AulaDetalheInstrutor', {idAgendamento});
+  const _handleAulaAprovacao = (idAgendamento: string) => {
+    navigation.navigate('AulaAprovacaoInstrutor', {idAgendamento});
   }
 
   const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
   const [snackMensagem, setSnackMensagem] = React.useState('');
-  const [arrayAulasProximas, setArrayAulasProximas] = React.useState(Array<IAula>())
+  const [arrayAulasPendentes, setArrayAulasPendentes] = React.useState(Array<IAula>())
 
   const corStatus = (status: string) => {
     switch (status) {
@@ -57,7 +57,7 @@ const  InstrutorPendentes = () => {
     baseURL: ConfigFile.API_SERVER_URL,
   });
 
-  const getAulasProximas = async () => {
+  const getAulasPendentesInstrutor = async () => {
 
     try {            
       const { id, token } = JSON.parse(await userLib.getUserAuthData())
@@ -66,7 +66,7 @@ const  InstrutorPendentes = () => {
         idUsuario: id,
       };
 
-      const resp = await API.get('/agendamento/proximas/' + reqData.idUsuario, 
+      const resp = await API.get('/agendamento/pendentesInstrutor/' + reqData.idUsuario, 
       {
         headers: 
         {
@@ -76,12 +76,12 @@ const  InstrutorPendentes = () => {
 
       if(resp.status == 200)
       {
-        console.log('Conseguiu carregar info proximas')        
+        console.log('Conseguiu carregar info pendentes')        
         const arrayAulas:Array<IAula> = resp.data.aulas
         return arrayAulas
       }
     } catch (error) {
-      console.log('Não conseguiu carregar info proximas')
+      console.log('Não conseguiu carregar info pendentes')
       console.log(error.response.data.error)
       setSnackMensagem(error.response.data.error)
       setSnackMensagemVisible(true)
@@ -89,10 +89,10 @@ const  InstrutorPendentes = () => {
   }
 
   useEffect(() => {
-    getAulasProximas().then(
-      (aulasProximas) => {
-        if (aulasProximas)
-        setArrayAulasProximas(aulasProximas)
+    getAulasPendentesInstrutor().then(
+      (aulasPendentes) => {
+        if (aulasPendentes)
+        setArrayAulasPendentes(aulasPendentes)
       }
     ) 
   }, [])
@@ -103,14 +103,14 @@ const  InstrutorPendentes = () => {
 
       <Appbar.Header statusBarHeight={0} style={{height: 45, backgroundColor: '#212F3C'}}>
         <Appbar.Action icon="arrow-left-circle" size={30} onPress={_goBack} />
-        <Appbar.Content title="Próximas Aulas" />
+        <Appbar.Content title="Aprovações Pendentes" />
       </Appbar.Header>
 
       <ScrollView>        
         <View style={styles.view_items} >
           
           {
-            arrayAulasProximas.map((item, i) => (
+            arrayAulasPendentes.map((item, i) => (
               <View key={item._id} style={styles.item}>
                 <View style={styles.item_status}>
                   <Icon name='circle' size={20} color={item.status ? corStatus(item.status)  : 'black'}/>
@@ -129,12 +129,12 @@ const  InstrutorPendentes = () => {
                     <Text>{ item.horarioInicio ? utilLib.formataDataParaExibicaoHorarioFriendly(item.horarioInicio) : ''}</Text>
                   </Text>
                   <Text style={styles.item_text_line}>
-                    <Text style={styles.item_text_title}>Instrutor: </Text>
-                    <Text>{(item.instrutor) ? item.instrutor.nome: 'Não definido'}</Text>
+                    <Text style={styles.item_text_title}>Aluno: </Text>
+                    <Text>{(item.aluno) ? item.aluno.nome: ''}</Text>
                   </Text>
                 </View>
                 <View style={styles.item_action}>
-                  <RectButton style={styles.button} onPress={() => _handleAulaDetalheInstrutor(item._id)}>
+                  <RectButton style={styles.button} onPress={() => _handleAulaAprovacao(item._id)}>
                     <Text style={styles.buttonText}>Detalhe</Text>
                   </RectButton>
                 </View >
