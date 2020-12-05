@@ -118,7 +118,7 @@ const AlunoDashboard = (props: any) => {
         <SideMenuItem icon='exclamation-circle' text='Próximas Aulas' onAction={() => _handleProximasAulas(true)}/>
         <SideMenuItem icon='car' text='Agendar Aulas' onAction={() => _handleAgendar(true)}/>
         <SideMenuItem icon='envelope' text='Notificações' onAction={() => _handleNotificacoes(true)}/>
-        <SideMenuItem icon='comments' text='Contato' onAction={() => {}}/>
+        {/* <SideMenuItem icon='comments' text='Contato' onAction={() => {}}/> */}
         <SideMenuItemSair icon='arrow-circle-left' text='Sair da conta' onAction={() => _handleSair(true)}/>
 
       </TouchableOpacity>

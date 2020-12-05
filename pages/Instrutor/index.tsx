@@ -64,6 +64,7 @@ const InstrutorDashboard = (props: any) => {
   const [urlFotoPerfil, setUrlFotoPerfil] = React.useState();
   const [qtdAulasRealizadas, setQtdAulasRealizadas] = useState(0)
   const [qtdProximasAulas, setQtdProximasAulas] = useState(0)
+  const [qtdAprovacoesPendentes, setQtdAprovacoesPendentes] = useState(0)
   const [statusCadastroOk, setStatusCadastroOk] = useState(false)
   const [temNotificacao, setTemNotificacao] = useState(false)
 
@@ -87,6 +88,7 @@ const InstrutorDashboard = (props: any) => {
         setTemNotificacao(resp.data.response.hasNotificacao)
         setQtdAulasRealizadas(resp.data.response.qtdAulasRealizadas)
         setQtdProximasAulas(resp.data.response.qtdProximasAulas)
+        setQtdAprovacoesPendentes(resp.data.response.qtdPendentesAprovacao)
       }
     } catch (error) {
       console.log('Não conseguiu carregar infos dash')
@@ -116,9 +118,9 @@ const InstrutorDashboard = (props: any) => {
         <SideMenuItem icon='check-circle' text='Aulas Realizadas' onAction={() => _handleAulasRealizadas(true)}/>
         <SideMenuItem icon='exclamation-circle' text='Próximas Aulas' onAction={() => _handleProximasAulas(true)}/>
         <SideMenuItem icon='list' text='Aprovações Pendentes' onAction={() => _handleAulasPendentesAprovacao(true)}/>
-        <SideMenuItem icon='car' text='Disponibilidades' onAction={() => _handleDisponibilidades(true)}/>
+        <SideMenuItem icon='car' text='Horários' onAction={() => _handleDisponibilidades(true)}/>
         <SideMenuItem icon='envelope' text='Notificações' onAction={() => _handleNotificacoes(true)}/>
-        <SideMenuItem icon='comments' text='Contato' onAction={() => {}}/>
+        {/* <SideMenuItem icon='comments' text='Contato' onAction={() => {}}/> */}
         <SideMenuItemSair icon='arrow-circle-left' text='Sair da conta' onAction={() => _handleSair(true)}/>
 
       </TouchableOpacity>
@@ -154,15 +156,15 @@ const InstrutorDashboard = (props: any) => {
         <View style={styles.dash}>
           <View style={styles.dash_column}>
             <View style={styles.item_dash_exterior}>
-              <View style={styles.item_dash_interior_1} onTouchEnd={() => _handleAulasRealizadas(false)}>
+              <View style={styles.item_dash_interior_1} onTouchEnd={() => _handleAulasPendentesAprovacao(false)}>
                 <View style={styles.item_dash_view_texto}>
-                  <Text style={styles.item_dash_texto_1}>Aulas</Text>
+                  <Text style={styles.item_dash_texto_1}>Aprovações</Text>
                 </View>
                 <View style={styles.item_dash_view_texto}>
-                  <Text style={styles.item_dash_texto_2}>Realizadas</Text>
+                  <Text style={styles.item_dash_texto_2}>Pendentes</Text>
                 </View>
                 <View style={styles.item_dash_view_numero}>
-                  <Text style={styles.item_dash_texto_3}>{qtdAulasRealizadas}</Text>
+                  <Text style={styles.item_dash_texto_3}>{qtdAprovacoesPendentes}</Text>
                 </View>
               </View>
             </View>
@@ -195,9 +197,9 @@ const InstrutorDashboard = (props: any) => {
               </View>
             </View>
             <View style={styles.item_dash_exterior}>
-              <View style={styles.item_dash_interior_4} onTouchEnd={() => {} /* _handleAgendar(false) */}>
+              <View style={styles.item_dash_interior_4} onTouchEnd={() => {_handleDisponibilidades(false)}}>
                 <View style={styles.item_dash_view_agendar}>
-                  <Text style={styles.item_dash_texto_agendar}>Agendar</Text>
+                  <Text style={styles.item_dash_texto_agendar}>Horários</Text>
                 </View>
                 <View style={styles.item_dash_view_numero}>
                   <Icon name= 'plus' color= 'purple' size={90} />
