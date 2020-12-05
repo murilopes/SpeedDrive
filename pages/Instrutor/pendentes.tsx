@@ -34,7 +34,8 @@ const  InstrutorPendentes = () => {
 
   const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
   const [snackMensagem, setSnackMensagem] = React.useState('');
-  const [arrayAulasPendentes, setArrayAulasPendentes] = React.useState(Array<IAula>())
+  const [arrayAulasPendentes, setArrayAulasPendentes] = React.useState(Array<IAula>())  
+  const [count, setCount] = React.useState(0)
 
   const corStatus = (status: string) => {
     switch (status) {
@@ -88,6 +89,10 @@ const  InstrutorPendentes = () => {
     } 
   }
 
+  navigation.addListener('focus', () => {
+    setCount(count+1)
+  })
+
   useEffect(() => {
     getAulasPendentesInstrutor().then(
       (aulasPendentes) => {
@@ -95,13 +100,13 @@ const  InstrutorPendentes = () => {
         setArrayAulasPendentes(aulasPendentes)
       }
     ) 
-  }, [])
+  }, [count])
   
   return (
     <KeyboardAvoidingView style={styles.container_principal} 
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
 
-      <Appbar.Header statusBarHeight={0} style={{height: 45, backgroundColor: '#212F3C'}}>
+      <Appbar.Header statusBarHeight={0} style={{height: 60, backgroundColor: '#212F3C'}}>
         <Appbar.Action icon="arrow-left-circle" size={30} onPress={_goBack} />
         <Appbar.Content title="Aprovações Pendentes" />
       </Appbar.Header>

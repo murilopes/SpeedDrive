@@ -138,7 +138,7 @@ const AlunoDashboard = (props: any) => {
         opacity={0.2}
       >
 
-        <Appbar.Header statusBarHeight={45} style={{height: 45, backgroundColor: '#212F3C'}}>
+        <Appbar.Header statusBarHeight={45} style={{height: 60, backgroundColor: '#212F3C'}}>
           <Appbar.Action icon="menu" size={30} onPress={ _handleTouchMenu} />
           <Appbar.Content onTouchEnd={() => setMenuOpened(false)} title={nomeCompleto} />
           <Appbar.Action icon="bell" size={30} onPress={() => _handleNotificacoes(false)} />

@@ -3,9 +3,12 @@ import { useNavigation } from '@react-navigation/native';
 import {
   StyleSheet, Text, View, TextInput, Image, ImageBackground, KeyboardAvoidingView, Platform, ScrollView,
 } from 'react-native';
-import { Appbar, Avatar, Snackbar } from 'react-native-paper';
+import { Appbar, Avatar, Snackbar, DefaultTheme, Provider, TextInput as TextInputNativePaper } from 'react-native-paper';
+import { Overlay } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IconMaterial from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+import { RectButton } from 'react-native-gesture-handler';
 import ConfigFile from "../../config.json"
 import * as userLib from '../../lib/user'
 import * as utilLib from '../../lib/util'
@@ -30,7 +33,7 @@ interface IAluno {
   estado?: string,
 }
 
-const AulaDetalhe = (props: object) => {
+const AulaAprovacao = (props: object) => {
   
   const navigation = useNavigation();
 
@@ -42,7 +45,21 @@ const AulaDetalhe = (props: object) => {
 
   const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
   const [snackMensagem, setSnackMensagem] = React.useState('');
-  const [objAulaDetalhe, setObjAulaDetalhe] = React.useState(aulaDetalheVazio)
+  const [objAulaDetalhe, setObjAulaDetalhe] = React.useState(aulaDetalheVazio);
+
+  const [overlayRecusarAulaVisibility, setOverlayRecusarAulaVisibility] = React.useState(false);
+  const [motivoRecusaAula, setMotivoRecusaAula] = React.useState('');  
+  const [opacityContainerPrincipal, setOpacityContainerPrincipal] = React.useState(1);
+
+  const toggleOverlayRecusarAulaVisibility = () => {
+    if (overlayRecusarAulaVisibility) {
+      setOverlayRecusarAulaVisibility(false)
+      setOpacityContainerPrincipal(1)
+    } else {
+      setOverlayRecusarAulaVisibility(true)
+      setOpacityContainerPrincipal(0.2)
+    }
+  };
 
   const API = axios.create({
     baseURL: ConfigFile.API_SERVER_URL,
@@ -74,6 +91,78 @@ const AulaDetalhe = (props: object) => {
     } 
   }
 
+  const recusarAula = async () => {
+
+    try {
+
+      const { token } = JSON.parse(await userLib.getUserAuthData())
+      const resp = await API.put('/agendamento/recusarAula/' + props.route.params.idAgendamento, 
+      {
+        'motivo': motivoRecusaAula
+      },
+      {
+        headers: 
+        {
+          Authorization: 'Bearer ' + token,
+        }
+      })
+
+      if(resp.status == 200)
+      {
+        console.log('Instrutor Recusou Aula')
+
+        setTimeout(async () => {
+          _goBack()
+        }, 3000);
+
+        toggleOverlayRecusarAulaVisibility()
+
+        setSnackMensagem('Aula recusada!')
+        setSnackMensagemVisible(true)
+      }
+    } catch (error) {
+      console.log('Erro quando Instrutor Recusou Aula')
+      console.log(error.response.data.error)
+      setSnackMensagem(error.response.data.error)
+      setSnackMensagemVisible(true)
+    } 
+  }
+
+  const aceitarAula = async () => {
+
+    try {
+      
+      const { token } = JSON.parse(await userLib.getUserAuthData())
+
+      console.log('/agendamento/aceitarAula/' + props.route.params.idAgendamento)
+
+      const resp = await API.put('/agendamento/aceitarAula/' + props.route.params.idAgendamento, {},
+      {
+        headers: 
+        {
+          Authorization: 'Bearer ' + token,
+        }
+      })
+
+      if(resp.status == 200)
+      {
+        console.log('Instrutor Aceitou Aula')
+
+        setTimeout(async () => {
+          _goBack()
+        }, 3000);
+
+        setSnackMensagem('Aula aceita!')
+        setSnackMensagemVisible(true)
+      }
+    } catch (error) {
+      console.log('Erro quando Instrutor Aceitou Aula')
+      console.log(error.response.data.error)
+      setSnackMensagem(error.response.data.error)
+      setSnackMensagemVisible(true)
+    } 
+  }
+
   React.useEffect(() => {
     getAulaDetalhe().then(
       (aulaDetalhe) => {
@@ -82,6 +171,21 @@ const AulaDetalhe = (props: object) => {
       }
     ) 
   }, [])
+  
+  const theme = {
+    ...DefaultTheme,
+    dark: false,
+    roundness: 2,
+    colors: {
+      ...DefaultTheme.colors,
+      primary: '#B70A0A',
+      accent: '#212F3C',
+      text: 'white',
+      surface: 'white',
+      background: '#212F3C',
+      placeholder: '#A79898',
+    },
+  };
 
   const textoValorAula = (valor: string) => {
     if (valor != "0")
@@ -99,12 +203,12 @@ const AulaDetalhe = (props: object) => {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
 
-      <Appbar.Header statusBarHeight={0} style={{ height: 45, backgroundColor: '#212F3C' }}>
+      <Appbar.Header statusBarHeight={0} style={{ height: 60, backgroundColor: '#212F3C' }}>
         <Appbar.Action icon="arrow-left-circle" size={30} onPress={_goBack} />
-        <Appbar.Content title="Detalhe Aula" />
+        <Appbar.Content title="Detalhe Aula - Aprovação" />
       </Appbar.Header>
 
-      <View style={styles.view_principal}>
+      <View style={{flex: 1, alignItems: 'center', paddingTop: 20, opacity: opacityContainerPrincipal}}>
         
         <View style={styles.view_items}>
 
@@ -191,38 +295,6 @@ const AulaDetalhe = (props: object) => {
           <View style={styles.item}>
             <View style={styles.item_interno}>
               <View style={styles.item_status}>
-                <Icon name="map-marker" size={20} />
-              </View>
-              <View style={styles.item_detalhes}>
-                <View style={styles.item_text_superior}>
-                  <Text style={styles.item_text_value}>{objAulaDetalhe.aluno ? objAulaDetalhe.aluno.CEP : ''}</Text>
-                </View>
-                <View style={styles.item_text_inferior}>
-                  <Text style={styles.item_text_title}>CEP</Text>
-                </View>
-              </View>
-            </View>
-          </View>
-
-          <View style={styles.item}>
-            <View style={styles.item_interno}>
-              <View style={styles.item_status}>
-                <Icon name="road" size={20} />
-              </View>
-              <View style={styles.item_detalhes}>
-                <View style={styles.item_text_superior}>
-                  <Text style={styles.item_text_value}>{objAulaDetalhe.aluno ? `${objAulaDetalhe.aluno.endereco}, ${objAulaDetalhe.aluno.numero} - ${objAulaDetalhe.aluno.complemento}` : ''}</Text>
-                </View>
-                <View style={styles.item_text_inferior}>
-                  <Text style={styles.item_text_title}>Endereço</Text>
-                </View>
-              </View>
-            </View>
-          </View>
-
-          <View style={styles.item}>
-            <View style={styles.item_interno}>
-              <View style={styles.item_status}>
                 <Icon name="map-signs" size={20} />
               </View>
               <View style={styles.item_detalhes}>
@@ -253,11 +325,33 @@ const AulaDetalhe = (props: object) => {
           </View>
         </View>
 
-        {/* <View style={styles.item_action}>
-          <RectButton style={styles.button} onPress={_handleAulaDetalheInstrutor}>
-            <Text style={styles.buttonText}>Cancelar Aula</Text>
+        <View style={styles.item_action}>
+          <RectButton style={styles.button_recusar} onPress={() => toggleOverlayRecusarAulaVisibility()}>
+            <Text style={styles.button_recusar_text}>Recusar</Text>
           </RectButton>
-        </View> */}
+
+          <RectButton style={styles.button_aceitar} onPress={() => aceitarAula()}>
+            <Text style={styles.button_aceitar_text}>Aceitar</Text>
+          </RectButton>
+        </View>
+
+        <Overlay isVisible={overlayRecusarAulaVisibility} overlayStyle={styles.overlay_motivo_recusa}>
+          <Provider>
+            <View style={styles.overlay_motivo_recusa_view_titulo}>
+              <View style={{flex: 1}}>
+                <MaterialIcon name='arrow-back' size={35} onPress={() => toggleOverlayRecusarAulaVisibility()}/>
+              </View>
+            </View>
+            <View style={styles.overlay_motivo_recusa_view_dados}>          
+              <Text style={{fontSize: 16, marginBottom: 15, color: 'white'}} >Por gentileza, insira um motivo para a recusa</Text>
+              <TextInputNativePaper theme={theme} label="Motivo" value={motivoRecusaAula} onChangeText={text => setMotivoRecusaAula(text)}/>
+            </View>
+                                
+            <View style={styles.overlay_motivo_recusa_view_button} onTouchEnd={() => recusarAula()}>
+              <Text style={{textAlign: 'center', fontSize: 25, fontWeight: 'bold'}}>Enviar</Text>
+            </View>
+          </Provider>
+        </Overlay>
 
         <Snackbar
           visible={snackMensagemVisible}
@@ -274,7 +368,7 @@ const AulaDetalhe = (props: object) => {
   );
 };
 
-export default AulaDetalhe;
+export default AulaAprovacao;
 
 const styles = StyleSheet.create({
   container_principal: {
@@ -283,57 +377,8 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     paddingTop: 40,
   },
-  view_principal: {
-    flex: 1,
-    alignItems: 'center',
-    paddingTop: 20
-  },
-
-  view_instrutor: {
-    flex: 3,
-    flexDirection: 'row',
-    width: '95%',
-    marginTop: 15,
-    alignItems: 'center',
-  },
-
-  view_intrutor_foto: {
-    flex: 9,
-    alignItems: 'center',
-  },
-
-  view_intrutor_detalhe: {
-    flex: 11,
-    justifyContent: 'center',
-    marginLeft: 20,
-  },
-
-  view_instrutor_detalhe_interno: {
-    height: '55%',
-  },
-
-  instrutor_titulo: {
-    flex: 1,
-    color: '#738396',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-
-  instrutor_info_principal: {
-    flex: 1,
-    color: 'white',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-
-  instrutor_info_secundaria: {
-    flex: 1,
-    color: 'white',
-    fontSize: 16,
-  },
 
   view_items: {
-    flex: 7,
     alignItems: 'center',
   },
 
@@ -384,25 +429,74 @@ const styles = StyleSheet.create({
   },
 
   item_action: {
-    flex: 3,
-    width: '100%',
     alignItems: 'center',
-  },
-
-  button: {
-    backgroundColor: '#0081DA',
-    height: '30%',
-    width: '50%',
-    borderRadius: 8,
-    overflow: 'hidden',
-    alignItems: 'center',
+    alignContent: 'center',
+    flexDirection: 'row',
     marginTop: 20,
   },
 
-  buttonText: {
+  button_recusar: {
+    backgroundColor: 'red',
+    height: 60,
+    width: 140,
+    borderRadius: 8,
+    overflow: 'hidden',
+    marginTop: 20,
+    alignItems: 'center',
+    marginRight: 25
+  },
+
+  button_aceitar: {
+    backgroundColor: 'green',
+    height: 60,
+    width: 140,
+    borderRadius: 8,
+    overflow: 'hidden',
+    marginTop: 20,
+    alignItems: 'center',
+    marginLeft: 25
+  },
+
+    button_aceitar_text: {
     flex: 1,
     color: '#FFF',
-    fontSize: 16,
-    marginTop: '8%',
+    fontSize: 26,
+    marginTop: '10%',    
+    fontWeight: 'bold',
   },
+
+   button_recusar_text: {
+    flex: 1,
+    fontSize: 24,
+    marginTop: '10%',
+    fontWeight: 'bold',
+  },
+
+    overlay_motivo_recusa: {
+    height: 250,
+    width: 300,
+    borderRadius: 8,
+    backgroundColor: '#212F3C',
+    marginBottom: 70
+  },
+  
+  overlay_motivo_recusa_view_titulo:{
+    flex: 1,
+    flexDirection: 'row',
+  },
+
+  overlay_motivo_recusa_view_dados:{
+    flex: 4,
+  },
+
+  
+  overlay_motivo_recusa_view_button:{
+    flex: 1.5,
+    backgroundColor: 'red',
+    margin: -10,
+    borderBottomStartRadius: 8,
+    borderBottomEndRadius: 8,
+    justifyContent: 'center',  
+  },
+
 });

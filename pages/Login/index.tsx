@@ -392,7 +392,7 @@ const  Login = () => {
             </View>
           </View>
           <View style={styles.overlay_esqueci_senha_view_dados}>          
-            <Text style={{fontSize: 16, marginBottom: 15}} >Enviaremos instruções para que você possa recuperar sua conta</Text>
+            <Text style={{fontSize: 16, marginBottom: 15, color: 'white'}} >Enviaremos instruções para que você possa recuperar sua conta</Text>
             <TextInputNativePaper theme={theme} label="E-mail" value={esqueciSenhaEmail} onChangeText={text => setEsqueciSenhaEmail(text)}/>
           </View>
                               

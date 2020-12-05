@@ -109,7 +109,7 @@ const cadastroDadosPessoais = (props: object) => {
     <KeyboardAwareScrollView
       style={styles.container_principal}
     >
-      <Appbar.Header statusBarHeight={0} style={{ height: 45, backgroundColor: '#212F3C' }}>
+      <Appbar.Header statusBarHeight={0} style={{ height: 60, backgroundColor: '#212F3C' }}>
         <Appbar.Action icon="arrow-left-circle" size={30} onPress={_goBack} />
         <Appbar.Content title="Dados Pessoais" />
       </Appbar.Header>
