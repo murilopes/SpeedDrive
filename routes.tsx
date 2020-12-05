@@ -24,6 +24,7 @@ import CadastroDocumentosInstrutor from './pages/Instrutor/cadastroDocumentos';
 import AulaDetalheInstrutor from './pages/Aluno/aulaDetalhe';
 import AulaDetalheAluno from './pages/Instrutor/aulaDetalhe';
 import AulaAprovacaoInstrutor from './pages/Instrutor/aulaAprovacao';
+import InstrutorDisponibilidades from './pages/Instrutor/disponibilidades';
 import UploadDocumento from './pages/Comum/uploadDocumento';
 import Notificacoes from './pages/Comum/notificacoes';
 
@@ -61,6 +62,7 @@ const Routes = () => {
         <AppStack.Screen name="AulaDetalheInstrutor" component={AulaDetalheInstrutor} />
         <AppStack.Screen name="AulaDetalheAluno" component={AulaDetalheAluno} />
         <AppStack.Screen name="AulaAprovacaoInstrutor" component={AulaAprovacaoInstrutor} />
+        <AppStack.Screen name="InstrutorDisponibilidades" component={InstrutorDisponibilidades} />
         <AppStack.Screen name="UploadDocumento" component={UploadDocumento} />
         <AppStack.Screen name="Notificacoes" component={Notificacoes} />
       </AppStack.Navigator>

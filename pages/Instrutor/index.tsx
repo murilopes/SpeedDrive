@@ -35,8 +35,12 @@ const InstrutorDashboard = (props: any) => {
     setMenuOpened(false)
     if (origemMenuLateral || !menuOpened)     
       navigation.navigate('InstrutorPendentes');
-  }
-  
+  }  
+  const _handleDisponibilidades = (origemMenuLateral: boolean) => {
+    setMenuOpened(false)
+    if (origemMenuLateral || !menuOpened)     
+      navigation.navigate('InstrutorDisponibilidades');
+  }  
   const _handleInstrutorCadastro = (origemMenuLateral: boolean) => {
     setMenuOpened(false)
     if (origemMenuLateral || !menuOpened)     
@@ -112,7 +116,7 @@ const InstrutorDashboard = (props: any) => {
         <SideMenuItem icon='check-circle' text='Aulas Realizadas' onAction={() => _handleAulasRealizadas(true)}/>
         <SideMenuItem icon='exclamation-circle' text='Próximas Aulas' onAction={() => _handleProximasAulas(true)}/>
         <SideMenuItem icon='list' text='Aprovações Pendentes' onAction={() => _handleAulasPendentesAprovacao(true)}/>
-        <SideMenuItem icon='car' text='Disponibilidades' onAction={() => {}}/>
+        <SideMenuItem icon='car' text='Disponibilidades' onAction={() => _handleDisponibilidades(true)}/>
         <SideMenuItem icon='envelope' text='Notificações' onAction={() => _handleNotificacoes(true)}/>
         <SideMenuItem icon='comments' text='Contato' onAction={() => {}}/>
         <SideMenuItemSair icon='arrow-circle-left' text='Sair da conta' onAction={() => _handleSair(true)}/>
