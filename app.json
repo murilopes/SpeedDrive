@@ -22,7 +22,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.muurilopes.SpeedDrive-Mobile"
     },
     "description": "App SpeedDrive mobile",
     "githubUrl": "https://github.com/murilopes/SpeedDrive"
