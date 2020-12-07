@@ -24,7 +24,8 @@ interface IInstrutor {
   nome?: string,
   sobrenome?: string,
   dataNascimento?: string,
-  veiculo?: string,
+  marcaVeiculo?: string,
+  modeloVeiculo?: string,
   urlFotoPerfil?: string,
 }
 
@@ -117,7 +118,7 @@ const AulaDetalhe = (props: object) => {
               <Text style={styles.instrutor_titulo}>Instrutor:</Text>
               <Text style={styles.instrutor_info_principal}>{objAulaDetalhe.instrutor?.nome} {utilLib.retornaUltimoNome(objAulaDetalhe.instrutor?.sobrenome)}</Text>
               <Text style={styles.instrutor_info_secundaria}>{objAulaDetalhe.instrutor?.dataNascimento ? `${utilLib.retornaIdade(objAulaDetalhe.instrutor?.dataNascimento)} anos` : ''}</Text>
-              <Text style={styles.instrutor_info_secundaria}>{objAulaDetalhe.instrutor?.veiculo}</Text>
+              <Text style={styles.instrutor_info_secundaria}>{`${objAulaDetalhe.instrutor?.marcaVeiculo} ${objAulaDetalhe.instrutor?.modeloVeiculo}`}</Text>
             </View>
           </View>
         </View>

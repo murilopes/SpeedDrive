@@ -121,6 +121,9 @@ const  Login = () => {
 
         userLib.storeUserAuthData(JSON.stringify(UserAuthData))
 
+        setEmail('')
+        setPassword('')
+
         if(UserAuthData.tipoUsuario == 'aluno'){
           handleNavigateToAlunoDashboard()
         }

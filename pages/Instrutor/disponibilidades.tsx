@@ -231,7 +231,7 @@ const disponibilidadesInstrutor = () => {
     >
       <Appbar.Header statusBarHeight={0} style={{ height: 60, backgroundColor: '#212F3C' }}>
         <Appbar.Action icon="arrow-left-circle" size={30} onPress={_goBack} />
-        <Appbar.Content title="Disponibilidades" />
+        <Appbar.Content title="Horários" />
       </Appbar.Header>
 
       <View style={{opacity: opacityContainerPrincipal}}>
@@ -248,7 +248,7 @@ const disponibilidadesInstrutor = () => {
         </View>
         
         <View style={styles.view_adicionar} onTouchEnd={()=> {toggleOverlayDisponibilidadeVisibility()}}>
-          <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', paddingTop: 3}}>
+          <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
             <Text style={{color: 'white', fontWeight: 'bold', fontSize: 24}} >Adicionar horário</Text>
           </View>        
         </View>
@@ -555,7 +555,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#0081DA',
     height: 40,
     width: '70%',
-    borderRadius: 8,
+    borderRadius: 10,
     overflow: 'hidden',
     alignItems: 'center',
     marginStart: '15%',
@@ -670,6 +670,7 @@ const styles = StyleSheet.create({
   view_adicionar: {
     flex: 3,
     backgroundColor: '#34CB79',
+    borderRadius: 10,
     height: 50
   },
 
