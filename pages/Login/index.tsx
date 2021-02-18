@@ -157,7 +157,7 @@ const  Login = () => {
     }
 
     else if(criarContaNome == '' || criarContaEmail == '' || criarContaSenha == '' || criarContaRepetirSenha == '') {
-      setMensagemErroOverlay('Prencha todos os campos')
+      setMensagemErroOverlay('Preencha todos os campos')
       setSnackErroOverlayVisible(true)
     }
 
@@ -278,18 +278,18 @@ const  Login = () => {
 
   return (
     <KeyboardAwareScrollView style={{flex: 1, backgroundColor: 'black', alignContent: 'center', paddingTop: 40, }} >
-      <View style={{opacity: opacityContainerPrincipal}}>
-        <ImageBackground
-          style={{}}
-          source={require('../../assets/bbb.jpg')}
-          imageStyle={{ width: '100%', height: '100%' }}
-        >
+      <View style={{opacity: opacityContainerPrincipal, marginTop: 30}}>
+        
           <Text style={styles.Titulo}>SPEED DRIVE</Text>
           <Text style={styles.DescricaoMaior}>Treinamento para habilitados</Text>
           <Text style={styles.DescricaoMenor}>Sua liberdade</Text>
           <Text style={styles.DescricaoMenor}>perto de virar realidade.</Text>
-
-          <View style={{paddingTop: 130, marginBottom: 20}}>
+          <ImageBackground
+            style={{}}
+            source={require('../../assets/bbb.jpg')}
+            imageStyle={{ width: '100%', height: '90%' }}
+          >
+          <View style={{paddingTop: 200, marginBottom: 30}}>
             <View style={styles.TextInput_Container}>
               <Icon name="user" size={25} color="white" style={{marginRight:10, width: '7%'}} />
               <TextInput style={{color: 'white', fontSize: 19, width: '93%'}}
