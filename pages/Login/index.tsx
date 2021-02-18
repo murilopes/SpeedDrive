@@ -11,8 +11,10 @@ import {
   DefaultTheme,
   Provider,
   Snackbar,
-  TextInput as TextInputNativePaper, 
+  TextInput as TextInputNativePaper,
+  Switch 
 } from 'react-native-paper';
+import CheckBox from '../../components/Checkbox'
 import DropDown from 'react-native-paper-dropdown'
 import { useFonts, Roboto_400Regular, Roboto_500Medium, Roboto_900Black_Italic } from '@expo-google-fonts/roboto';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -54,6 +56,8 @@ const  Login = () => {
   const [criarContaEmail, setCriarContaEmail] = React.useState('');
   const [criarContaSenha, setCriarContaSenha] = React.useState('');
   const [criarContaRepetirSenha, setCriarContaRepetirSenha] = React.useState('');
+  const [criarContaCheckTermosDeUso, setCriarContaCheckTermosDeUso] = React.useState(false);
+  const [criarContaCheckTermoDadosPessoais, setCriarContaCheckTermoDadosPessoais] = React.useState(false);
 
   const [overlayEsqueciSenhaVisibility, setOverlayEsqueciSenhaVisibility] = useState(false);
   const [esqueciSenhaEmail, setEsqueciSenhaEmail] = React.useState('');
@@ -71,6 +75,8 @@ const  Login = () => {
       setCriarContaEmail('')
       setCriarContaSenha('')
       setCriarContaRepetirSenha('')
+      setCriarContaCheckTermosDeUso(false)
+      setCriarContaCheckTermoDadosPessoais(false)
     } else {
       setOverlayCriaContaVisibility(true)
       setOpacityContainerPrincipal(0.2)
@@ -170,6 +176,12 @@ const  Login = () => {
       setMensagemErroOverlay('Confirmação da senha não confere')
       setSnackErroOverlayVisible(true)
     }
+
+    else if(criarContaCheckTermosDeUso == false || criarContaCheckTermoDadosPessoais == false) {
+      setMensagemErroOverlay('É necessário aceitar os termos para prosseguir')
+      setSnackErroOverlayVisible(true)
+    }
+    
     else {
       var userData = {
         nome: criarContaNome,
@@ -366,6 +378,20 @@ const  Login = () => {
             <TextInputNativePaper theme={theme} label="E-mail" value={criarContaEmail} onChangeText={text => setCriarContaEmail(text)}/>
             <TextInputNativePaper secureTextEntry={true} theme={theme} label="Senha" value={criarContaSenha} onChangeText={text => setCriarContaSenha(text)}/>
             <TextInputNativePaper secureTextEntry={true} theme={theme} label="Repetir Senha" value={criarContaRepetirSenha} onChangeText={text => setCriarContaRepetirSenha(text)}/>
+            <CheckBox 
+                    selected={criarContaCheckTermosDeUso} 
+                    onPressCheck={()=>{setCriarContaCheckTermosDeUso(!criarContaCheckTermosDeUso)}}
+                    text='Aceitar termos e condições de uso'
+                    style={{marginTop: 10}}
+                    textStyle={{fontSize: 15, color:'white'}}
+                />
+            <CheckBox 
+                    selected={criarContaCheckTermoDadosPessoais} 
+                    onPressCheck={()=>{setCriarContaCheckTermoDadosPessoais(!criarContaCheckTermoDadosPessoais)}}
+                    text='Aceitar termo de consentimento para tratamento de dados pessoais'
+                    style={{marginTop: 10}}
+                    textStyle={{fontSize: 15, color:'white'}}
+                />
           </View>
                               
           <View style={styles.overlay_criar_conta_view_button} onTouchEnd={CriarConta}>
@@ -510,8 +536,8 @@ const styles = StyleSheet.create({
   },
 
   overlay_criar_conta: {
-    height: 450,
-    width: 300,
+    height: 585,
+    width: 320,
     borderRadius: 8,
     backgroundColor: '#212F3C',
     marginBottom: 70
