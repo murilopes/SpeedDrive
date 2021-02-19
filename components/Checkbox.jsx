@@ -4,8 +4,8 @@ import { StyleSheet } from 'react-native'
 
 import { TouchableOpacity, Text } from 'react-native'
 
-const CheckBox = ({ selected, onPressCheck, style, textStyle, size = 40, color = '#064c7a', text = '', ...props}) => (
-    <TouchableOpacity style={[styles.checkBox, style]}  {...props}>
+const CheckBox = ({ selected, onPressCheck, onPressText, style, textStyle, size = 40, color = '#064c7a', text = '', ...props}) => (
+    <TouchableOpacity style={[styles.checkBox, style]} onPress={onPressText} {...props}>
         <Icon
             style={{marginRight: 5}}
             size={size}
