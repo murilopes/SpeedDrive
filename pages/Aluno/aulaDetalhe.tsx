@@ -10,12 +10,15 @@ import ConfigFile from "../../config.json"
 import * as userLib from '../../lib/user'
 import * as utilLib from '../../lib/util'
 import axios from "axios";
+import { RectButton } from 'react-native-gesture-handler';
+import moment from 'moment';
+import { Overlay } from 'react-native-elements';
 
 interface IAulaDetalhe {
   _id?: string,
   status?: string,
-  horarioInicio?: string,
-  horarioFim?: string,
+  horarioInicio?: Date,
+  horarioFim?: Date,
   valor?: string,
   instrutor?: IInstrutor,
 }
@@ -40,8 +43,36 @@ const AulaDetalhe = (props: object) => {
   let aulaDetalheVazio: IAulaDetalhe = {}
 
   const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
+  const [snackMensagemCancelamentoInvalidoVisible, setSnackMensagemCancelamentoInvalidoVisible] = React.useState(false);
   const [snackMensagem, setSnackMensagem] = React.useState('');
   const [objAulaDetalhe, setObjAulaDetalhe] = React.useState(aulaDetalheVazio)
+
+  const [overlayCancelarVisibility, setOverlayCancelarVisibility] = React.useState(false);
+
+  const verificaSePodecancelarAula = () => {
+    let bPodeCancelar = false;
+
+    if(objAulaDetalhe.horarioInicio) {
+
+      var horarioInicioAula = new Date(objAulaDetalhe.horarioInicio)
+      var horarioMaximoCancelamentoAula = moment(horarioInicioAula).add(-1, 'days').hours(22)
+      var horarioAgora = moment()
+      console.log('Horario maximo cancelamento aula: ', horarioMaximoCancelamentoAula)
+      console.log('Horario agora: ', horarioAgora)
+      
+      bPodeCancelar = horarioAgora < horarioMaximoCancelamentoAula
+      console.log('Pode cancelar aula: ', bPodeCancelar)
+    }
+
+    if (bPodeCancelar) {
+      setOverlayCancelarVisibility(true)
+    } else
+    {
+      setSnackMensagem('Cancelamento permitido até as 22h do dia anterior do agendamento. Em caso de imprevisto, contate diretamente a SpeedDrive.')
+      setSnackMensagemCancelamentoInvalidoVisible(true)
+    }
+
+  }
 
   const API = axios.create({
     baseURL: ConfigFile.API_SERVER_URL,
@@ -71,6 +102,38 @@ const AulaDetalhe = (props: object) => {
       setSnackMensagem(error.response.data.error)
       setSnackMensagemVisible(true)
     } 
+  }
+
+  const CancelarAula = async () => {
+
+    const { token, tipoUsuario } = JSON.parse(await userLib.getUserAuthData())
+
+    const bodyData = {
+      tipoUsuario,
+    };
+
+    try {
+      const resp = await API.put(`/agendamento/cancelarAula/${objAulaDetalhe._id}`, 
+      bodyData, 
+      {
+       headers: 
+        {
+          Authorization: 'Bearer ' + token,
+        }
+      })
+
+      if(resp.status == 200)
+      {
+        setOverlayCancelarVisibility(false)
+        setSnackMensagem('Aula cancelada com sucesso!')
+        setSnackMensagemVisible(true)                    
+      }  
+
+    } catch (error) {
+      console.log('Erro ao cancelar Aula')
+      setSnackMensagem(error.response.data.error)
+      setSnackMensagemVisible(true)
+    }
   }
 
   React.useEffect(() => {
@@ -207,15 +270,50 @@ const AulaDetalhe = (props: object) => {
 
         </View>
 
-        {/* <View style={styles.item_action}>
-          <RectButton style={styles.button} onPress={_handleAulaDetalheInstrutor}>
-            <Text style={styles.buttonText}>Cancelar Aula</Text>
-          </RectButton>
-        </View> */}
+        {(objAulaDetalhe.status == 'Pend. Confirmação' || objAulaDetalhe.status == 'Confirmada' || objAulaDetalhe.status == 'Reagendada') && (
+          <View style={styles.item_action}>
+            <RectButton style={styles.button} onPress={() => verificaSePodecancelarAula()}>
+              <Text style={styles.buttonText}>Cancelar Aula</Text>
+            </RectButton>
+          </View>
+        )}
+
+        <Overlay isVisible={overlayCancelarVisibility} overlayStyle={styles.overlay_agendar}>
+        <>
+          <View style={{flex: 1, alignItems: 'center'}}>
+            <Text style={{fontSize: 20, fontWeight: 'bold'}}>Confirma cancelar</Text>
+            <Text style={{fontSize: 20, fontWeight: 'bold'}}>o agendamento?</Text>
+          </View>
+          <View style={{flex: 1, flexDirection:'row', alignItems: 'center'}}>
+            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', }}>
+              <RectButton style={styles.buttonNao} onPress={()=> setOverlayCancelarVisibility(false)} >
+                <Text style={styles.buttonNaoText}>Não</Text>
+              </RectButton>
+            </View>
+            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', }}>
+              <RectButton style={styles.buttonSim} onPress={()=> CancelarAula()}>
+                <Text style={styles.buttonSimText}>Sim</Text>
+              </RectButton>
+            </View>
+          </View>
+        </>
+        </Overlay>
 
         <Snackbar
           visible={snackMensagemVisible}
+          duration={7000}
           onDismiss={() => setSnackMensagemVisible(false)}
+          action={{
+            label: 'OK',
+            onPress: _goBack,
+          }}>
+          {snackMensagem}
+        </Snackbar>
+
+        <Snackbar
+          visible={snackMensagemCancelamentoInvalidoVisible}
+          duration={20000}
+          onDismiss={() => setSnackMensagemCancelamentoInvalidoVisible(false)}
           action={{
             label: 'OK',
             onPress: () => {},
@@ -243,9 +341,9 @@ const styles = StyleSheet.create({
   },
 
   view_instrutor: {
-    flex: 3,
     flexDirection: 'row',
     width: '95%',
+    height: 200,
     marginTop: 15,
     alignItems: 'center',
   },
@@ -286,7 +384,6 @@ const styles = StyleSheet.create({
   },
 
   view_items: {
-    flex: 7,
     alignItems: 'center',
   },
 
@@ -337,14 +434,14 @@ const styles = StyleSheet.create({
   },
 
   item_action: {
-    flex: 3,
+    flex: 1,
     width: '100%',
     alignItems: 'center',
   },
 
   button: {
     backgroundColor: '#0081DA',
-    height: '30%',
+    height: 50,
     width: '50%',
     borderRadius: 8,
     overflow: 'hidden',
@@ -356,6 +453,48 @@ const styles = StyleSheet.create({
     flex: 1,
     color: '#FFF',
     fontSize: 16,
-    marginTop: '8%',
+    marginTop: '7%',
   },
+
+  overlay_agendar: {
+    height: 150,
+    width: 250,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+
+  buttonNao: {
+    height: 50,
+    width: '80%',
+    borderRadius: 8,
+    overflow: 'hidden',
+    alignItems: 'center',
+    marginStart: '15%',
+    borderWidth: 1
+  },
+
+  buttonNaoText: {
+    flex: 1,
+    fontSize: 16,
+    marginTop: '12%'
+  },
+
+
+  buttonSim: {
+    backgroundColor: 'green',
+    height: 50,
+    width: '80%',
+    borderRadius: 8,
+    overflow: 'hidden',
+    alignItems: 'center',
+    marginStart: '15%',
+  },
+
+  buttonSimText: {
+    flex: 1,
+    color: '#FFF',
+    fontSize: 16,
+    marginTop: '12%'
+  },
+
 });

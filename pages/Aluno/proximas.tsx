@@ -35,6 +35,7 @@ const  AlunoProximas = () => {
   const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
   const [snackMensagem, setSnackMensagem] = React.useState('');
   const [arrayAulasProximas, setArrayAulasProximas] = React.useState(Array<IAula>())
+  const [count, setCount] = React.useState(0)
 
   const corStatus = (status: string) => {
     switch (status) {
@@ -88,6 +89,10 @@ const  AlunoProximas = () => {
     } 
   }
 
+  navigation.addListener('focus', () => {
+    setCount(count+1)
+  })
+
   useEffect(() => {
     getAulasProximas().then(
       (aulasProximas) => {
@@ -95,7 +100,7 @@ const  AlunoProximas = () => {
         setArrayAulasProximas(aulasProximas)
       }
     ) 
-  }, [])
+  }, [count])
   
   return (
     <KeyboardAvoidingView style={styles.container_principal} 
