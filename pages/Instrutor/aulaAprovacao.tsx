@@ -472,7 +472,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
-    overlay_motivo_recusa: {
+  overlay_motivo_recusa: {
     height: 250,
     width: 300,
     borderRadius: 8,
@@ -488,7 +488,6 @@ const styles = StyleSheet.create({
   overlay_motivo_recusa_view_dados:{
     flex: 4,
   },
-
   
   overlay_motivo_recusa_view_button:{
     flex: 1.5,
