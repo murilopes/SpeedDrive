@@ -58,6 +58,7 @@ const cadastroDadosPessoais = (props: object) => {
       sexo: objPessoa.sexo || '',
       email: objPessoa.email || '',
       observacoes: objPessoa.observacoes || '',
+      credencial: objPessoa.credencial|| '',
     };
 
     try {
@@ -164,9 +165,11 @@ const cadastroDadosPessoais = (props: object) => {
                   theme={theme} 
                   label="Observações" 
                   value={objPessoa.observacoes} 
-                  placeholder='Ex: preferência de aula com instrutor do mesmo sexo' 
+                  placeholder='Ex: preferência de aula com instrutor do mesmo gênero' 
                   onChangeText={text => setObjPessoa({...objPessoa, observacoes: text})}/
       >)}
+
+      {(props.route.params.tipoUsuario == 'instrutor') && (<TextInput theme={theme} label="Credencial" value={objPessoa.credencial} onChangeText={text => setObjPessoa({...objPessoa, credencial: text})}/>)}
 
       <View style={styles.buttonView}>
         <RectButton style={styles.button} onPress={() => SalvarDados()}>

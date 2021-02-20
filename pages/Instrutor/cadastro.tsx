@@ -20,6 +20,7 @@ interface IInstrutor {
   whatsapp?: string,
   sexo?: string,
   email?: string,
+  credencial?: string,
   CEP?: string,
   endereco?: string,
   numero?: string,
@@ -115,7 +116,7 @@ const InstrutorCadastro = () => {
   )
 
   const calculaPercentDadosPessoais = () : number => {
-    let contagemTotalCampos = 7
+    let contagemTotalCampos = 8
     let contagemTotalPreenchido = 0
 
     console.log(objInstrutor)
@@ -127,6 +128,7 @@ const InstrutorCadastro = () => {
     if (objInstrutor.whatsapp != undefined && objInstrutor.whatsapp != '') contagemTotalPreenchido++
     if (objInstrutor.dataNascimento != undefined && objInstrutor.dataNascimento != '') contagemTotalPreenchido++
     if (objInstrutor.email != undefined && objInstrutor.email != '') contagemTotalPreenchido++
+    if (objInstrutor.credencial != undefined && objInstrutor.credencial != '') contagemTotalPreenchido++
 
     const percentObtido = contagemTotalPreenchido/contagemTotalCampos * 100
     

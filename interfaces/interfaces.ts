@@ -8,6 +8,7 @@ export interface IAluno {
   sexo?: string,
   email?: string,
   observacoes?: string,
+  credencial?: string,
   CEP?: string,
   endereco?: string,
   numero?: string,
