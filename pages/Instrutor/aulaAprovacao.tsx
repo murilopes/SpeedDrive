@@ -343,7 +343,7 @@ const AulaAprovacao = (props: object) => {
               </View>
             </View>
             <View style={styles.overlay_motivo_recusa_view_dados}>          
-              <Text style={{fontSize: 16, marginBottom: 15, color: 'white'}} >Por gentileza, insira um motivo para a recusa</Text>
+              <Text style={{fontSize: 16, marginBottom: 15, color: 'white'}} >Por gentileza, descreva  o motivo da recusa da aula</Text>
               <TextInputNativePaper theme={theme} label="Motivo" value={motivoRecusaAula} onChangeText={text => setMotivoRecusaAula(text)}/>
             </View>
                                 

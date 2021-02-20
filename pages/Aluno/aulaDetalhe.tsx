@@ -115,7 +115,7 @@ const AulaDetalhe = (props: object) => {
           </View>
           <View style={styles.view_intrutor_detalhe}>
             <View style={styles.view_instrutor_detalhe_interno}>
-              <Text style={styles.instrutor_titulo}>Instrutor:</Text>
+              <Text style={styles.instrutor_titulo}>Dados do instrutor:</Text>
               <Text style={styles.instrutor_info_principal}>{objAulaDetalhe.instrutor ? objAulaDetalhe.instrutor?.nome : 'Não definido'} {utilLib.retornaUltimoNome(objAulaDetalhe.instrutor?.sobrenome)}</Text>
               <Text style={styles.instrutor_info_secundaria}>{objAulaDetalhe.instrutor?.dataNascimento ? `${utilLib.retornaIdade(objAulaDetalhe.instrutor?.dataNascimento)} anos` : ''}</Text>
               <Text style={styles.instrutor_info_secundaria}>{objAulaDetalhe.instrutor?.marcaVeiculo} {objAulaDetalhe.instrutor?.modeloVeiculo}</Text>

@@ -65,6 +65,7 @@ const AlunoDashboard = (props: any) => {
   const [urlFotoPerfil, setUrlFotoPerfil] = React.useState();
   const [qtdAulasRealizadas, setQtdAulasRealizadas] = useState(0)
   const [qtdProximasAulas, setQtdProximasAulas] = useState(0)
+  const [qtdAulasHistorico, setQtdAulasHistorico] = useState(0)
   const [statusCadastroOk, setStatusCadastroOk] = useState(false)
   const [temNotificacao, setTemNotificacao] = useState(false)
 
@@ -88,6 +89,7 @@ const AlunoDashboard = (props: any) => {
         setTemNotificacao(resp.data.response.hasNotificacao)
         setQtdAulasRealizadas(resp.data.response.qtdAulasRealizadas)
         setQtdProximasAulas(resp.data.response.qtdProximasAulas)
+        setQtdAulasHistorico(resp.data.response.qtdAulasHistorico)
       }
     } catch (error) {
       console.log('Não conseguiu carregar infos dash')
@@ -114,7 +116,7 @@ const AlunoDashboard = (props: any) => {
         </View>
 
         <SideMenuItem icon='cogs' text='Cadastro' onAction={() => _handleAlunoCadastro(true)}/>
-        <SideMenuItem icon='check-circle' text='Aulas Realizada' onAction={() => _handleAulasRealizadas(true)}/>
+        <SideMenuItem icon='check-circle' text='Histórico de Aulas' onAction={() => _handleAulasRealizadas(true)}/>
         <SideMenuItem icon='exclamation-circle' text='Próximas Aulas' onAction={() => _handleProximasAulas(true)}/>
         <SideMenuItem icon='car' text='Agendar Aulas' onAction={() => _handleAgendar(true)}/>
         <SideMenuItem icon='envelope' text='Notificações' onAction={() => _handleNotificacoes(true)}/>
@@ -156,13 +158,13 @@ const AlunoDashboard = (props: any) => {
             <View style={styles.item_dash_exterior}>
               <View style={styles.item_dash_interior_1} onTouchEnd={() => _handleAulasRealizadas(false)}>
                 <View style={styles.item_dash_view_texto}>
-                  <Text style={styles.item_dash_texto_1}>Aulas</Text>
+                  <Text style={styles.item_dash_texto_1}>Histórico</Text>
                 </View>
                 <View style={styles.item_dash_view_texto}>
-                  <Text style={styles.item_dash_texto_2}>Realizadas</Text>
+                  <Text style={styles.item_dash_texto_2}>de Aulas</Text>
                 </View>
                 <View style={styles.item_dash_view_numero}>
-                  <Text style={styles.item_dash_texto_3}>{qtdAulasRealizadas}</Text>
+                  <Text style={styles.item_dash_texto_3}>{qtdAulasHistorico}</Text>
                 </View>
               </View>
             </View>
