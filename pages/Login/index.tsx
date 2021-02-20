@@ -314,7 +314,7 @@ const  Login = () => {
 
   const EsqueciSenha = () => {
     console.log(esqueciSenhaEmail)
-    toggleOverlayEsqueciSenhaVisibility()
+    toggleOverlayEsqueciSenhaVisibility() 
   }
 
   const theme = {
