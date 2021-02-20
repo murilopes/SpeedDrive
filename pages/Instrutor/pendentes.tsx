@@ -135,7 +135,7 @@ const  InstrutorPendentes = () => {
                   </Text>
                   <Text style={styles.item_text_line}>
                     <Text style={styles.item_text_title}>Aluno: </Text>
-                    <Text>{(item.aluno) ? item.aluno.nome: ''}</Text>
+                    <Text>(Não exibido)</Text>
                   </Text>
                 </View>
                 <View style={styles.item_action}>

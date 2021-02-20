@@ -283,7 +283,7 @@ const AulaAprovacao = (props: object) => {
               </View>
               <View style={styles.item_detalhes}>
                 <View style={styles.item_text_superior}>
-                  <Text style={styles.item_text_value}>{objAulaDetalhe.aluno ? objAulaDetalhe.aluno.nome : ''}</Text>
+                  <Text style={styles.item_text_value}>(Não exibido)</Text>
                 </View>
                 <View style={styles.item_text_inferior}>
                   <Text style={styles.item_text_title}>Aluno</Text>
