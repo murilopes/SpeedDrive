@@ -34,6 +34,10 @@ const  Login = () => {
     navigation.navigate('InstrutorDashboard');
   }
 
+  function handleNavigateToAdminDashboard() {
+    navigation.navigate('AdminDashboard');
+  }
+
   let [fontsLoaded] = useFonts({
     Roboto_400Regular,
     Roboto_500Medium,

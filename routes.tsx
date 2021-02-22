@@ -8,6 +8,7 @@ import Onboarding from './pages/Onboarding';
 import Login from './pages/Login';
 import AlunoDashboard from './pages/Aluno';
 import InstrutorDashboard from './pages/Instrutor';
+import AdminDashboard from './pages/Admin';
 import AlunoRealizadas from './pages/Aluno/realizadas';
 import InstrutorRealizadas from './pages/Instrutor/realizadas';
 import AlunoProximas from './pages/Aluno/proximas';
@@ -46,6 +47,7 @@ const Routes = () => {
         <AppStack.Screen name="Login" component={Login} />
         <AppStack.Screen name="AlunoDashboard" component={AlunoDashboard} />
         <AppStack.Screen name="InstrutorDashboard" component={InstrutorDashboard} />
+        <AppStack.Screen name="AdminDashboard" component={AdminDashboard} />
         <AppStack.Screen name="AlunoRealizadas" component={AlunoRealizadas} />
         <AppStack.Screen name="InstrutorRealizadas" component={InstrutorRealizadas} />
         <AppStack.Screen name="AlunoProximas" component={AlunoProximas} />

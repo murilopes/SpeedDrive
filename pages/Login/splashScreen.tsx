@@ -23,6 +23,10 @@ const  SplashScreen = () => {
     navigation.navigate('InstrutorDashboard');
   }
 
+  function handleNavigateToAdminDashboard() {
+    navigation.navigate('AdminDashboard');
+  }
+
   let [fontsLoaded] = useFonts({
     Roboto_400Regular,
     Roboto_500Medium,
@@ -63,6 +67,7 @@ const  SplashScreen = () => {
         const {tipoUsuario} = JSON.parse(await userLib.getUserAuthData())
         if (tipoUsuario == 'aluno') handleNavigateToAlunoDashboard()
         if (tipoUsuario == 'instrutor') handleNavigateToInstrutorDashboard()
+        if (tipoUsuario == 'admin') handleNavigateToAdminDashboard()
       }        
       else
         handleNavigateToOnboarding()

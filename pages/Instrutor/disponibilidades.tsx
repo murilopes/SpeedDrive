@@ -10,7 +10,7 @@ import { RectButton } from 'react-native-gesture-handler';
 import * as userLib from '../../lib/user'
 import ConfigFile from "../../config.json"
 import axios from "axios";
-import { Overlay } from 'react-native-elements';
+import { Overlay, Divider } from 'react-native-elements';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { TextInputMask } from 'react-native-masked-text'
 import DropDown from 'react-native-paper-dropdown'
@@ -242,7 +242,8 @@ const disponibilidadesInstrutor = () => {
           </View>
           <View style={styles.item_detalhes}>
             <Text style={styles.item_text_line}>
-              <Text style={styles.item_text_disclaimer}>Cadastre abaixo os horários que você pretende receber aulas</Text>
+              <Text style={styles.item_text_disclaimer}>Cadastre os horários que pretende receber aulas</Text>
+              <Text style={styles.item_text_disclaimer}>Você pode cadastrar mais de um período por dia</Text>
             </Text>                  
           </View>
         </View>
@@ -254,205 +255,218 @@ const disponibilidadesInstrutor = () => {
         </View>
 
         <View style={styles.view_disponibilidades}>
-          <ScrollView>
-            
-            <Text style={styles.item_text_bold} >Domingo</Text>
-            
-            {
-              disponibilidadesDomingo.map((item: IDisponibilidade, id: number) => ( 
 
-                <View key={item._id} style={styles.item} >
-                  <View style={styles.item_status}>
-                    <Icon name='circle' size={20} color='blue'/>
-                  </View>
-                  <View style={styles.item_detalhes}>
-                    <Text style={styles.item_text_line}>
-                      <Text style={styles.item_text_title}>Horário início: </Text>
-                        <Text>{item.horaInicio}</Text>
-                    </Text>
-                    <Text style={styles.item_text_line}>
-                      <Text style={styles.item_text_title}>Horário saída: </Text>
-                        <Text>{item.horaFim}</Text>
-                    </Text>
-                  </View>
-                  <View style={styles.item_action}>
-                    <RectButton style={styles.button} onPress={() => {item._id ? removerHorario(item._id.toString()) : ''}}>
-                      <Text style={styles.buttonText}>Remover</Text>
-                    </RectButton>
-                  </View >              
+          <Divider style={styles.divider} />
+            
+          <Text style={styles.item_text_bold} >Domingo</Text>
+            
+          {
+            disponibilidadesDomingo.map((item: IDisponibilidade, id: number) => ( 
+
+              <View key={item._id} style={styles.item} >
+                <View style={styles.item_status}>
+                  <Icon name='circle' size={20} color='blue'/>
                 </View>
-              ))
-            }
-
-            <Text style={styles.item_text_bold} >Segunda-feira</Text>
-            
-            {
-              disponibilidadesSegunda.map((item: IDisponibilidade, id: number) => ( 
-
-                <View key={item._id} style={styles.item} >
-                  <View style={styles.item_status}>
-                    <Icon name='circle' size={20} color='blue'/>
-                  </View>
-                  <View style={styles.item_detalhes}>
-                    <Text style={styles.item_text_line}>
-                      <Text style={styles.item_text_title}>Horário início: </Text>
-                        <Text>{item.horaInicio}</Text>
-                    </Text>
-                    <Text style={styles.item_text_line}>
-                      <Text style={styles.item_text_title}>Horário saída: </Text>
-                        <Text>{item.horaFim}</Text>
-                    </Text>
-                  </View>
-                  <View style={styles.item_action}>
-                    <RectButton style={styles.button} onPress={() => {item._id ? removerHorario(item._id.toString()) : ''}}>
-                      <Text style={styles.buttonText}>Remover</Text>
-                    </RectButton>
-                  </View >              
+                <View style={styles.item_detalhes}>
+                  <Text style={styles.item_text_line}>
+                    <Text style={styles.item_text_title}>Horário início: </Text>
+                      <Text>{item.horaInicio}</Text>
+                  </Text>
+                  <Text style={styles.item_text_line}>
+                    <Text style={styles.item_text_title}>Horário saída: </Text>
+                      <Text>{item.horaFim}</Text>
+                  </Text>
                 </View>
-              ))
-            }
+                <View style={styles.item_action}>
+                  <RectButton style={styles.button} onPress={() => {item._id ? removerHorario(item._id.toString()) : ''}}>
+                    <Text style={styles.buttonText}>Remover</Text>
+                  </RectButton>
+                </View >              
+              </View>
+            ))
+          }
 
-            <Text style={styles.item_text_bold} >Terça-feira</Text>
-            
-            {
-              disponibilidadesTerca.map((item: IDisponibilidade, id: number) => ( 
+          <Divider style={styles.divider} />
 
-                <View key={item._id} style={styles.item} >
-                  <View style={styles.item_status}>
-                    <Icon name='circle' size={20} color='blue'/>
-                  </View>
-                  <View style={styles.item_detalhes}>
-                    <Text style={styles.item_text_line}>
-                      <Text style={styles.item_text_title}>Horário início: </Text>
-                        <Text>{item.horaInicio}</Text>
-                    </Text>
-                    <Text style={styles.item_text_line}>
-                      <Text style={styles.item_text_title}>Horário saída: </Text>
-                        <Text>{item.horaFim}</Text>
-                    </Text>
-                  </View>
-                  <View style={styles.item_action}>
-                    <RectButton style={styles.button} onPress={() => {item._id ? removerHorario(item._id.toString()) : ''}}>
-                      <Text style={styles.buttonText}>Remover</Text>
-                    </RectButton>
-                  </View >              
+
+          <Text style={styles.item_text_bold} >Segunda-feira</Text>
+          
+          {
+            disponibilidadesSegunda.map((item: IDisponibilidade, id: number) => ( 
+
+              <View key={item._id} style={styles.item} >
+                <View style={styles.item_status}>
+                  <Icon name='circle' size={20} color='blue'/>
                 </View>
-              ))
-            }
-
-            <Text style={styles.item_text_bold} >Quarta-feira</Text>
-            
-            {
-              disponibilidadesQuarta.map((item: IDisponibilidade, id: number) => ( 
-
-                <View key={item._id} style={styles.item} >
-                  <View style={styles.item_status}>
-                    <Icon name='circle' size={20} color='blue'/>
-                  </View>
-                  <View style={styles.item_detalhes}>
-                    <Text style={styles.item_text_line}>
-                      <Text style={styles.item_text_title}>Horário início: </Text>
-                        <Text>{item.horaInicio}</Text>
-                    </Text>
-                    <Text style={styles.item_text_line}>
-                      <Text style={styles.item_text_title}>Horário saída: </Text>
-                        <Text>{item.horaFim}</Text>
-                    </Text>
-                  </View>
-                  <View style={styles.item_action}>
-                    <RectButton style={styles.button} onPress={() => {item._id ? removerHorario(item._id.toString()) : ''}}>
-                      <Text style={styles.buttonText}>Remover</Text>
-                    </RectButton>
-                  </View >              
+                <View style={styles.item_detalhes}>
+                  <Text style={styles.item_text_line}>
+                    <Text style={styles.item_text_title}>Horário início: </Text>
+                      <Text>{item.horaInicio}</Text>
+                  </Text>
+                  <Text style={styles.item_text_line}>
+                    <Text style={styles.item_text_title}>Horário saída: </Text>
+                      <Text>{item.horaFim}</Text>
+                  </Text>
                 </View>
-              ))
-            }
+                <View style={styles.item_action}>
+                  <RectButton style={styles.button} onPress={() => {item._id ? removerHorario(item._id.toString()) : ''}}>
+                    <Text style={styles.buttonText}>Remover</Text>
+                  </RectButton>
+                </View >              
+              </View>
+            ))
+          }
 
-            <Text style={styles.item_text_bold} >Quinta-feira</Text>
-            
-            {
-              disponibilidadesQuinta.map((item: IDisponibilidade, id: number) => ( 
+          <Divider style={styles.divider} />
 
-                <View key={item._id} style={styles.item} >
-                  <View style={styles.item_status}>
-                    <Icon name='circle' size={20} color='blue'/>
-                  </View>
-                  <View style={styles.item_detalhes}>
-                    <Text style={styles.item_text_line}>
-                      <Text style={styles.item_text_title}>Horário início: </Text>
-                        <Text>{item.horaInicio}</Text>
-                    </Text>
-                    <Text style={styles.item_text_line}>
-                      <Text style={styles.item_text_title}>Horário saída: </Text>
-                        <Text>{item.horaFim}</Text>
-                    </Text>
-                  </View>
-                  <View style={styles.item_action}>
-                    <RectButton style={styles.button} onPress={() => {item._id ? removerHorario(item._id.toString()) : ''}}>
-                      <Text style={styles.buttonText}>Remover</Text>
-                    </RectButton>
-                  </View >              
+          <Text style={styles.item_text_bold} >Terça-feira</Text>
+          
+          {
+            disponibilidadesTerca.map((item: IDisponibilidade, id: number) => ( 
+
+              <View key={item._id} style={styles.item} >
+                <View style={styles.item_status}>
+                  <Icon name='circle' size={20} color='blue'/>
                 </View>
-              ))
-            }
-
-            <Text style={styles.item_text_bold} >Sexta-feira</Text>
-            
-            {
-              disponibilidadesSexta.map((item: IDisponibilidade, id: number) => ( 
-
-                <View key={item._id} style={styles.item} >
-                  <View style={styles.item_status}>
-                    <Icon name='circle' size={20} color='blue'/>
-                  </View>
-                  <View style={styles.item_detalhes}>
-                    <Text style={styles.item_text_line}>
-                      <Text style={styles.item_text_title}>Horário início: </Text>
-                        <Text>{item.horaInicio}</Text>
-                    </Text>
-                    <Text style={styles.item_text_line}>
-                      <Text style={styles.item_text_title}>Horário saída: </Text>
-                        <Text>{item.horaFim}</Text>
-                    </Text>
-                  </View>
-                  <View style={styles.item_action}>
-                    <RectButton style={styles.button} onPress={() => {item._id ? removerHorario(item._id.toString()) : ''}}>
-                      <Text style={styles.buttonText}>Remover</Text>
-                    </RectButton>
-                  </View >              
+                <View style={styles.item_detalhes}>
+                  <Text style={styles.item_text_line}>
+                    <Text style={styles.item_text_title}>Horário início: </Text>
+                      <Text>{item.horaInicio}</Text>
+                  </Text>
+                  <Text style={styles.item_text_line}>
+                    <Text style={styles.item_text_title}>Horário saída: </Text>
+                      <Text>{item.horaFim}</Text>
+                  </Text>
                 </View>
-              ))
-            }
+                <View style={styles.item_action}>
+                  <RectButton style={styles.button} onPress={() => {item._id ? removerHorario(item._id.toString()) : ''}}>
+                    <Text style={styles.buttonText}>Remover</Text>
+                  </RectButton>
+                </View >              
+              </View>
+            ))
+          }
 
-            <Text style={styles.item_text_bold} >Sábado</Text>
-            
-            {
-              disponibilidadesSabado.map((item: IDisponibilidade, id: number) => ( 
+          <Divider style={styles.divider} />
 
-                <View key={item._id} style={styles.item} >
-                  <View style={styles.item_status}>
-                    <Icon name='circle' size={20} color='blue'/>
-                  </View>
-                  <View style={styles.item_detalhes}>
-                    <Text style={styles.item_text_line}>
-                      <Text style={styles.item_text_title}>Horário início: </Text>
-                        <Text>{item.horaInicio}</Text>
-                    </Text>
-                    <Text style={styles.item_text_line}>
-                      <Text style={styles.item_text_title}>Horário saída: </Text>
-                        <Text>{item.horaFim}</Text>
-                    </Text>
-                  </View>
-                  <View style={styles.item_action}>
-                    <RectButton style={styles.button} onPress={() => {item._id ? removerHorario(item._id.toString()) : ''}}>
-                      <Text style={styles.buttonText}>Remover</Text>
-                    </RectButton>
-                  </View >              
+          <Text style={styles.item_text_bold} >Quarta-feira</Text>
+          
+          {
+            disponibilidadesQuarta.map((item: IDisponibilidade, id: number) => ( 
+
+              <View key={item._id} style={styles.item} >
+                <View style={styles.item_status}>
+                  <Icon name='circle' size={20} color='blue'/>
                 </View>
-              ))
-            }
+                <View style={styles.item_detalhes}>
+                  <Text style={styles.item_text_line}>
+                    <Text style={styles.item_text_title}>Horário início: </Text>
+                      <Text>{item.horaInicio}</Text>
+                  </Text>
+                  <Text style={styles.item_text_line}>
+                    <Text style={styles.item_text_title}>Horário saída: </Text>
+                      <Text>{item.horaFim}</Text>
+                  </Text>
+                </View>
+                <View style={styles.item_action}>
+                  <RectButton style={styles.button} onPress={() => {item._id ? removerHorario(item._id.toString()) : ''}}>
+                    <Text style={styles.buttonText}>Remover</Text>
+                  </RectButton>
+                </View >              
+              </View>
+            ))
+          }
 
-          </ScrollView>
+          <Divider style={styles.divider} />
+
+          <Text style={styles.item_text_bold} >Quinta-feira</Text>
+          
+          {
+            disponibilidadesQuinta.map((item: IDisponibilidade, id: number) => ( 
+
+              <View key={item._id} style={styles.item} >
+                <View style={styles.item_status}>
+                  <Icon name='circle' size={20} color='blue'/>
+                </View>
+                <View style={styles.item_detalhes}>
+                  <Text style={styles.item_text_line}>
+                    <Text style={styles.item_text_title}>Horário início: </Text>
+                      <Text>{item.horaInicio}</Text>
+                  </Text>
+                  <Text style={styles.item_text_line}>
+                    <Text style={styles.item_text_title}>Horário saída: </Text>
+                      <Text>{item.horaFim}</Text>
+                  </Text>
+                </View>
+                <View style={styles.item_action}>
+                  <RectButton style={styles.button} onPress={() => {item._id ? removerHorario(item._id.toString()) : ''}}>
+                    <Text style={styles.buttonText}>Remover</Text>
+                  </RectButton>
+                </View >              
+              </View>
+            ))
+          }
+
+          <Divider style={styles.divider} />  
+
+          <Text style={styles.item_text_bold} >Sexta-feira</Text>
+          
+          {
+            disponibilidadesSexta.map((item: IDisponibilidade, id: number) => ( 
+
+              <View key={item._id} style={styles.item} >
+                <View style={styles.item_status}>
+                  <Icon name='circle' size={20} color='blue'/>
+                </View>
+                <View style={styles.item_detalhes}>
+                  <Text style={styles.item_text_line}>
+                    <Text style={styles.item_text_title}>Horário início: </Text>
+                      <Text>{item.horaInicio}</Text>
+                  </Text>
+                  <Text style={styles.item_text_line}>
+                    <Text style={styles.item_text_title}>Horário saída: </Text>
+                      <Text>{item.horaFim}</Text>
+                  </Text>
+                </View>
+                <View style={styles.item_action}>
+                  <RectButton style={styles.button} onPress={() => {item._id ? removerHorario(item._id.toString()) : ''}}>
+                    <Text style={styles.buttonText}>Remover</Text>
+                  </RectButton>
+                </View >              
+              </View>
+            ))
+          }
+          
+          <Divider style={styles.divider} />
+
+          <Text style={styles.item_text_bold} >Sábado</Text>
+          
+          {
+            disponibilidadesSabado.map((item: IDisponibilidade, id: number) => ( 
+
+              <View key={item._id} style={styles.item} >
+                <View style={styles.item_status}>
+                  <Icon name='circle' size={20} color='blue'/>
+                </View>
+                <View style={styles.item_detalhes}>
+                  <Text style={styles.item_text_line}>
+                    <Text style={styles.item_text_title}>Horário início: </Text>
+                      <Text>{item.horaInicio}</Text>
+                  </Text>
+                  <Text style={styles.item_text_line}>
+                    <Text style={styles.item_text_title}>Horário saída: </Text>
+                      <Text>{item.horaFim}</Text>
+                  </Text>
+                </View>
+                <View style={styles.item_action}>
+                  <RectButton style={styles.button} onPress={() => {item._id ? removerHorario(item._id.toString()) : ''}}>
+                    <Text style={styles.buttonText}>Remover</Text>
+                  </RectButton>
+                </View >              
+              </View>
+            ))
+          }
+
         </View>
 
         <Overlay isVisible={overlayAdicionarVisibility} overlayStyle={styles.overlay_criar_conta}>
@@ -478,7 +492,7 @@ const disponibilidadesInstrutor = () => {
                   right: <TextInputNativePaper.Icon name={'menu-down'} />,
                 }}
               />
-              <TextInputNativePaper theme={theme} label="Horário Início" value={adicionarDisponibilidadeInicio} returnKeyType={ 'done' }
+              <TextInputNativePaper theme={theme} label="Horário Início (ex: 08:00)" value={adicionarDisponibilidadeInicio} returnKeyType={ 'done' }
                 render={props =><TextInputMask
                   {...props}
                   type={'datetime'}
@@ -489,7 +503,7 @@ const disponibilidadesInstrutor = () => {
                   onChangeText={text => setAdicionarDisponibilidadeInicio(text)}
                 />}
               />
-              <TextInputNativePaper theme={theme} label="Horário saída" value={adicionarDisponibilidadeSaida} returnKeyType={ 'done' }
+              <TextInputNativePaper theme={theme} label="Horário saída (ex: 17:30)" value={adicionarDisponibilidadeSaida} returnKeyType={ 'done' }
                 render={props =><TextInputMask
                   {...props}
                   type={'datetime'}
@@ -609,7 +623,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'white',
     fontSize: 20,
-    marginTop: 10,
+    marginTop: 5,
   },
 
   view_items: {
@@ -619,10 +633,8 @@ const styles = StyleSheet.create({
   },
 
   divider: {
-    flex: 1,
-    width: Dimensions.get('window').width,
-    height: 0.5,
-    backgroundColor: 'white'
+    backgroundColor: '#212F3C',
+    marginTop: 5,
   },
 
   item: {
