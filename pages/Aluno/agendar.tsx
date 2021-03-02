@@ -12,6 +12,7 @@ import moment from 'moment';
 import * as userLib from '../../lib/user'
 import ConfigFile from "../../config.json"
 import axios from "axios";
+import { DatePickerModal, TimePickerModal  } from 'react-native-paper-dates';
 
 const  AlunoAgendar = () => {
 
@@ -40,6 +41,8 @@ const  AlunoAgendar = () => {
   const [actualTimeOverlay, setActualTimeOverlay] = useState(timeInitialValue);
   const [actualTimeExactOverlay, setActualTimeExactOverlay] = useState(horaInicial);
   const [valorFinal, setValorFinal] = useState(0);
+
+  const [date, setDate] = React.useState<Date | undefined>(undefined);
   
   const [aulaSelecionadaRemocao, setAulaSelecionadaRemocao] = useState(0);
   const [overlayRemoverAulaVisibility, setOverlayRemoverAulaVisibility] = useState(false);  
@@ -50,6 +53,10 @@ const  AlunoAgendar = () => {
 
   const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
   const [snackMensagem, setSnackMensagem] = React.useState('');
+
+  const [precoUnitario, setPrecoUnitario] = React.useState(60);
+  const [precoPacote10, setPrecoPacote10] = React.useState(50);
+  const [precoPacote15, setPrecoPacote15] = React.useState(45);
 
   const toggleOverlayVisibility = () => {
     setoverlayVisibility(!overlayVisibility);
@@ -123,6 +130,22 @@ const  AlunoAgendar = () => {
     }
   }
 
+  const guardaHorarioSelecionado = (hours: number, minutes: number) : Date => {
+    const dateSelecionada:Date = moment().toDate();
+    dateSelecionada.setHours(hours)
+    dateSelecionada.setMinutes(minutes)
+    return dateSelecionada
+  }
+
+  const calculaValorTotalAgendamento = (): number => {
+    if (listAulas.length >= 15)
+      return listAulas.length * precoPacote15
+    else if (listAulas.length >= 10)
+      return listAulas.length * precoPacote10
+    else
+    return listAulas.length * precoUnitario
+  }
+
   return (
     <KeyboardAvoidingView style={styles.container_principal} 
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
@@ -139,15 +162,15 @@ const  AlunoAgendar = () => {
         <View style={styles.item_detalhes}>
           <Text style={styles.item_text_line}>
             <Text style={styles.item_text_title}>Aula Individual: </Text>
-            <Text>60 reais</Text>
+            <Text>{precoUnitario} reais</Text>
           </Text>
           <Text style={styles.item_text_line}>
             <Text style={styles.item_text_title}>Pacote com 10 aulas: </Text>
-            <Text >45 reais cada</Text>
+            <Text >{precoPacote10} reais cada</Text>
           </Text>
           <Text style={styles.item_text_line}>
-            <Text style={styles.item_text_title}>Pacote com 15 aulas: </Text>
-            <Text >40 reais cada</Text>
+            <Text style={styles.item_text_title}>Pacote com 15 aulas ou mais: </Text>
+            <Text >{precoPacote15} reais cada</Text>
           </Text>
           <Text style={styles.item_text_line}>
             <Text style={styles.item_text_suave}>O pagamento não é tratado via aplicativo</Text>
@@ -190,72 +213,59 @@ const  AlunoAgendar = () => {
               <>
                 <View style={styles.overlay_titulo}>
                   <View style={{flex: 1}}>
-                    <MaterialIcon name='arrow-back' size={25} onPress={toggleOverlayVisibility}/>
+                    <MaterialIcon name='arrow-back' size={35} onPress={toggleOverlayVisibility}/>
                   </View>
-                  <View style={{flex: 6}}>
-                    <Text style={{textAlign: 'center', fontSize: 18}}>Nova Aula</Text>
+                  <View style={{flex: 8}}>
+                    <Text style={{textAlign: 'center', fontSize: 24, color: 'white'}}>Nova Aula</Text>
                   </View>
                 </View>
                 
                 <View style={styles.overlay_data}>
-                  <Text style={{fontSize: 18}}>Data</Text>
+                  <Text style={{fontSize: 18, color: 'white', marginBottom: 10}}>Data</Text>
                     <Button onPressOut={()=>setShowDatePicker(true)} title={actualDateOverlay.toLocaleDateString()} />  
                     {showDatePicker && (
-                      <DatePicker
-                        date={actualDateOverlay}
-                        onClose={date => {
-                          if (date && Platform.OS !== 'iOS') {
-                            setShowDatePicker(false)
-                          } else {
-                            setShowDatePicker(false)
-                            setActualDateOverlay(date);
-                          }
-                          
-                        }}
-                        onChange={date => {
-                          if (date && Platform.OS !== 'iOS') {
-                            setActualDateOverlay(date);
-                          } else {
-                            setActualDateOverlay(date);
-                          }
-                          
-                        }}                     
-                      />
+                      <DatePickerModal
+                      // locale={'en'} optional, default: automatic
+                      mode="single"
+                      visible={showDatePicker}
+                      onDismiss={ ()=> setShowDatePicker(false) }
+                      date={actualDateOverlay}
+                      onConfirm={ (params) => {
+                        setShowDatePicker(false)
+                        setActualDateOverlay(params.date);
+                      }}
+                      // onChange={} // same props as onConfirm but triggered without confirmed by user
+                      // saveLabel="Save" // optional
+                      // label="Select date" // optional
+                      // animationType="slide" // optional, default is 'slide' on ios/android and 'none' on web
+                    />
                     )}                
                 </View>
                   
                 <View style={styles.overlay_hora}>
-                  <Text style={{ fontSize: 18}}>Horário de início</Text>
+                  <Text style={{ fontSize: 18, color: 'white', marginBottom: 10}}>Horário de início</Text>
                   <Button onPressOut={()=>setShowTimePicker(true)} title={dataBonita(actualTimeExactOverlay)} />  
                     {showTimePicker && (
-                      <TimePicker
-                        date={actualTimeExactOverlay}
-                        onClose={time => {
-                          if (time && Platform.OS !== 'iOS') {
-                            setShowTimePicker(false)
-                          } else {
-                            setShowTimePicker(false)
-                            setActualTimeExactOverlay(time)
-                            //setActualTimeOverlay(moment(time).toDate().getHours().toString().padStart(2, '0') + ':' + moment(time).toDate().getMinutes().toString().padStart(2, '0'));
-                          }
-                          
-                        }}
-                        onChange={time => {
-                          if (time && Platform.OS !== 'iOS') {
-                            setActualTimeExactOverlay(time)
-                            //setActualTimeOverlay(moment(time).toDate().getHours().toString().padStart(2, '0') + ':' + moment(time).toDate().getMinutes().toString().padStart(2, '0'));
-                          } else {
-                            setActualTimeExactOverlay(time)
-                            //setActualTimeOverlay(moment(time).toDate().getHours().toString().padStart(2, '0') + ':' + moment(time).toDate().getMinutes().toString().padStart(2, '0'));
-                          }
-                          
-                        }}                     
-                      />
+                      <TimePickerModal
+                      visible={showTimePicker}
+                      onDismiss={ ()=> setShowTimePicker(false) }
+                      onConfirm={({ hours, minutes }) => {
+                        setShowTimePicker(false);
+                        setActualTimeExactOverlay(guardaHorarioSelecionado( hours, minutes));
+                      }}
+                      hours={actualTimeExactOverlay.getHours()} // default: current hours
+                      minutes={0} // default: current minutes
+                      label="Selecione o horário de início" // optional, default 'Select time'
+                      cancelLabel="Cancelar" // optional, default: 'Cancel'
+                      confirmLabel="Ok" // optional, default: 'Ok'
+                      animationType="fade" // optional, default is 'none'
+                      //locale={'en'} // optional, default is automically detected by your system
+                    />
                     )}
                 </View>
 
                 <View style={styles.overlay_button} onTouchEnd={()=>addAula(actualDateOverlay, actualTimeExactOverlay)}>
-                  <Text style={{textAlign: 'center', fontSize: 25}}>Adicionar</Text>
+                  <Text style={{textAlign: 'center', fontSize: 30, fontWeight: 'bold'}}>Adicionar</Text>
                 </View>
               </>
               </Overlay>
@@ -266,15 +276,15 @@ const  AlunoAgendar = () => {
       </View>
 
       <View style={styles.view_confirmar_button} onTouchEnd={()=> setOverlayAgendarVisibility(true)}>
-        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', paddingTop: 5}}>
-          <Text style={{color: 'white', fontWeight: 'bold', fontSize: 24}} >Solicitar Agendamento</Text>
+        <View style={{flex: 2, alignItems: 'center', justifyContent: 'center'}}>
+          <Text style={{color: 'white', fontWeight: 'bold', fontSize: 24, paddingTop: 8}} >Solicitar Agendamento</Text>
         </View>
-        <View style={{flex: 1, flexDirection:'row'}}>
+        <View style={{flex: 3, flexDirection:'row', paddingBottom: 12}}>
           <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', }}>
-            <Text style={{fontSize: 18}}>Quant. Aulas: {listAulas.length}</Text>
+            <Text style={{fontSize: 20}}>Quant. Aulas: {listAulas.length}</Text>
           </View>    
           <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', }}>     
-            <Text style={{fontSize: 18}}>Valor: {listAulas.length * 50}</Text>
+            <Text style={{fontSize: 20}}>Valor: {calculaValorTotalAgendamento()}</Text>
           </View>   
         </View>
       </View>
@@ -347,9 +357,11 @@ const styles = StyleSheet.create({
   },
 
   overlay_add: {
-    height: 300,
-    width: 250,
-    borderRadius: 8
+    height: 350,
+    width: 300,
+    borderRadius: 8,
+    backgroundColor: '#212F3C',
+    
   },
   overlay_timepicker: {
     height: 400,
@@ -377,7 +389,7 @@ const styles = StyleSheet.create({
   },
 
   view_infos: {
-    flex: 4,
+    height: 100,
     margin: 10,
     borderRadius: 8,
     borderColor: '#212F3C',
