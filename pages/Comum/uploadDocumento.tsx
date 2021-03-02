@@ -13,6 +13,8 @@ import * as ImagePicker from 'expo-image-picker';
 import * as userLib from '../../lib/user'
 import ConfigFile from "../../config.json"
 import axios from "axios";
+import LottieView from 'lottie-react-native'
+import { Animated, Easing,  } from 'react-native';
 
 export default class uploadDocumento extends React.Component {
   constructor(props: any) {
@@ -26,6 +28,7 @@ export default class uploadDocumento extends React.Component {
       imagemWidth:300,
       snackMensagemVisible: false,
       snackMensagem: false,     
+      textButtonSalvar: 'Salvar'
     };
 
     /* ToDo: salvar height e width pra poder definir aqui quando for abrir a imagem
@@ -108,6 +111,8 @@ export default class uploadDocumento extends React.Component {
 
     const SalvarFoto = async () => {
 
+      this.setState({textButtonSalvar: 'Salvando...'})
+
       const { token } = JSON.parse(await userLib.getUserAuthData())
 
       const bodyFormData = new FormData();
@@ -129,6 +134,7 @@ export default class uploadDocumento extends React.Component {
 
         if(resp.status == 200)
         {
+          this.setState({textButtonSalvar: 'Salvar'})
           this.setState({snackMensagem: 'Documento salvo'})
           this.setState({snackMensagemVisible: true})     
         }  
@@ -171,10 +177,10 @@ export default class uploadDocumento extends React.Component {
 
         <View style={styles.buttonView}>
           <RectButton style={styles.button} onPress={() => SalvarFoto()}>
-            <Text style={styles.buttonTextBold}>Salvar</Text>
+            <Text style={styles.buttonTextBold}>{this.state.textButtonSalvar}</Text>
           </RectButton>
         </View>
-
+       
 
         <Snackbar
           visible={this.state.snackMensagemVisible}
@@ -232,5 +238,10 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontSize: 20,
     fontWeight: 'bold'
+  },
+
+  animation: {
+    alignItems: 'center',
+    marginTop: -250
   },
 });
