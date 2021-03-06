@@ -35,10 +35,12 @@ const Routes = () => {
   return (
     <NavigationContainer>
       <AppStack.Navigator
+        initialRouteName="AlunoDashboard"
         headerMode="none"
         screenOptions={{
           cardStyle: {
             backgroundColor: 'white',
+            
           },
         }}
       >

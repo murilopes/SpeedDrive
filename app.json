@@ -1,31 +1,36 @@
 {
-  "expo": {
-    "name": "SpeedDrive-Mobile-Dev",
-    "slug": "SpeedDrive-Mobile",
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ],
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.muurilopes.SpeedDrive-Mobile"
-    },
-    "description": "App SpeedDrive mobile",
-    "githubUrl": "https://github.com/murilopes/SpeedDrive"
-  }
+    "expo": {
+        "name": "Speed Drive",
+        "slug": "SpeedDrive-Mobile",
+        "platforms": [
+            "ios",
+            "android",
+            "web"
+        ],
+        "version": "1.0.0",
+        "orientation": "portrait",
+        "icon": "./assets/icon3.png",
+        "splash": {
+            "image": "./assets/splash.png",
+            "resizeMode": "contain",
+            "backgroundColor": "#ffffff"
+        },
+        "updates": {
+            "fallbackToCacheTimeout": 0
+        },
+        "assetBundlePatterns": [
+            "**/*"
+        ],
+        "ios": {
+            "supportsTablet": true,
+            "bundleIdentifier": "com.muurilopes.speedDriveMobile",
+            "buildNumber": "1.0.0"
+        },
+        "android": {
+            "package": "com.muurilopes.speedDriveMobile",
+            "versionCode": 1
+        },
+        "description": "App SpeedDrive mobile",
+        "githubUrl": "https://github.com/murilopes/SpeedDrive"
+    }
 }

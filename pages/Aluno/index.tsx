@@ -21,7 +21,7 @@ const AlunoDashboard = (props: any) => {
       navigation.navigate('Login');
     }      
   }
-  const _handleAulasRealizadas = (origemMenuLateral: boolean) => {
+  const _handleAulasRealizadas = async (origemMenuLateral: boolean = false) => {
     setMenuOpened(false)    
     if (origemMenuLateral || !menuOpened)     
       navigation.navigate('AlunoRealizadas');
@@ -141,7 +141,7 @@ const AlunoDashboard = (props: any) => {
       >
 
         <Appbar.Header statusBarHeight={45} style={{height: 60, backgroundColor: '#212F3C'}}>
-          <Appbar.Action icon="menu" size={30} onPress={ _handleTouchMenu} />
+          <Appbar.Action icon="menu" size={30} onPress={_handleTouchMenu} />
           <Appbar.Content onTouchEnd={() => setMenuOpened(false)} title={nomeCompleto} />
           <Appbar.Action icon="bell" size={30} onPress={() => _handleNotificacoes(false)} />
         </Appbar.Header>
@@ -326,5 +326,6 @@ const styles = StyleSheet.create({
     fontSize: 22,
     paddingTop: 20,
   },
+
 
 });
