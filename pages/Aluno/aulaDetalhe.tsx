@@ -10,7 +10,7 @@ import ConfigFile from "../../config.json"
 import * as userLib from '../../lib/user'
 import * as utilLib from '../../lib/util'
 import axios from "axios";
-import { RectButton } from 'react-native-gesture-handler';
+import { RectButton, TapGestureHandler } from 'react-native-gesture-handler';
 import moment from 'moment';
 import { Overlay } from 'react-native-elements';
 
@@ -48,6 +48,10 @@ const AulaDetalhe = (props: object) => {
   const [objAulaDetalhe, setObjAulaDetalhe] = React.useState(aulaDetalheVazio)
 
   const [overlayCancelarVisibility, setOverlayCancelarVisibility] = React.useState(false);
+
+const faz = () => {
+  setOverlayCancelarVisibility(false)
+}
 
   const verificaSePodecancelarAula = () => {
     let bPodeCancelar = false;
@@ -285,13 +289,13 @@ const AulaDetalhe = (props: object) => {
             <Text style={{fontSize: 20, fontWeight: 'bold'}}>o agendamento?</Text>
           </View>
           <View style={{flex: 1, flexDirection:'row', alignItems: 'center'}}>
-            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', }}>
-              <RectButton style={styles.buttonNao} onPress={()=> setOverlayCancelarVisibility(false)} >
+            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', }} onTouchEnd={()=> setOverlayCancelarVisibility(false)}>
+              <RectButton style={styles.buttonNao} >
                 <Text style={styles.buttonNaoText}>Não</Text>
               </RectButton>
             </View>
-            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', }}>
-              <RectButton style={styles.buttonSim} onPress={()=> CancelarAula()}>
+            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', }} onTouchEnd={()=> CancelarAula()}>
+              <RectButton style={styles.buttonSim} >
                 <Text style={styles.buttonSimText}>Sim</Text>
               </RectButton>
             </View>

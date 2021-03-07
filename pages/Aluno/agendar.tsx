@@ -1,14 +1,13 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import { Button, Overlay } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
-import { StyleSheet, Text, View, TextInput, Image, ImageBackground, KeyboardAvoidingView, Platform, ScrollView, RefreshControl } from 'react-native';
-import { Appbar, Avatar, Snackbar } from 'react-native-paper';
+import { StyleSheet, Text, View, KeyboardAvoidingView, Platform, ScrollView} from 'react-native';
+import { Appbar, Snackbar } from 'react-native-paper';
 import { RectButton } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import DatePicker from '../../components/DatePickerX';
-import TimePicker from '../../components/TimePickerX';
 import moment from 'moment';
+import 'moment/locale/pt-br';
 import * as userLib from '../../lib/user'
 import ConfigFile from "../../config.json"
 import axios from "axios";
@@ -28,9 +27,10 @@ const  AlunoAgendar = () => {
   
   type AulaType = { id: number, data: Date, horario: Date};  
   const aulaInitialValue:Array<AulaType> = []
-  const dateInitialValue:Date = moment().toDate();
-  const timeInitialValue:string = moment().toDate().getHours().toString().padStart(2, '0') + ':' + moment().toDate().getMinutes().toString().padStart(2, '0');
-  var horaInicial:Date = dateInitialValue
+  //10800000 corresponde a 3hr, para descontar no horario e calcular corretamente
+  //const dateInitialValue:Date = new Date(Date.now()-10800000)
+  const dateInitialValue:Date = new Date()
+  var horaInicial:Date = new Date()
   horaInicial.setMinutes(0)
 
   const [overlayVisibility, setoverlayVisibility] = useState(false);
@@ -38,11 +38,7 @@ const  AlunoAgendar = () => {
   const [count, setcount] = useState(0);
   const [listAulas, setListAulas] = useState(aulaInitialValue);
   const [actualDateOverlay, setActualDateOverlay] = useState(dateInitialValue);
-  const [actualTimeOverlay, setActualTimeOverlay] = useState(timeInitialValue);
   const [actualTimeExactOverlay, setActualTimeExactOverlay] = useState(horaInicial);
-  const [valorFinal, setValorFinal] = useState(0);
-
-  const [date, setDate] = React.useState<Date | undefined>(undefined);
   
   const [aulaSelecionadaRemocao, setAulaSelecionadaRemocao] = useState(0);
   const [overlayRemoverAulaVisibility, setOverlayRemoverAulaVisibility] = useState(false);  
@@ -62,14 +58,30 @@ const  AlunoAgendar = () => {
     setoverlayVisibility(!overlayVisibility);
   };
 
-  function dataBonita(time: Date) {    
-    return time.toLocaleTimeString(navigator.language, {
+  function apresentaHoraBonita(time: Date) {
+    var horarioApresentacao = time.toLocaleTimeString('pr-BR', {
       hour: '2-digit',
-      minute:'2-digit'
-    });
+      minute:'2-digit',
+      hour12: false
+    })
+
+    //Tratamento especifico pois no Android ficava apresentando os segundos indevidamente
+    horarioApresentacao = horarioApresentacao.substring(0, 5)
+
+    return horarioApresentacao
   }
 
-  const addAula = (data: Date, horario: Date) => {    
+  function apresentaDataBonita(dateRaw: Date) {
+    function pad(n:number) {
+       return n < 10 ? "0"+n : n;
+    }
+    
+    var result = pad(dateRaw.getDate())+"/"+ pad((dateRaw.getMonth()+1)) +"/"+dateRaw.getFullYear();
+    return result
+  }
+
+  const addAula = (data: Date, horario: Date) => { 
+    console.log('adding: ', data)   
     setListAulas(listAulas.concat({id: count, data, horario}));
     toggleOverlayVisibility();
     setShowDatePicker(false);
@@ -97,12 +109,14 @@ const  AlunoAgendar = () => {
       aulas: []
     };
 
-    listAulas.map((item, i) => (
+    listAulas.map((item, i) => {
+      console.log('antes: ', item.data)
+      console.log('depois: ', item.data.toISOString().replace(/T.*/,'').split('-').join('-'))
       objAulas.aulas.push({
         data: item.data.toISOString().replace(/T.*/,'').split('-').join('-'),
-        hora: dataBonita(item.horario)
+        hora: apresentaHoraBonita(item.horario)
       })
-    ))
+    })
 
     console.log(objAulas)
 
@@ -131,9 +145,11 @@ const  AlunoAgendar = () => {
   }
 
   const guardaHorarioSelecionado = (hours: number, minutes: number) : Date => {
-    const dateSelecionada:Date = moment().toDate();
+    const dateSelecionada:Date = new Date(Date.now())
     dateSelecionada.setHours(hours)
     dateSelecionada.setMinutes(minutes)
+/*     console.log('hours: ', hours)
+    console.log('minutes: ', minutes) */
     return dateSelecionada
   }
 
@@ -152,7 +168,8 @@ const  AlunoAgendar = () => {
 
       <Appbar.Header statusBarHeight={0} style={{ height: 60, backgroundColor: '#212F3C' }}>
         <Appbar.Action icon="arrow-left-circle" size={30} onPress={_goBack} />
-        <Appbar.Content title="Agendamento" />
+        <Appbar.Content title="Agendamento" style={{alignItems:'center'}}/>
+          <Appbar.Action icon="arrow-left-circle" color='#212F3C' size={30}  />
       </Appbar.Header>
 
       <View style={styles.view_infos}>
@@ -192,11 +209,11 @@ const  AlunoAgendar = () => {
                   <View style={styles.aula_item_detalhes}>
                     <Text style={styles.aula_item_text_line}>
                       <Text style={styles.aula_item_text_title}>Data: </Text>
-                      <Text>{item.data.toLocaleDateString()}</Text>
+                      <Text>{apresentaDataBonita(item.data)}</Text>
                     </Text>
                     <Text style={styles.aula_item_text_line}>
                       <Text style={styles.aula_item_text_title}>Horário: </Text>
-                      <Text >{dataBonita(item.horario)}</Text>
+                      <Text >{apresentaHoraBonita(item.horario)}</Text>
                     </Text>              
                   </View>
                   <View style={styles.item_action}>
@@ -222,7 +239,7 @@ const  AlunoAgendar = () => {
                 
                 <View style={styles.overlay_data}>
                   <Text style={{fontSize: 18, color: 'white', marginBottom: 10}}>Data</Text>
-                    <Button onPressOut={()=>setShowDatePicker(true)} title={actualDateOverlay.toLocaleDateString()} />  
+                    <Button onPressOut={()=>setShowDatePicker(true)} title={apresentaDataBonita(actualDateOverlay)} />  
                     {showDatePicker && (
                       <DatePickerModal
                       // locale={'en'} optional, default: automatic
@@ -244,22 +261,21 @@ const  AlunoAgendar = () => {
                   
                 <View style={styles.overlay_hora}>
                   <Text style={{ fontSize: 18, color: 'white', marginBottom: 10}}>Horário de início</Text>
-                  <Button onPressOut={()=>setShowTimePicker(true)} title={dataBonita(actualTimeExactOverlay)} />  
+                  <Button onPressOut={()=>setShowTimePicker(true)} title={apresentaHoraBonita(actualTimeExactOverlay)} />  
                     {showTimePicker && (
                       <TimePickerModal
                       visible={showTimePicker}
                       onDismiss={ ()=> setShowTimePicker(false) }
                       onConfirm={({ hours, minutes }) => {
                         setShowTimePicker(false);
-                        setActualTimeExactOverlay(guardaHorarioSelecionado( hours, minutes));
+                        setActualTimeExactOverlay(guardaHorarioSelecionado(hours, minutes));
                       }}
-                      hours={actualTimeExactOverlay.getHours()} // default: current hours
                       minutes={0} // default: current minutes
                       label="Selecione o horário de início" // optional, default 'Select time'
                       cancelLabel="Cancelar" // optional, default: 'Cancel'
                       confirmLabel="Ok" // optional, default: 'Ok'
                       animationType="fade" // optional, default is 'none'
-                      //locale={'en'} // optional, default is automically detected by your system
+                      locale={'pt-BR'} // optional, default is automically detected by your system
                     />
                     )}
                 </View>
@@ -296,13 +312,13 @@ const  AlunoAgendar = () => {
           <Text style={{fontSize: 20, fontWeight: 'bold'}}>agendamentos?</Text>
         </View>
         <View style={{flex: 1, flexDirection:'row', alignItems: 'center'}}>
-          <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', }}>
-            <RectButton style={styles.buttonNao} onPress={()=> setOverlayAgendarVisibility(false)} >
+          <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', }} onTouchEnd={()=> setOverlayAgendarVisibility(false)}>
+            <RectButton style={styles.buttonNao}>
               <Text style={styles.buttonNaoText}>Não</Text>
             </RectButton>
           </View>
-          <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', }}>
-            <RectButton style={styles.buttonSim} onPress={()=> AgendarAulas()}>
+          <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', }} onTouchEnd={()=> AgendarAulas()}>
+            <RectButton style={styles.buttonSim}>
               <Text style={styles.buttonSimText}>Sim</Text>
             </RectButton>
           </View>

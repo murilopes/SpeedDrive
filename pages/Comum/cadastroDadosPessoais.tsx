@@ -10,7 +10,7 @@ import { RectButton } from 'react-native-gesture-handler';
 import * as userLib from '../../lib/user'
 import * as utilLib from '../../lib/util'
 import ConfigFile from "../../config.json"
-import { IPessoaTelaDadosPessoais } from '../../interfaces/interfaces'
+import { IAlunoTelaDadosPessoais } from '../../interfaces/interfaces'
 import axios from "axios";
 
 const cadastroDadosPessoais = (props: object) => {
@@ -20,7 +20,7 @@ const cadastroDadosPessoais = (props: object) => {
     navigation.goBack();
   };
 
-  let pessoaVazio: IPessoaTelaDadosPessoais = {}
+  let pessoaVazio: IAlunoTelaDadosPessoais = {}
   const [objPessoa, setObjPessoa] = React.useState(pessoaVazio)
 
   const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
@@ -45,21 +45,30 @@ const cadastroDadosPessoais = (props: object) => {
     baseURL: ConfigFile.API_SERVER_URL,
   });
 
+  const removeCaracteresIndesajados = async (texto: String|undefined) => {
+    if (texto != undefined)
+      return texto.replace('.', '').replace('-', '').replace(' ', '').replace('(', '').replace(')', '')
+    else 
+      return ''
+  }
+
   const SalvarDados = async () => {
 
     const { token, tipoUsuario } = JSON.parse(await userLib.getUserAuthData())
 
-    const pessoaDadosPessoaisData = {
+    const pessoaDadosPessoaisData = await {
       nome: objPessoa.nome || '',
       sobrenome: objPessoa.sobrenome || '',
-      CPF: objPessoa.CPF?.replaceAll('.', '').replaceAll('-', '') || '',
+      CPF: await removeCaracteresIndesajados(objPessoa.CPF) || '',
       dataNascimento: utilLib.formataDataFriendlyParaDataSistema(objPessoa.dataNascimentoFormatada) || '',
-      whatsapp: objPessoa.whatsapp?.replaceAll(' ', '').replaceAll('(', '').replaceAll(')', '').replaceAll('-', '') || '',
+      whatsapp: await removeCaracteresIndesajados(objPessoa.whatsapp) || '',
       sexo: objPessoa.sexo || '',
       email: objPessoa.email || '',
       observacoes: objPessoa.observacoes || '',
       credencial: objPessoa.credencial|| '',
     };
+
+    console.log(pessoaDadosPessoaisData)
 
     try {
       const resp = await API.put(`/${tipoUsuario}/alterarDadosPrincipais`, 
@@ -112,7 +121,8 @@ const cadastroDadosPessoais = (props: object) => {
     >
       <Appbar.Header statusBarHeight={0} style={{ height: 60, backgroundColor: '#212F3C' }}>
         <Appbar.Action icon="arrow-left-circle" size={30} onPress={_goBack} />
-        <Appbar.Content title="Dados Pessoais" />
+        <Appbar.Content title="Dados Pessoais" style={{alignItems:'center'}}/>
+        <Appbar.Action icon="arrow-left-circle" color='#212F3C' size={30}  />
       </Appbar.Header>
 
       <TextInput theme={theme} label="Nome" value={objPessoa.nome} onChangeText={text => setObjPessoa({...objPessoa, nome: text})}/>
@@ -121,8 +131,8 @@ const cadastroDadosPessoais = (props: object) => {
       
       <Text  style={{color: '#A79898', marginStart: 12, marginTop: 10, marginBottom: 10, fontSize: objPessoa.sexo != '' ? 12 : 16}}>Gênero</Text>
       <View style={{flexDirection: 'row'}}>
-        <Chip selected={objPessoa.sexo == 'M'} selectedColor={objPessoa.sexo == 'M' ? 'blue' : 'black'} onPress={() => {handleSelecaoGenero('Masculino')}} style={{width: 110, marginStart: 10, marginEnd: 10}}>Masculino</Chip>
-        <Chip selected={objPessoa.sexo == 'F'} selectedColor={objPessoa.sexo == 'F' ? 'blue' : 'black'} onPress={() => {handleSelecaoGenero('Feminino')}} style={{width: 100, marginEnd: 10}}>Feminino</Chip>
+        <Chip selected={objPessoa.sexo == 'M'} selectedColor={objPessoa.sexo == 'M' ? 'blue' : 'black'} onPress={() => {handleSelecaoGenero('Masculino')}} style={{width: 120, marginStart: 10, marginEnd: 10}}>Masculino</Chip>
+        <Chip selected={objPessoa.sexo == 'F'} selectedColor={objPessoa.sexo == 'F' ? 'blue' : 'black'} onPress={() => {handleSelecaoGenero('Feminino')}} style={{width: 110, marginEnd: 10}}>Feminino</Chip>
         <Chip selected={objPessoa.sexo == 'O'} selectedColor={objPessoa.sexo == 'O' ? 'blue' : 'black'} onPress={() => {handleSelecaoGenero('Outros')}} style={{width: 100}}>Outros</Chip>
       </View>
 

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useNavigation } from '@react-navigation/native';
 import {
   Platform,
   StyleSheet, 
@@ -13,17 +12,17 @@ import * as ImagePicker from 'expo-image-picker';
 import * as userLib from '../../lib/user'
 import ConfigFile from "../../config.json"
 import axios from "axios";
-import LottieView from 'lottie-react-native'
-import { Animated, Easing,  } from 'react-native';
 
 export default class uploadDocumento extends React.Component {
   constructor(props: any) {
     super(props);
 
+    var random = '?random_number=' + new Date().getTime()
+
     this.state = {
       nomeDocumento: props.route.params.nomeDocumento,
       metodoAPI: props.route.params.metodoAPI,
-      imagemUri: props.route.params.imagemUri,
+      imagemUri: props.route.params.imagemUri + random,
       imagemHeight: 300,
       imagemWidth:300,
       snackMensagemVisible: false,
@@ -48,8 +47,6 @@ export default class uploadDocumento extends React.Component {
       navigation.goBack();
     };
 
-    const onToggleSnackSalvar = () => this.setState({snackSalvarVisible: !this.state.snackSalvarVisible})
-
     const API = axios.create({
       baseURL: ConfigFile.API_SERVER_URL,
     });
@@ -67,7 +64,7 @@ export default class uploadDocumento extends React.Component {
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: false,
             aspect: [4, 3],
-            quality: 1,
+            quality: 0.5,
           });
             
           if (!result.cancelled) {
@@ -94,7 +91,7 @@ export default class uploadDocumento extends React.Component {
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: false,
             aspect: [4, 3],
-            quality: 1,
+            quality: 0,
           });
             
           if (!result.cancelled) {
@@ -121,6 +118,8 @@ export default class uploadDocumento extends React.Component {
         type: 'image/jpeg',
         name: `${this.state.nomeDocumento}.jpg`
       });
+
+      console.log(bodyFormData)
 
       try {
         const resp = await API.put(this.state.metodoAPI,
@@ -150,15 +149,18 @@ export default class uploadDocumento extends React.Component {
         style={styles.container_principal}
       >
         <Appbar.Header statusBarHeight={0} style={{ height: 60, backgroundColor: '#212F3C' }}>
-          <Appbar.Action icon="arrow-left-circle" size={30} onPress={_goBack} />
-          <Appbar.Content title={this.state.nomeDocumento}/>
+          <Appbar.Action icon="arrow-left-circle" size={30} onPress={_goBack} />       
+          <Appbar.Content title={this.state.nomeDocumento} style={{alignItems:'center'}}/>
+          <Appbar.Action icon="arrow-left-circle" color='#212F3C' size={30}  />
+          
         </Appbar.Header>
 
         <View style={styles.view_documento} >
           <Image
             style={{ height: this.state.imagemHeight, width: this.state.imagemWidth, borderColor: 'white', borderWidth: 0.5, }}
             source={{
-              uri: this.state.imagemUri
+              uri: this.state.imagemUri,
+              cache: 'reload'
             }}
           />
         </View>

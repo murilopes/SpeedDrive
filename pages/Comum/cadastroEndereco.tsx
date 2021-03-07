@@ -118,7 +118,8 @@ const cadastroEndereco = (props: object) => {
     >
       <Appbar.Header statusBarHeight={0} style={{ height: 60, backgroundColor: '#212F3C' }}>
         <Appbar.Action icon="arrow-left-circle" size={30} onPress={_goBack} />
-        <Appbar.Content title="Endereço" />
+        <Appbar.Content  title="Endereço" style={{alignItems:'center'}}/>
+        <Appbar.Action icon="arrow-left-circle" color='#212F3C' size={30}  />
       </Appbar.Header>
 
       <TextInput theme={theme} label="CEP" value={objPessoa.CEP} returnKeyType={ 'done' } onBlur={BuscaCEP}

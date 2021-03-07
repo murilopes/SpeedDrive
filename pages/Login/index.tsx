@@ -400,7 +400,19 @@ const  Login = () => {
                 <Text style={styles.buttonText}>Esqueci minha senha</Text>
             </RectButton>
           </View>
+         
         </ImageBackground>
+        <View>
+          <Snackbar
+            visible={snackErroVisible}
+            onDismiss={() => setSnackErroVisible(false)}
+            action={{
+              label: 'Ok',
+              onPress: () => {},
+            }}>
+            {mensagemErro}
+          </Snackbar>
+        </View>
       </View>
       
       <Overlay isVisible={overlayCriaContaVisibility} overlayStyle={styles.overlay_criar_conta}>
@@ -742,17 +754,7 @@ As partes poderão entrar em acordo, quanto aos eventuais danos causados, caso e
         </Provider>
       </Overlay>
 
-      <View style={{marginTop: 100}} >
-        <Snackbar
-            visible={snackErroVisible}
-            onDismiss={() => setSnackErroVisible(false)}
-            action={{
-              label: 'Ok',
-              onPress: () => {},
-            }}>
-            {mensagemErro}
-          </Snackbar>
-      </View>
+      
 
     </KeyboardAwareScrollView>
   );
@@ -848,7 +850,7 @@ const styles = StyleSheet.create({
 
   overlay_criar_conta: {
     height: 585,
-    width: 325,
+    width: 355,
     borderRadius: 8,
     backgroundColor: '#212F3C',
     marginBottom: 70,

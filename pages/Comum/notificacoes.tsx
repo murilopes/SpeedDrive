@@ -84,7 +84,8 @@ const  Notificacoes = (props: object) => {
 
       <Appbar.Header statusBarHeight={0} style={{height: 60, backgroundColor: '#212F3C'}}>
         <Appbar.Action icon="arrow-left-circle" size={30} onPress={_goBack} />
-        <Appbar.Content title="Notificações" />
+        <Appbar.Content  title="Notificações" style={{alignItems:'center'}}/>
+        <Appbar.Action icon="arrow-left-circle" color='#212F3C' size={30}  />
       </Appbar.Header>
 
       <ScrollView>        
