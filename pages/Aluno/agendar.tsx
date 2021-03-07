@@ -169,7 +169,7 @@ const  AlunoAgendar = () => {
       <Appbar.Header statusBarHeight={0} style={{ height: 60, backgroundColor: '#212F3C' }}>
         <Appbar.Action icon="arrow-left-circle" size={30} onPress={_goBack} />
         <Appbar.Content title="Agendamento" style={{alignItems:'center'}}/>
-          <Appbar.Action icon="arrow-left-circle" color='#212F3C' size={30}  />
+        <Appbar.Action icon="arrow-left-circle" color='#212F3C' size={30}  />
       </Appbar.Header>
 
       <View style={styles.view_infos}>
@@ -293,7 +293,7 @@ const  AlunoAgendar = () => {
 
       <View style={styles.view_confirmar_button} onTouchEnd={()=> setOverlayAgendarVisibility(true)}>
         <View style={{flex: 2, alignItems: 'center', justifyContent: 'center'}}>
-          <Text style={{color: 'white', fontWeight: 'bold', fontSize: 24, paddingTop: 8}} >Solicitar Agendamento</Text>
+          <Text style={{color: 'white', fontWeight: 'bold', fontSize: 24, paddingTop: 8}} >Confirmar Agendamento</Text>
         </View>
         <View style={{flex: 3, flexDirection:'row', paddingBottom: 12}}>
           <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', }}>

@@ -1,9 +1,9 @@
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import {
-  StyleSheet, Text, View, TextInput, Image, ImageBackground, KeyboardAvoidingView, Platform, ScrollView,
+  StyleSheet, Text, View, KeyboardAvoidingView, Platform, ScrollView,
 } from 'react-native';
-import { Appbar, Avatar, DefaultTheme, Provider, Snackbar,  TextInput as TextInputNativePaper } from 'react-native-paper';
+import { Appbar, DefaultTheme, Provider, Snackbar,  TextInput as TextInputNativePaper } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IconMaterial from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
@@ -365,7 +365,7 @@ const AulaDetalhe = (props: object) => {
             </View>
           </View>
 
-          {(objAulaDetalhe.status == 'Pend. Confirmação' || objAulaDetalhe.status == 'Confirmada' || objAulaDetalhe.status == 'Reagendada') && (
+          {(objAulaDetalhe.status == 'Pend. Confirmação' || objAulaDetalhe.status == 'Confirmada') && (
           <View style={styles.item_action}>
             <RectButton style={styles.button} onPress={() => verificaSePodecancelarAula()}>
               <Text style={styles.buttonText}>Cancelar Aula</Text>

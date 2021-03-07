@@ -39,7 +39,7 @@ const  InstrutorPendentes = () => {
 
   const corStatus = (status: string) => {
     switch (status) {
-      case 'Reagendada':
+      case 'Remarcada':
         return '#000000'
       case 'Cancelada':
         return '#C80000'

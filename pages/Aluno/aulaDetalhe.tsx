@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import {
-  StyleSheet, Text, View, TextInput, Image, ImageBackground, KeyboardAvoidingView, Platform, ScrollView,
+  StyleSheet, Text, View, KeyboardAvoidingView, Platform, 
 } from 'react-native';
 import { Appbar, Avatar, Snackbar } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -10,7 +10,7 @@ import ConfigFile from "../../config.json"
 import * as userLib from '../../lib/user'
 import * as utilLib from '../../lib/util'
 import axios from "axios";
-import { RectButton, TapGestureHandler } from 'react-native-gesture-handler';
+import { RectButton } from 'react-native-gesture-handler';
 import moment from 'moment';
 import { Overlay } from 'react-native-elements';
 
@@ -48,10 +48,6 @@ const AulaDetalhe = (props: object) => {
   const [objAulaDetalhe, setObjAulaDetalhe] = React.useState(aulaDetalheVazio)
 
   const [overlayCancelarVisibility, setOverlayCancelarVisibility] = React.useState(false);
-
-const faz = () => {
-  setOverlayCancelarVisibility(false)
-}
 
   const verificaSePodecancelarAula = () => {
     let bPodeCancelar = false;
@@ -167,7 +163,8 @@ const faz = () => {
 
       <Appbar.Header statusBarHeight={0} style={{ height: 60, backgroundColor: '#212F3C' }}>
         <Appbar.Action icon="arrow-left-circle" size={30} onPress={_goBack} />
-        <Appbar.Content title="Detalhe Aula" />
+        <Appbar.Content title="Detalhe Aula" style={{alignItems:'center'}}/>
+        <Appbar.Action icon="arrow-left-circle" color='#212F3C' size={30}  />
       </Appbar.Header>
 
       <View style={styles.view_principal}>
@@ -274,7 +271,7 @@ const faz = () => {
 
         </View>
 
-        {(objAulaDetalhe.status == 'Pend. Confirmação' || objAulaDetalhe.status == 'Confirmada' || objAulaDetalhe.status == 'Reagendada') && (
+        {(objAulaDetalhe.status == 'Pend. Confirmação' || objAulaDetalhe.status == 'Confirmada') && (
           <View style={styles.item_action}>
             <RectButton style={styles.button} onPress={() => verificaSePodecancelarAula()}>
               <Text style={styles.buttonText}>Cancelar Aula</Text>

@@ -64,7 +64,7 @@ export default class uploadDocumento extends React.Component {
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: false,
             aspect: [4, 3],
-            quality: 0.5,
+            quality: 1,
           });
             
           if (!result.cancelled) {
@@ -91,7 +91,7 @@ export default class uploadDocumento extends React.Component {
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: false,
             aspect: [4, 3],
-            quality: 0,
+            quality: 1,
           });
             
           if (!result.cancelled) {
