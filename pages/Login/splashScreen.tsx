@@ -11,6 +11,8 @@ const  SplashScreen = () => {
 
   const navigation = useNavigation();
 
+  const [count, setCount] = React.useState(0)
+
   function handleNavigateToOnboarding() {
     navigation.navigate('Onboarding');
   }
@@ -61,6 +63,10 @@ const  SplashScreen = () => {
       return false
   }
 
+  navigation.addListener('focus', () => {
+    setCount(count+1)
+  })
+
   useEffect(() => {
     setTimeout(async () => {
       if (await usuarioEstaAutenticado()) {
@@ -73,7 +79,7 @@ const  SplashScreen = () => {
         handleNavigateToOnboarding()
     }, 3000);
     
-  }, [])
+  }, [count])
 
   while (!fontsLoaded) {
     return <View />;

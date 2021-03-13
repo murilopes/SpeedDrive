@@ -27,22 +27,22 @@ export default function App() {
 
 
     require('@formatjs/intl-pluralrules/polyfill');
-    require('@formatjs/intl-pluralrules/locale-data/br.js'); // USE YOUR OWN LANGUAGE OR MULTIPLE IMPORTS YOU WANT TO SUPPORT
+    require('@formatjs/intl-pluralrules/locale-data/pt-PT.js'); // USE YOUR OWN LANGUAGE OR MULTIPLE IMPORTS YOU WANT TO SUPPORT
 
     require('@formatjs/intl-displaynames/polyfill');
-    require('@formatjs/intl-displaynames/locale-data/br.js'); // USE YOUR OWN LANGUAGE OR MULTIPLE IMPORTS YOU WANT TO SUPPORT
+    require('@formatjs/intl-displaynames/locale-data/pt-PT.js'); // USE YOUR OWN LANGUAGE OR MULTIPLE IMPORTS YOU WANT TO SUPPORT
 
     require('@formatjs/intl-listformat/polyfill');
-    require('@formatjs/intl-listformat/locale-data/br.js'); // USE YOUR OWN LANGUAGE OR MULTIPLE IMPORTS YOU WANT TO SUPPORT
+    require('@formatjs/intl-listformat/locale-data/pt-PT.js'); // USE YOUR OWN LANGUAGE OR MULTIPLE IMPORTS YOU WANT TO SUPPORT
 
     require('@formatjs/intl-numberformat/polyfill');
-    require('@formatjs/intl-numberformat/locale-data/br.js'); // USE YOUR OWN LANGUAGE OR MULTIPLE IMPORTS YOU WANT TO SUPPORT
+    require('@formatjs/intl-numberformat/locale-data/pt-PT.js'); // USE YOUR OWN LANGUAGE OR MULTIPLE IMPORTS YOU WANT TO SUPPORT
 
     require('@formatjs/intl-relativetimeformat/polyfill');
-    require('@formatjs/intl-relativetimeformat/locale-data/br.js'); // USE YOUR OWN LANGUAGE OR MULTIPLE IMPORTS YOU WANT TO SUPPORT
+    require('@formatjs/intl-relativetimeformat/locale-data/pt-PT.js'); // USE YOUR OWN LANGUAGE OR MULTIPLE IMPORTS YOU WANT TO SUPPORT
 
     require('@formatjs/intl-datetimeformat/polyfill');
-    require('@formatjs/intl-datetimeformat/locale-data/br.js'); // USE YOUR OWN LANGUAGE OR MULTIPLE IMPORTS YOU WANT TO SUPPORT
+    require('@formatjs/intl-datetimeformat/locale-data/pt-PT.js'); // USE YOUR OWN LANGUAGE OR MULTIPLE IMPORTS YOU WANT TO SUPPORT
 
     require('@formatjs/intl-datetimeformat/add-golden-tz.js');
 

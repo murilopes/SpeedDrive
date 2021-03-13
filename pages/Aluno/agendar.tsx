@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import { Button, Overlay } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, Text, View, KeyboardAvoidingView, Platform, ScrollView} from 'react-native';
@@ -17,14 +17,22 @@ const  AlunoAgendar = () => {
 
   const navigation = useNavigation();
 
-  const _goBack = () => {
-    if(listAulas.length == 0)
-      navigation.goBack()
+  //Recebe parametro para poder tratar no caso de ter sido chamado pelo evento beforeRemove do Navigation
+  const _goBack = (e) => {
+    if(refListAulas.current.length == 0) {
+      if (e == undefined) {
+        navigation.goBack()
+      }        
+      else {
+        navigation.dispatch(e.data.action)
+      }        
+    }
     else
-    setOverlaySairVisibility(true)
+      setOverlaySairVisibility(true)
   }
 
   const confirmouSairSemSalvar = () => {
+    refListAulas.current = aulaInitialValue
     setOverlaySairVisibility(false)
     navigation.goBack()
   }
@@ -46,6 +54,8 @@ const  AlunoAgendar = () => {
   const [overlaySairVisibility, setOverlaySairVisibility] = useState(false);
   const [count, setcount] = useState(0);
   const [listAulas, setListAulas] = useState(aulaInitialValue);
+  //referencia para poder ter o valor atualizado da lista ao usar o evento 'beforeRemove' do navigation
+  const refListAulas = useRef(listAulas)
   const [actualDateOverlay, setActualDateOverlay] = useState(dateInitialValue);
   const [actualTimeExactOverlay, setActualTimeExactOverlay] = useState(horaInicial);
 
@@ -123,6 +133,8 @@ const  AlunoAgendar = () => {
     }    
 
     setListAulas(listAulas.concat({id: count, data, horarioInicio: horario, horarioFim: horarioFimCalculado}));
+    //atualizando a referencia para poder ter o valor atualizado da lista ao usar o evento 'beforeRemove' do navigation
+    refListAulas.current = listAulas.concat({id: count, data, horarioInicio: horario, horarioFim: horarioFimCalculado});
     toggleOverlayVisibility();
     setShowDatePicker(false);
     setShowTimePicker(false);
@@ -198,12 +210,22 @@ const  AlunoAgendar = () => {
       return (listAulas.length - qtdPendentesReagendamento) * precoPacote15
     else if (listAulas.length - qtdPendentesReagendamento >= 10)
       return (listAulas.length - qtdPendentesReagendamento) * precoPacote10
-    else
-    return (listAulas.length - qtdPendentesReagendamento) * precoUnitario
+    else{
+      if (listAulas.length - qtdPendentesReagendamento < 0) {
+        return listAulas.length * precoUnitario
+      } else {
+        return (listAulas.length - qtdPendentesReagendamento) * precoUnitario
+      }      
+    }    
   }
 
   useEffect(() => {
-    getQtdPendentesReagendamento()  
+    getQtdPendentesReagendamento()
+
+    navigation.addListener('beforeRemove', (e) => {   
+      e.preventDefault();      
+      _goBack(e)
+    })
    
   }, [])
 
@@ -212,7 +234,7 @@ const  AlunoAgendar = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
 
       <Appbar.Header statusBarHeight={0} style={{ height: 60, backgroundColor: '#212F3C' }}>
-        <Appbar.Action icon="arrow-left-circle" size={30} onPress={_goBack} />
+        <Appbar.Action icon="arrow-left-circle" size={30} onPress={() => _goBack(undefined)} />
         <Appbar.Content title="Agendamento" style={{alignItems:'center'}}/>
         <Appbar.Action icon="arrow-left-circle" color='#212F3C' size={30}  />
       </Appbar.Header>
@@ -300,7 +322,7 @@ const  AlunoAgendar = () => {
                         setShowDatePicker(false)
                         setActualDateOverlay(params.date);
                       }}                      
-                      locale={'pt-BR'} // optional, default is automically detected by your system
+                      locale={'pt-PT'} // optional, default is automically detected by your system
                       // onChange={} // same props as onConfirm but triggered without confirmed by user
                        saveLabel="Salvar" // optional
                        label="Selecione a data" // optional
@@ -325,7 +347,7 @@ const  AlunoAgendar = () => {
                       cancelLabel="Cancelar" // optional, default: 'Cancel'
                       confirmLabel="Salvar" // optional, default: 'Ok'
                       animationType="fade" // optional, default is 'none'
-                      locale={'pt-BR'} // optional, default is automically detected by your system
+                      locale={'pt-PT'} // optional, default is automically detected by your system
                     />
                     )}
                 </View>
@@ -423,7 +445,7 @@ const  AlunoAgendar = () => {
         onDismiss={() => setSnackMensagemVisible(false)}
         action={{
           label: 'OK',
-          onPress: _goBack,
+          onPress: () => confirmouSairSemSalvar(),
         }}>
         {snackMensagem}
       </Snackbar>
