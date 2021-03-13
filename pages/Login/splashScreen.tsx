@@ -54,8 +54,8 @@ const  SplashScreen = () => {
   const usuarioEstaAutenticado = async () => {
     const rawDadosUsuario = await userLib.getUserAuthData();
     if (rawDadosUsuario != undefined) {
-      const { token } = JSON.parse(rawDadosUsuario)
-      return await ValidaToken(token) ? true : false
+      const { token, id } = JSON.parse(rawDadosUsuario)
+      return await ValidaToken(token) && id != undefined && id != '' ? true : false
     }      
     else
       return false

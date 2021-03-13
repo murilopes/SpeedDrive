@@ -36,6 +36,23 @@ const  AlunoRealizadas = () => {
   const [snackMensagem, setSnackMensagem] = React.useState('');
   const [arrayAulasRealizadas, setArrayAulasRealizadas] = React.useState(Array<IAula>())
 
+  const corStatus = (status: string) => {
+    switch (status) {
+      case 'Remarcada':
+        return '#000000'
+      case 'Cancelada':
+        return '#C80000'
+      case 'Pend. Confirmação':
+        return '#F7C700'
+      case 'Confirmada':
+        return '#00AA4E'
+      case 'Realizada':
+        return '#0081DA'
+      default:
+        return '#000000'        
+    }
+  }
+
   const API = axios.create({
     baseURL: ConfigFile.API_SERVER_URL,
   });
@@ -98,7 +115,7 @@ const  AlunoRealizadas = () => {
             arrayAulasRealizadas.map((item, i) => (
               <View key={item._id} style={styles.item}>
                 <View style={styles.item_status}>
-                  <Icon name='circle' size={20} color='#0081DA'/>
+                <Icon name='circle' size={20} color={item.status ? corStatus(item.status)  : 'black'}/>
                 </View>
                 <View style={styles.item_detalhes}>
                   <Text style={styles.item_text_line}>

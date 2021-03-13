@@ -35,7 +35,7 @@ const Routes = () => {
   return (
     <NavigationContainer>
       <AppStack.Navigator
-        initialRouteName="AlunoDashboard"
+        initialRouteName="SplashScreen"
         headerMode="none"
         screenOptions={{
           cardStyle: {

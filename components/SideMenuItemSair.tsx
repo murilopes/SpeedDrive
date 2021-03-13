@@ -37,7 +37,6 @@ export default class SideMenuItemSair extends React.Component {
 
 const styles = StyleSheet.create({  
   menu_item_sair: {
-    marginTop: 20,
     height: 40,
     flexDirection: 'row',
     alignItems: 'center',

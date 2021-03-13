@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { Button, Overlay } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, Text, View, KeyboardAvoidingView, Platform, ScrollView} from 'react-native';
@@ -18,6 +18,14 @@ const  AlunoAgendar = () => {
   const navigation = useNavigation();
 
   const _goBack = () => {
+    if(listAulas.length == 0)
+      navigation.goBack()
+    else
+    setOverlaySairVisibility(true)
+  }
+
+  const confirmouSairSemSalvar = () => {
+    setOverlaySairVisibility(false)
     navigation.goBack()
   }
 
@@ -25,7 +33,7 @@ const  AlunoAgendar = () => {
       baseURL: ConfigFile.API_SERVER_URL,
     });
   
-  type AulaType = { id: number, data: Date, horario: Date};  
+  type AulaType = { id: number, data: Date, horarioInicio: Date, horarioFim: Date};  
   const aulaInitialValue:Array<AulaType> = []
   //10800000 corresponde a 3hr, para descontar no horario e calcular corretamente
   //const dateInitialValue:Date = new Date(Date.now()-10800000)
@@ -35,10 +43,15 @@ const  AlunoAgendar = () => {
 
   const [overlayVisibility, setoverlayVisibility] = useState(false);
   const [overlayAgendarVisibility, setOverlayAgendarVisibility] = useState(false);
+  const [overlaySairVisibility, setOverlaySairVisibility] = useState(false);
   const [count, setcount] = useState(0);
   const [listAulas, setListAulas] = useState(aulaInitialValue);
   const [actualDateOverlay, setActualDateOverlay] = useState(dateInitialValue);
   const [actualTimeExactOverlay, setActualTimeExactOverlay] = useState(horaInicial);
+
+  const[qtdPendentesReagendamento, setQtdPendentesReagendamento] = useState(0);
+
+  const[minutosDuracaoAula, setMinutosDuracaoAula] = useState(50);
   
   const [aulaSelecionadaRemocao, setAulaSelecionadaRemocao] = useState(0);
   const [overlayRemoverAulaVisibility, setOverlayRemoverAulaVisibility] = useState(false);  
@@ -57,6 +70,24 @@ const  AlunoAgendar = () => {
   const toggleOverlayVisibility = () => {
     setoverlayVisibility(!overlayVisibility);
   };
+
+  const getQtdPendentesReagendamento = async () => {
+    try { 
+      const { id, token } = JSON.parse(await userLib.getUserAuthData())
+
+      const resp = await API.get('/agendamento/qtdPendentesReagendamento/' + id, {headers: {Authorization: 'Bearer ' + token}})
+
+      if(resp.status == 200)
+      {
+        setQtdPendentesReagendamento(resp.data.qtdPendentesReagendamento)
+      }
+   } catch (error) {
+     console.log('Não conseguiu carregar qtd aulas reagendamento')
+     console.log(error.response.data.error)
+     setSnackMensagem(error.response.data.error)
+     setSnackMensagemVisible(true)
+   } 
+ }
 
   function apresentaHoraBonita(time: Date) {
     var horarioApresentacao = time.toLocaleTimeString('pr-BR', {
@@ -81,8 +112,17 @@ const  AlunoAgendar = () => {
   }
 
   const addAula = (data: Date, horario: Date) => { 
-    console.log('adding: ', data)   
-    setListAulas(listAulas.concat({id: count, data, horario}));
+    console.log('adding: ', data, horario)
+
+    var horarioFimCalculado = new Date(horario)
+    if (horarioFimCalculado.getMinutes() + minutosDuracaoAula >= 60) {
+      horarioFimCalculado.setHours(horarioFimCalculado.getHours() + 1)
+      horarioFimCalculado.setMinutes(horarioFimCalculado.getMinutes() + minutosDuracaoAula - 60)
+    } else {
+      horarioFimCalculado.setMinutes(horarioFimCalculado.getMinutes() + minutosDuracaoAula)
+    }    
+
+    setListAulas(listAulas.concat({id: count, data, horarioInicio: horario, horarioFim: horarioFimCalculado}));
     toggleOverlayVisibility();
     setShowDatePicker(false);
     setShowTimePicker(false);
@@ -114,7 +154,7 @@ const  AlunoAgendar = () => {
       console.log('depois: ', item.data.toISOString().replace(/T.*/,'').split('-').join('-'))
       objAulas.aulas.push({
         data: item.data.toISOString().replace(/T.*/,'').split('-').join('-'),
-        hora: apresentaHoraBonita(item.horario)
+        hora: apresentaHoraBonita(item.horarioInicio)
       })
     })
 
@@ -154,13 +194,18 @@ const  AlunoAgendar = () => {
   }
 
   const calculaValorTotalAgendamento = (): number => {
-    if (listAulas.length >= 15)
-      return listAulas.length * precoPacote15
-    else if (listAulas.length >= 10)
-      return listAulas.length * precoPacote10
+    if (listAulas.length - qtdPendentesReagendamento >= 15)
+      return (listAulas.length - qtdPendentesReagendamento) * precoPacote15
+    else if (listAulas.length - qtdPendentesReagendamento >= 10)
+      return (listAulas.length - qtdPendentesReagendamento) * precoPacote10
     else
-    return listAulas.length * precoUnitario
+    return (listAulas.length - qtdPendentesReagendamento) * precoUnitario
   }
+
+  useEffect(() => {
+    getQtdPendentesReagendamento()  
+   
+  }, [])
 
   return (
     <KeyboardAvoidingView style={styles.container_principal} 
@@ -190,6 +235,10 @@ const  AlunoAgendar = () => {
             <Text >{precoPacote15} reais cada</Text>
           </Text>
           <Text style={styles.item_text_line}>
+            <Text style={styles.item_text_title}>Aulas pendente reagendamento: </Text>
+            <Text style={{color: qtdPendentesReagendamento > 0 ? '#A3D6D4' : '#fff', fontWeight: qtdPendentesReagendamento > 0 ? 'bold' : 'normal'}}>{qtdPendentesReagendamento}</Text>
+          </Text>
+          <Text style={styles.item_text_line}>
             <Text style={styles.item_text_suave}>O pagamento não é tratado via aplicativo</Text>
           </Text>
         </View>
@@ -213,7 +262,7 @@ const  AlunoAgendar = () => {
                     </Text>
                     <Text style={styles.aula_item_text_line}>
                       <Text style={styles.aula_item_text_title}>Horário: </Text>
-                      <Text >{apresentaHoraBonita(item.horario)}</Text>
+                      <Text >{apresentaHoraBonita(item.horarioInicio)} até {apresentaHoraBonita(item.horarioFim)}</Text>
                     </Text>              
                   </View>
                   <View style={styles.item_action}>
@@ -250,10 +299,11 @@ const  AlunoAgendar = () => {
                       onConfirm={ (params) => {
                         setShowDatePicker(false)
                         setActualDateOverlay(params.date);
-                      }}
+                      }}                      
+                      locale={'pt-BR'} // optional, default is automically detected by your system
                       // onChange={} // same props as onConfirm but triggered without confirmed by user
-                      // saveLabel="Save" // optional
-                      // label="Select date" // optional
+                       saveLabel="Salvar" // optional
+                       label="Selecione a data" // optional
                       // animationType="slide" // optional, default is 'slide' on ios/android and 'none' on web
                     />
                     )}                
@@ -273,7 +323,7 @@ const  AlunoAgendar = () => {
                       minutes={0} // default: current minutes
                       label="Selecione o horário de início" // optional, default 'Select time'
                       cancelLabel="Cancelar" // optional, default: 'Cancel'
-                      confirmLabel="Ok" // optional, default: 'Ok'
+                      confirmLabel="Salvar" // optional, default: 'Ok'
                       animationType="fade" // optional, default is 'none'
                       locale={'pt-BR'} // optional, default is automically detected by your system
                     />
@@ -326,6 +376,27 @@ const  AlunoAgendar = () => {
       </>
       </Overlay>
 
+      <Overlay isVisible={overlaySairVisibility} overlayStyle={styles.overlay_agendar}>
+      <>
+        <View style={{flex: 1, alignItems: 'center'}}>
+          <Text style={{fontSize: 20, fontWeight: 'bold'}}>Dados não salvos</Text>
+          <Text style={{fontSize: 20, fontWeight: 'bold'}}>Deseja sair?</Text>
+        </View>
+        <View style={{flex: 1, flexDirection:'row', alignItems: 'center'}}>
+          <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', }} onTouchEnd={()=> setOverlaySairVisibility(false)}>
+            <RectButton style={styles.buttonNao}>
+              <Text style={styles.buttonNaoText}>Não</Text>
+            </RectButton>
+          </View>
+          <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', }} onTouchEnd={()=> confirmouSairSemSalvar()}>
+            <RectButton style={styles.buttonSimDelete}>
+              <Text style={styles.buttonSimText}>Sim</Text>
+            </RectButton>
+          </View>
+        </View>
+      </>
+      </Overlay>
+
       <Overlay isVisible={overlayRemoverAulaVisibility} overlayStyle={styles.overlay_agendar}>
       <>
         <View style={{flex: 1, alignItems: 'center'}}>
@@ -333,13 +404,13 @@ const  AlunoAgendar = () => {
           <Text style={{fontSize: 20, fontWeight: 'bold'}}>a aula?</Text>
         </View>
         <View style={{flex: 1, flexDirection:'row', alignItems: 'center'}}>
-          <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', }}>
-            <RectButton style={styles.buttonNao} onPress={()=> setOverlayRemoverAulaVisibility(false)} >
+          <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', }} onTouchEnd={()=> setOverlayRemoverAulaVisibility(false)} >
+            <RectButton style={styles.buttonNao} >
               <Text style={styles.buttonNaoText}>Não</Text>
             </RectButton>
           </View>
-          <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', }}>
-            <RectButton style={styles.buttonSimDelete} onPress={()=> removeAula(aulaSelecionadaRemocao)}>
+          <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', }} onTouchEnd={()=> removeAula(aulaSelecionadaRemocao)} >
+            <RectButton style={styles.buttonSimDelete} >
               <Text style={styles.buttonSimText}>Sim</Text>
             </RectButton>
           </View>
@@ -405,7 +476,7 @@ const styles = StyleSheet.create({
   },
 
   view_infos: {
-    height: 100,
+    height: 120,
     margin: 10,
     borderRadius: 8,
     borderColor: '#212F3C',
@@ -432,6 +503,8 @@ const styles = StyleSheet.create({
 
   item_detalhes:{
     flex: 4,
+    paddingTop: 3,
+    paddingBottom: 3,
   },
 
   item_text_line:{
@@ -497,7 +570,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     alignItems: 'center',
     marginStart: '15%',
-    borderWidth: 1
+    borderWidth: 1,
   },
 
   buttonNaoText: {
@@ -509,7 +582,6 @@ const styles = StyleSheet.create({
   aula_item_detalhes:{
     flex: 4,
   },
-
 
   aula_item_text_line:{
     flex: 1,
