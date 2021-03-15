@@ -10,11 +10,6 @@
         "version": "1.0.0",
         "orientation": "portrait",
         "icon": "./assets/icon4.png",
-        "splash": {
-            "image": "./assets/splash.png",
-            "resizeMode": "contain",
-            "backgroundColor": "#ffffff"
-        },
         "updates": {
             "fallbackToCacheTimeout": 0
         },
@@ -24,11 +19,11 @@
         "ios": {
             "supportsTablet": true,
             "bundleIdentifier": "com.muurilopes.speedDriveMobile",
-            "buildNumber": "1.0.0"
+            "buildNumber": "1.0.4"
         },
         "android": {
             "package": "com.muurilopes.speedDriveMobile",
-            "versionCode": 1
+            "versionCode": 4
         },
         "description": "App SpeedDrive mobile",
         "githubUrl": "https://github.com/murilopes/SpeedDrive"
