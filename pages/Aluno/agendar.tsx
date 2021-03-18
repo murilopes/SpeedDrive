@@ -6,7 +6,6 @@ import { Appbar, Snackbar } from 'react-native-paper';
 import { RectButton } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import moment from 'moment';
 import 'moment/locale/pt-br';
 import * as userLib from '../../lib/user'
 import ConfigFile from "../../config.json"
@@ -100,11 +99,7 @@ const  AlunoAgendar = () => {
  }
 
   function apresentaHoraBonita(time: Date) {
-    var horarioApresentacao = time.toLocaleTimeString('pr-BR', {
-      hour: '2-digit',
-      minute:'2-digit',
-      hour12: false
-    })
+    var horarioApresentacao = time.toTimeString()
 
     //Tratamento especifico pois no Android ficava apresentando os segundos indevidamente
     horarioApresentacao = horarioApresentacao.substring(0, 5)
@@ -442,7 +437,7 @@ const  AlunoAgendar = () => {
 
       <Snackbar
         visible={snackMensagemVisible}
-        onDismiss={() => setSnackMensagemVisible(false)}
+        onDismiss={() => confirmouSairSemSalvar()}
         action={{
           label: 'OK',
           onPress: () => confirmouSairSemSalvar(),
