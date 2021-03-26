@@ -11,7 +11,7 @@ import ConfigFile from "../../config.json"
 import * as userLib from '../../lib/user'
 import * as utilLib from '../../lib/util'
 import axios from "axios";
-import { RectButton } from 'react-native-gesture-handler';
+import { RectButton, TapGestureHandler } from 'react-native-gesture-handler';
 import moment from 'moment';
 import { Overlay } from 'react-native-elements';
 
@@ -49,8 +49,6 @@ const AulaDetalhe = (props: object) => {
   const [snackMensagem, setSnackMensagem] = React.useState('');
   const [objAulaDetalhe, setObjAulaDetalhe] = React.useState(aulaDetalheVazio)
   const [motivoCancelamento, setMotivoCancelamento] = React.useState('')
-
-  const [overlayCancelarVisibility, setOverlayCancelarVisibility] = React.useState(false);
 
   const [overlayMotivoCancelamentoAulaVisibility, setOverlayMotivoCancelamentoAulaVisibility] = React.useState(false);
   const [opacityContainerPrincipal, setOpacityContainerPrincipal] = React.useState(1);
@@ -213,7 +211,8 @@ const AulaDetalhe = (props: object) => {
 
       <Appbar.Header statusBarHeight={0} style={{ height: 60, backgroundColor: '#212F3C' }}>
         <Appbar.Action icon="arrow-left-circle" size={30} onPress={_goBack} />
-        <Appbar.Content title="Detalhe Aula" />
+        <Appbar.Content title="Detalhe Aula" style={{alignItems:'center'}} />        
+        <Appbar.Action icon="arrow-left-circle" color='#212F3C' size={30}  />
       </Appbar.Header>
       <ScrollView>
         <View style={styles.view_principal}>

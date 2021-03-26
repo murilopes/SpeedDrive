@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import {
-  Dimensions, StyleSheet, View, Text, ScrollView
+  Dimensions, StyleSheet, View, Text, ScrollView, SafeAreaView
 } from 'react-native';
 import { Appbar, Chip, Provider, Snackbar, DefaultTheme, TextInput as TextInputNativePaper,  } from 'react-native-paper';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -231,7 +231,8 @@ const disponibilidadesInstrutor = () => {
     >
       <Appbar.Header statusBarHeight={0} style={{ height: 60, backgroundColor: '#212F3C' }}>
         <Appbar.Action icon="arrow-left-circle" size={30} onPress={_goBack} />
-        <Appbar.Content title="Horários" />
+        <Appbar.Content title="Horários" style={{alignItems:'center'}}/>
+        <Appbar.Action icon="arrow-left-circle" color='#212F3C' size={30}  />
       </Appbar.Header>
 
       <View style={{opacity: opacityContainerPrincipal}}>
@@ -477,21 +478,21 @@ const disponibilidadesInstrutor = () => {
               </View>
             </View>
             
-            <View style={styles.overlay_disponibilidade_view_dados}>
-              <DropDown
-                theme={theme}
-                label={'Dia da semana'}
-                mode={'flat'}
-                value={adicionarDisponibilidadeDiaSemana}
-                setValue={setAdicionarDisponibilidadeDiaSemana}
-                list={DiaSemanaList}
-                visible={adicionarDisponibilidadeShowDropDownDiaSemana}
-                showDropDown={() => setAdicionarDisponibilidadeShowDropDownDiaSemana(true)}
-                onDismiss={() => setAdicionarDisponibilidadeShowDropDownDiaSemana(false)}
-                inputProps={{
-                  right: <TextInputNativePaper.Icon name={'menu-down'} />,
-                }}
-              />
+              <View style={styles.overlay_disponibilidade_view_dados}>
+                <DropDown
+                  theme={theme}
+                  label={'Dia da semana'}
+                  mode={'flat'}
+                  value={adicionarDisponibilidadeDiaSemana}
+                  setValue={setAdicionarDisponibilidadeDiaSemana}
+                  list={DiaSemanaList}
+                  visible={adicionarDisponibilidadeShowDropDownDiaSemana}
+                  showDropDown={() => setAdicionarDisponibilidadeShowDropDownDiaSemana(true)}
+                  onDismiss={() => setAdicionarDisponibilidadeShowDropDownDiaSemana(false)}
+                  inputProps={{
+                    right: <TextInputNativePaper.Icon name={'menu-down'} />,
+                  }}
+                />
               <TextInputNativePaper theme={theme} label="Horário Início (ex: 08:00)" value={adicionarDisponibilidadeInicio} returnKeyType={ 'done' }
                 render={props =><TextInputMask
                   {...props}

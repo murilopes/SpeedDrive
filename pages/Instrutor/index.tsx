@@ -9,6 +9,13 @@ import SideMenuItemSair from '../../components/SideMenuItemSair';
 import ConfigFile from "../../config.json"
 import * as userLib from '../../lib/user.ts'
 import axios from "axios";
+import { TapGestureHandler } from 'react-native-gesture-handler'
+import {
+  TouchableNativeFeedback,
+  TouchableHighlight,
+  TouchableOpacity as TouchableOpacity2,
+  TouchableWithoutFeedback,
+} from 'react-native-gesture-handler';
 
 const InstrutorDashboard = (props: any) => {
   
@@ -108,22 +115,40 @@ const InstrutorDashboard = (props: any) => {
   }, [count])
 
   const drawerContent = () => {
-    return (
-      <TouchableOpacity style={styles.animatedMenuBox}>
-        <View onTouchEnd={() => setMenuOpened(false)} style={{height: 100, flexDirection: 'row', alignItems: 'center'}}>
-          <Text style={styles.menu_text_voltar}>Fechar Menu</Text>
-        </View>
+    return (    
 
-        <SideMenuItem icon='cogs' text='Cadastro' onAction={() => _handleInstrutorCadastro(true)}/>
-        <SideMenuItem icon='check-circle' text='Aulas Realizadas' onAction={() => _handleAulasRealizadas(true)}/>
-        <SideMenuItem icon='exclamation-circle' text='Próximas Aulas' onAction={() => _handleProximasAulas(true)}/>
-        <SideMenuItem icon='list' text='Aprovações Pendentes' onAction={() => _handleAulasPendentesAprovacao(true)}/>
-        <SideMenuItem icon='car' text='Horários' onAction={() => _handleDisponibilidades(true)}/>
-        <SideMenuItem icon='envelope' text='Notificações' onAction={() => _handleNotificacoes(true)}/>
+      <TouchableOpacity style={styles.animatedMenuBox}>
+        <TouchableOpacity2 onPress={() => setMenuOpened(false)}>
+          <View style={{height: 100, flexDirection: 'row', alignItems: 'center'}}>
+            <Text style={styles.menu_text_voltar}>Fechar Menu</Text>
+          </View>
+        </TouchableOpacity2>
+
+        <TouchableOpacity2 onPress={() => _handleInstrutorCadastro(true)}>
+          <SideMenuItem icon='cogs' text='Cadastro'/>
+        </TouchableOpacity2>
+        <TouchableOpacity2 onPress={() => _handleAulasRealizadas(true)}>
+          <SideMenuItem icon='check-circle' text='Aulas Realizadas'/>
+        </TouchableOpacity2>
+        <TouchableOpacity2 onPress={() => _handleProximasAulas(true)}>
+          <SideMenuItem icon='exclamation-circle' text='Próximas Aulas'/>
+        </TouchableOpacity2>
+        <TouchableOpacity2 onPress={() => _handleAulasPendentesAprovacao(true)}>
+          <SideMenuItem icon='list' text='Aprovações Pendentes'/>
+        </TouchableOpacity2>
+        <TouchableOpacity2 onPress={() => _handleDisponibilidades(true)}>
+          <SideMenuItem icon='car' text='Horários'/>
+        </TouchableOpacity2>
+        <TouchableOpacity2 onPress={() => _handleNotificacoes(true)} style={{marginBottom: 20}}>
+          <SideMenuItem icon='envelope' text='Notificações'/>
+        </TouchableOpacity2>
         {/* <SideMenuItem icon='comments' text='Contato' onAction={() => {}}/> */}
-        <SideMenuItemSair icon='arrow-circle-left' text='Sair da conta' onAction={() => _handleSair(true)}/>
+        <TouchableOpacity2 onPress={() => _handleSair(true)}>
+          <SideMenuItemSair icon='arrow-circle-left' text='Sair da conta'/>
+        </TouchableOpacity2>
 
       </TouchableOpacity>
+      
     );
   };
 
@@ -141,10 +166,17 @@ const InstrutorDashboard = (props: any) => {
       >
 
         <Appbar.Header statusBarHeight={45} style={{height: 60, backgroundColor: '#212F3C'}}>
-          <Appbar.Action icon="menu" size={30} onPress={ _handleTouchMenu} />
-          <Appbar.Content onTouchEnd={() => setMenuOpened(false)} title={nomeCompleto} />
-          <Appbar.Action icon="bell" size={30} onPress={() => _handleNotificacoes(false)} />
+          <TouchableOpacity2 onPress={() => _handleTouchMenu()}>
+            <Appbar.Action icon="menu" color='white' size={30}/>
+          </TouchableOpacity2>
+          {/* ToDo: implementar comportamento de click para o texto do Content abaixo */}
+          <Appbar.Content onTouchEnd={() => setMenuOpened(false)} title={nomeCompleto} style={{alignItems: 'center'}}/>
+          <TouchableOpacity2 onPress={() => _handleNotificacoes(false)} >
+            <Appbar.Action icon="bell" color='white' size={30} />
+          </TouchableOpacity2>
         </Appbar.Header>
+
+
         <View style={{alignItems: 'center'}} onTouchEnd={() => setMenuOpened(false)}>
           <Avatar.Image 
             size={170}
@@ -155,57 +187,72 @@ const InstrutorDashboard = (props: any) => {
         
         <View style={styles.dash}>
           <View style={styles.dash_column}>
-            <View style={styles.item_dash_exterior}>
-              <View style={styles.item_dash_interior_1} onTouchEnd={() => _handleAulasPendentesAprovacao(false)}>
-                <View style={styles.item_dash_view_texto}>
-                  <Text style={styles.item_dash_texto_1}>Aprovações</Text>
-                </View>
-                <View style={styles.item_dash_view_texto}>
-                  <Text style={styles.item_dash_texto_2}>Pendentes</Text>
-                </View>
-                <View style={styles.item_dash_view_numero}>
-                  <Text style={styles.item_dash_texto_3}>{qtdAprovacoesPendentes}</Text>
-                </View>
-              </View>
-            </View>
-            <View style={styles.item_dash_exterior}>
-              <View style={styles.item_dash_interior_2} onTouchEnd={() => _handleInstrutorCadastro(false)}>
-                <View style={styles.item_dash_view_texto}>
-                  <Text style={styles.item_dash_texto_1}>Cadastro</Text>
-                </View>
-                <View style={styles.item_dash_view_texto}>
-                  <Text style={styles.item_dash_texto_2}>{statusCadastroOk ? 'Ok' : 'Pendente'}</Text>
-                </View>
-                <View style={styles.item_dash_view_numero}>
-                  {statusCadastroOk ? <Icon name= 'check-circle' color= 'green' size={90} /> : <Icon name= 'times-circle' color= 'red' size={90} />}
+
+            <TapGestureHandler onHandlerStateChange={() => _handleAulasPendentesAprovacao(false)}>
+              <View style={styles.item_dash_exterior}>
+                <View style={styles.item_dash_interior_1}>
+                  <View style={styles.item_dash_view_texto}>
+                    <Text style={styles.item_dash_texto_1}>Aprovações</Text>
+                  </View>
+                  <View style={styles.item_dash_view_texto}>
+                    <Text style={styles.item_dash_texto_2}>Pendentes</Text>
+                  </View>
+                  <View style={styles.item_dash_view_numero}>
+                    <Text style={styles.item_dash_texto_3}>{qtdAprovacoesPendentes}</Text>
+                  </View>
                 </View>
               </View>
-            </View>
+            </TapGestureHandler>
+
+            <TapGestureHandler onHandlerStateChange={() => _handleInstrutorCadastro(false)}>
+              <View style={styles.item_dash_exterior}>
+                <View style={styles.item_dash_interior_2}>
+                  <View style={styles.item_dash_view_texto}>
+                    <Text style={styles.item_dash_texto_1}>Cadastro</Text>
+                  </View>
+                  <View style={styles.item_dash_view_texto}>
+                    <Text style={styles.item_dash_texto_2}>{statusCadastroOk ? 'Ok' : 'Pendente'}</Text>
+                  </View>
+                  <View style={styles.item_dash_view_numero}>
+                    {statusCadastroOk ? <Icon name= 'check-circle' color= 'green' size={90} /> : <Icon name= 'times-circle' color= 'red' size={90} />}
+                  </View>
+                </View>
+              </View>
+            </TapGestureHandler>
+
           </View>
-          <View style={styles.dash_column}>
-            <View style={styles.item_dash_exterior}>
-              <View style={styles.item_dash_interior_3} onTouchEnd={() => _handleProximasAulas(false)}>
-                <View style={styles.item_dash_view_texto}>
-                  <Text style={styles.item_dash_texto_1}>Próximas</Text>
-                </View>
-                <View style={styles.item_dash_view_texto}>
-                  <Text style={styles.item_dash_texto_2}>Aulas</Text>
-                </View>
-                <View style={styles.item_dash_view_numero}>
-                  <Text style={styles.item_dash_texto_3}>{qtdProximasAulas}</Text>
-                </View>
-              </View>
-            </View>
-            <View style={styles.item_dash_exterior}>
-              <View style={styles.item_dash_interior_4} onTouchEnd={() => {_handleDisponibilidades(false)}}>
-                <View style={styles.item_dash_view_agendar}>
-                  <Text style={styles.item_dash_texto_agendar}>Horários</Text>
-                </View>
-                <View style={styles.item_dash_view_numero}>
-                  <Icon name= 'plus' color= 'purple' size={90} />
+
+          <View style={styles.dash_column}>            
+
+            <TapGestureHandler onHandlerStateChange={() => _handleProximasAulas(false)}>
+              <View style={styles.item_dash_exterior}>
+                <View style={styles.item_dash_interior_3} >
+                  <View style={styles.item_dash_view_texto}>
+                    <Text style={styles.item_dash_texto_1}>Próximas</Text>
+                  </View>
+                  <View style={styles.item_dash_view_texto}>
+                    <Text style={styles.item_dash_texto_2}>Aulas</Text>
+                  </View>
+                  <View style={styles.item_dash_view_numero}>
+                    <Text style={styles.item_dash_texto_3}>{qtdProximasAulas}</Text>
+                  </View>
                 </View>
               </View>
-            </View>
+            </TapGestureHandler>
+
+            <TapGestureHandler onHandlerStateChange={() => _handleDisponibilidades(false)}>
+              <View style={styles.item_dash_exterior}>
+                <View style={styles.item_dash_interior_4}>
+                  <View style={styles.item_dash_view_agendar}>
+                    <Text style={styles.item_dash_texto_agendar}>Horários</Text>
+                  </View>
+                  <View style={styles.item_dash_view_numero}>
+                    <Icon name= 'plus' color= 'purple' size={90} />
+                  </View>
+                </View>
+              </View>
+            </TapGestureHandler>
+            
           </View>
         </View>
 

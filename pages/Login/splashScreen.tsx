@@ -77,7 +77,7 @@ const  SplashScreen = () => {
       }        
       else
         handleNavigateToOnboarding()
-    }, 3000);
+    }, 3000000);
     
   }, [count])
 
@@ -87,11 +87,16 @@ const  SplashScreen = () => {
 
   return (
     <KeyboardAvoidingView style={styles.container_principal}>
-      <View style={styles.view_splash}>
-        <View style={styles.view_interna}>
-          <Text style={styles.Titulo}>SPEED DRIVE</Text>
-          <Image source={require('../../assets/cth.png')} resizeMode='center'></Image>
-        </View>
+      <View style={styles.view_texto}>
+        <Text style={{}}>
+          <Text style={styles.titulo_amarelo}>Speed </Text>
+          <Text style={styles.titulo_vermelho}>Drive</Text>
+        </Text>
+      </View>
+      <View style={styles.view_imagem}>
+        <Image source={require('../../assets/cth3.png')} resizeMode= 'center'></Image>
+      </View>
+      <View style={styles.view_vazia}>        
       </View>
     </KeyboardAvoidingView>
   );
@@ -104,26 +109,30 @@ const styles = StyleSheet.create({
   container_principal: {
     flex: 1,
     backgroundColor: 'black',
-    justifyContent: 'center',
     alignItems: 'center'
   },
 
-  view_splash: {
-    alignItems: 'center',
+  view_texto: {
+    flex: 2,
+    justifyContent: 'flex-end',
   },
 
-  view_interna: {
-    alignItems: 'center',
+  view_imagem: {
+    flex: 1,
   },
 
-  Titulo: {
+  view_vazia: {
+    flex: 4,
+  },
+
+  titulo_vermelho: {
     fontSize: 55,
     fontFamily: 'Roboto_500Medium',
     color: "#C80000",
   },
 
-  DescricaoMaior: {
-    fontSize: 25,
+  titulo_amarelo: {
+    fontSize: 55,
     fontFamily: 'Roboto_500Medium',
     color: '#F7C700',
   },  
