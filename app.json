@@ -19,7 +19,7 @@
         "ios": {
             "supportsTablet": true,
             "bundleIdentifier": "com.muurilopes.speedDriveMobile",
-            "buildNumber": "1.0.4"
+            "buildNumber": "1.0.6"
         },
         "android": {
             "package": "com.muurilopes.speedDriveMobile",

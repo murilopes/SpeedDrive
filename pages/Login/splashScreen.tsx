@@ -77,7 +77,7 @@ const  SplashScreen = () => {
       }        
       else
         handleNavigateToOnboarding()
-    }, 3000000);
+    }, 3000);
     
   }, [count])
 
