@@ -55,7 +55,7 @@ export default class uploadDocumento extends React.Component {
     const pickImageFromLibrary = async () => {
 
       if (Platform.OS !== 'web') {
-        const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (status !== 'granted') {
           alert('Desculpa, precisamos de acesso ao rolo de foto para essa funcionalidade! \n Caso mude de ideia, altere via ajustes de configurações de suas aplicações');
         }
