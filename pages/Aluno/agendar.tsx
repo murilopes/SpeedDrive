@@ -72,15 +72,15 @@ const  AlunoAgendar = () => {
   const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
   const [snackMensagem, setSnackMensagem] = React.useState('');
 
-  const [precoUnitario, setPrecoUnitario] = React.useState(60);
-  const [precoPacote10, setPrecoPacote10] = React.useState(50);
-  const [precoPacote15, setPrecoPacote15] = React.useState(45);
+  const [precoUnitario, setPrecoUnitario] = React.useState(0);
+  const [precoPacote10, setPrecoPacote10] = React.useState(0);
+  const [precoPacote15, setPrecoPacote15] = React.useState(0);
 
   const toggleOverlayVisibility = () => {
     setoverlayVisibility(!overlayVisibility);
   };
 
-  const getQtdPendentesReagendamento = async () => {
+  const buscaQtdPendentesReagendamento = async () => {
     try { 
       const { id, token } = JSON.parse(await userLib.getUserAuthData())
 
@@ -97,6 +97,26 @@ const  AlunoAgendar = () => {
      setSnackMensagemVisible(true)
    } 
  }
+
+ const buscaValorAulas = async () => {
+  try { 
+    const { id, token } = JSON.parse(await userLib.getUserAuthData())
+
+    const resp = await API.get('/empresa/60e517b4cfe23a0013cbd824', {headers: {Authorization: 'Bearer ' + token}})
+
+    if(resp.status == 200)
+    {
+      setPrecoUnitario(resp.data.empresa.valorAulaUnitario)
+      setPrecoPacote10(resp.data.empresa.valor10Aulas)
+      setPrecoPacote15(resp.data.empresa.valor15Aulas)
+    }
+ } catch (error) {
+   console.log('Não conseguiu carregar valor das aulas')
+   console.log(error.response.data.error)
+   setSnackMensagem(error.response.data.error)
+   setSnackMensagemVisible(true)
+ } 
+}
 
   function apresentaHoraBonita(time: Date) {
     var horarioApresentacao = time.toTimeString()
@@ -215,7 +235,8 @@ const  AlunoAgendar = () => {
   }
 
   useEffect(() => {
-    getQtdPendentesReagendamento()
+    buscaQtdPendentesReagendamento()
+    buscaValorAulas()
 
     navigation.addListener('beforeRemove', (e) => {   
       e.preventDefault();      
