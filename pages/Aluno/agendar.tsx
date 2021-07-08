@@ -12,7 +12,7 @@ import ConfigFile from "../../config.json"
 import axios from "axios";
 import { DatePickerModal, TimePickerModal  } from 'react-native-paper-dates';
 
-const  AlunoAgendar = () => {
+const  AlunoAgendar = () => { 
 
   const navigation = useNavigation();
 
@@ -73,8 +73,8 @@ const  AlunoAgendar = () => {
   const [snackMensagem, setSnackMensagem] = React.useState('');
 
   const [precoUnitario, setPrecoUnitario] = React.useState(0);
+  const [precoPacote6, setPrecoPacote6] = React.useState(0);
   const [precoPacote10, setPrecoPacote10] = React.useState(0);
-  const [precoPacote15, setPrecoPacote15] = React.useState(0);
 
   const toggleOverlayVisibility = () => {
     setoverlayVisibility(!overlayVisibility);
@@ -107,8 +107,8 @@ const  AlunoAgendar = () => {
     if(resp.status == 200)
     {
       setPrecoUnitario(resp.data.empresa.valorAulaUnitario)
+      setPrecoPacote6(resp.data.empresa.valor6Aulas)
       setPrecoPacote10(resp.data.empresa.valor10Aulas)
-      setPrecoPacote15(resp.data.empresa.valor15Aulas)
     }
  } catch (error) {
    console.log('Não conseguiu carregar valor das aulas')
@@ -221,10 +221,10 @@ const  AlunoAgendar = () => {
   }
 
   const calculaValorTotalAgendamento = (): number => {
-    if (listAulas.length - qtdPendentesReagendamento >= 15)
-      return (listAulas.length - qtdPendentesReagendamento) * precoPacote15
-    else if (listAulas.length - qtdPendentesReagendamento >= 10)
+    if (listAulas.length - qtdPendentesReagendamento >= 10)
       return (listAulas.length - qtdPendentesReagendamento) * precoPacote10
+    else if (listAulas.length - qtdPendentesReagendamento >= 6)
+      return (listAulas.length - qtdPendentesReagendamento) * precoPacote6
     else{
       if (listAulas.length - qtdPendentesReagendamento < 0) {
         return listAulas.length * precoUnitario
@@ -265,12 +265,12 @@ const  AlunoAgendar = () => {
             <Text>{precoUnitario} reais</Text>
           </Text>
           <Text style={styles.item_text_line}>
-            <Text style={styles.item_text_title}>Pacote com 10 aulas: </Text>
-            <Text >{precoPacote10} reais cada</Text>
+            <Text style={styles.item_text_title}>Pacote com 6 aulas: </Text>
+            <Text >{precoPacote6} reais cada</Text>
           </Text>
           <Text style={styles.item_text_line}>
-            <Text style={styles.item_text_title}>Pacote com 15 aulas ou mais: </Text>
-            <Text >{precoPacote15} reais cada</Text>
+            <Text style={styles.item_text_title}>Pacote com 10 aulas ou mais: </Text>
+            <Text >{precoPacote10} reais cada</Text>
           </Text>
           <Text style={styles.item_text_line}>
             <Text style={styles.item_text_title}>Aulas pendente reagendamento: </Text>
