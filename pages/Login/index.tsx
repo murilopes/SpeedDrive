@@ -56,6 +56,7 @@ const  Login = () => {
   const [overlayCriaContaVisibility, setOverlayCriaContaVisibility] = useState(false);
   const [criarContaShowDropDownPapel, setCriarContaShowDropDownPapel] = useState(false);
   const [criarContaPapel, setCriarContaPapel] = useState('aluno');
+  const [criarContaWhatsapp, setCriarContaWhatsapp] = React.useState('');
   const [criarContaNome, setCriarContaNome] = React.useState('');
   const [criarContaEmail, setCriarContaEmail] = React.useState('');
   const [criarContaSenha, setCriarContaSenha] = React.useState('');
@@ -79,6 +80,7 @@ const  Login = () => {
       setOverlayCriaContaVisibility(false)
       setOpacityContainerPrincipal(1)
       setCriarContaNome('')
+      setCriarContaWhatsapp('')
       setCriarContaEmail('')
       setCriarContaSenha('')
       setCriarContaRepetirSenha('')
@@ -237,6 +239,7 @@ const  Login = () => {
     else {
       var userData = {
         nome: criarContaNome,
+        whatsapp: criarContaWhatsapp,
         email: criarContaEmail,
         senha: criarContaSenha
       };
@@ -439,6 +442,7 @@ const  Login = () => {
               }}
             />
             <TextInputNativePaper theme={theme} label="Primeiro Nome" value={criarContaNome} onChangeText={text => setCriarContaNome(text)}/>
+            <TextInputNativePaper theme={theme} label="WhatsApp" value={criarContaWhatsapp} onChangeText={text => setCriarContaWhatsapp(text)}/>
             <TextInputNativePaper theme={theme} label="E-mail" value={criarContaEmail} onChangeText={text => setCriarContaEmail(text)}/>
             <TextInputNativePaper secureTextEntry={true} theme={theme} label="Senha" value={criarContaSenha} onChangeText={text => setCriarContaSenha(text)}/>
             <TextInputNativePaper secureTextEntry={true} theme={theme} label="Repetir Senha" value={criarContaRepetirSenha} onChangeText={text => setCriarContaRepetirSenha(text)}/>
@@ -849,7 +853,7 @@ const styles = StyleSheet.create({
   },
 
   overlay_criar_conta: {
-    height: 585,
+    height: 665,
     width: 355,
     borderRadius: 8,
     backgroundColor: '#212F3C',
