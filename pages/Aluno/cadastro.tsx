@@ -264,7 +264,7 @@ const AlunoCadastro = () => {
     getAluno().then(
       (aluno) => {
         if (aluno)
-        setObjAluno(aluno)
+          setObjAluno(aluno)
       }
     ) 
     

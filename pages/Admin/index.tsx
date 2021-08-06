@@ -51,6 +51,12 @@ const AdminDashboard = (props: any) => {
     if (origemMenuLateral || !menuOpened)     
       navigation.navigate('Notificacoes');
   }
+  const _handleConfiguracoes = (origemMenuLateral: boolean) => {
+    setMenuOpened(false)
+    if (origemMenuLateral || !menuOpened)     
+      navigation.navigate('AdminConfiguracoes');
+  }
+
   const _handleTouchMenu = async () => {
     menuOpened ? setMenuOpened(false) : setMenuOpened(true)
   };
@@ -115,6 +121,8 @@ const AdminDashboard = (props: any) => {
           <Text style={styles.menu_text_voltar}>Fechar Menu</Text>
         </View>
 
+        <SideMenuItem icon='book' text='Configurações' onAction={() => _handleConfiguracoes(true)}/>
+        
         <SideMenuItem icon='cogs' text='Cadastro' onAction={() => _handleInstrutorCadastro(true)}/>
         <SideMenuItem icon='check-circle' text='Aulas Realizadas' onAction={() => _handleAulasRealizadas(true)}/>
         <SideMenuItem icon='exclamation-circle' text='Próximas Aulas' onAction={() => _handleProximasAulas(true)}/>

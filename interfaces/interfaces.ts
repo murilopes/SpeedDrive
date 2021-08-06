@@ -23,3 +23,18 @@ export interface IAluno {
 export interface IAlunoTelaDadosPessoais extends IAluno {
   dataNascimentoFormatada?: string
 }
+
+export interface IEmpresa {
+  _id?: string,
+  razaoSocial?: string,
+  nomeFantasia?: string,
+  CNPJ?: string,
+  telefone?: string,
+  email?: string,
+  endereco?: string,
+  latitude?: number,
+  longitude?: number,
+  valorAulaUnitario?: number,
+  valor6Aulas?: number,
+  valor10Aulas?: number  
+}

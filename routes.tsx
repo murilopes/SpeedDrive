@@ -28,6 +28,7 @@ import AulaAprovacaoInstrutor from './pages/Instrutor/aulaAprovacao';
 import InstrutorDisponibilidades from './pages/Instrutor/disponibilidades';
 import UploadDocumento from './pages/Comum/uploadDocumento';
 import Notificacoes from './pages/Comum/notificacoes';
+import AdminConfiguracoes from './pages/Admin/configuracoes';
 
 const AppStack = createStackNavigator();
 
@@ -49,7 +50,8 @@ const Routes = () => {
         <AppStack.Screen name="Login" component={Login} />
         <AppStack.Screen name="AlunoDashboard" component={AlunoDashboard} />
         <AppStack.Screen name="InstrutorDashboard" component={InstrutorDashboard} />
-        <AppStack.Screen name="AdminDashboard" component={AdminDashboard} />
+        <AppStack.Screen name="AdminDashboard" component={AdminDashboard} />        
+        <AppStack.Screen name="AdminConfiguracoes" component={AdminConfiguracoes} />
         <AppStack.Screen name="AlunoRealizadas" component={AlunoRealizadas} />
         <AppStack.Screen name="InstrutorRealizadas" component={InstrutorRealizadas} />
         <AppStack.Screen name="AlunoProximas" component={AlunoProximas} />
