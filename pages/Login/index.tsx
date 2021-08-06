@@ -190,6 +190,9 @@ const  Login = () => {
         if(UserAuthData.tipoUsuario == 'instrutor'){
           handleNavigateToInstrutorDashboard()
         }
+        if(UserAuthData.tipoUsuario == 'admin'){
+          handleNavigateToAdminDashboard()
+        }
       }
 
     } catch (error) {
