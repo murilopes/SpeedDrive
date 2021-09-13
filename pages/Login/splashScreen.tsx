@@ -63,12 +63,33 @@ const  SplashScreen = () => {
       return false
   }
 
+  const getBackendIpDinamically = async () => {
+
+    try {
+
+      const resp = await API.get('https://mjlio6bg8h.execute-api.sa-east-1.amazonaws.com/Dev/backend/ip')
+
+      if(resp.status == 200)
+      {
+        console.log('Conseguiu dados do server backend') 
+        console.log(resp.data.ip)
+        ConfigFile.API_SERVER_URL = resp.data.ip
+      }
+    } catch (error) {
+      console.log('Não conseguiu dados do server backend')
+      console.log(error)
+    } 
+  }
+
   navigation.addListener('focus', () => {
     setCount(count+1)
   })
 
   useEffect(() => {
     setTimeout(async () => {
+
+      getBackendIpDinamically()
+
       if (await usuarioEstaAutenticado()) {
         const {tipoUsuario} = JSON.parse(await userLib.getUserAuthData())
         if (tipoUsuario == 'aluno') handleNavigateToAlunoDashboard()
