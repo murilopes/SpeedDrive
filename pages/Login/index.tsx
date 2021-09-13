@@ -211,16 +211,16 @@ const  Login = () => {
     resp.data = objeto devolvido pelo backend como resposta
     */   
   }
-
-  const CriarConta = async () => {
-
-    if(criarContaPapel != 'aluno' && criarContaPapel != 'instrutor') {
-      setMensagemErroOverlay('Escolha o Tipo de Conta')
-      setSnackErroOverlayVisible(true)
-    }
-
-    else if(criarContaNome == '' || criarContaEmail == '' || criarContaSenha == '' || criarContaRepetirSenha == '') {
-      setMensagemErroOverlay('Preencha todos os campos')
+   
+   const CriarConta = async () => {
+     
+     if(criarContaPapel != 'aluno' && criarContaPapel != 'instrutor') {
+       setMensagemErroOverlay('Escolha o Tipo   de Conta')
+       setSnackErroOverlayVisible(true)
+      }
+      
+      else if(criarContaNome == '' || criarContaWhatsapp == '' || criarContaEmail == '' || criarContaSenha == '' || criarContaRepetirSenha == '') {
+        setMensagemErroOverlay('Preencha todos os campos')
       setSnackErroOverlayVisible(true)
     }
 
