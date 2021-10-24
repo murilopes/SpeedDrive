@@ -140,8 +140,15 @@ const AlunoCadastro = (props: object) => {
 
   const pickImage = async () => {
 
+    //Se o acesso à essa tela tiver sido atrave de impersonate, não deve deixar trocar a foto
+    if (props.route.params.idAlunoImpersonate) {
+      setSnackMensagem('Admin não pode mudar foto do aluno')
+      setSnackMensagemVisible(true)
+      return
+    }    
+
     if (Platform.OS !== 'web') {
-      const { status } = await ImagePicker.requestCameraRollPermissionsAsync();
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== 'granted') {
         alert('Desculpa, precisamos de acesso ao rolo de foto para isso!');
       }
