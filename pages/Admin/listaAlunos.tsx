@@ -2,13 +2,11 @@ import React, { useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, Text, View, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { Appbar, Avatar, Snackbar } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { RectButton } from 'react-native-gesture-handler';
 import ConfigFile from "../../config.json"
 import * as userLib from '../../lib/user'
 import * as utilLib from '../../lib/util'
 import axios from "axios";
-import { DateTimePickerResult } from '@react-native-community/datetimepicker';
 
 interface IAluno {
   _id: string,
@@ -26,13 +24,14 @@ const  ListaAlunos = () => {
   const _goBack = () => {
     navigation.goBack()
   }
-  const _handleAulaDetalheInstrutor = (idAgendamento: string) => {
-    navigation.navigate('AulaDetalheInstrutor', {idAgendamento});
-  }
 
   const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
   const [snackMensagem, setSnackMensagem] = React.useState('');
   const [arrayAlunos, setArrayAlunos] = React.useState(Array<IAluno>())
+
+  const _handleCadastroAluno = (idAluno: string, nomeAluno: string) => {
+    navigation.navigate('AlunoCadastro', {idAlunoImpersonate: idAluno, nomeAlunoImpersonate: nomeAluno});
+  };
 
   const API = axios.create({
     baseURL: ConfigFile.API_SERVER_URL,
@@ -115,7 +114,7 @@ const  ListaAlunos = () => {
                   
                 </View>
                 <View style={styles.item_action}>
-                  <RectButton style={styles.button} onPress={() => _handleAulaDetalheInstrutor(item._id)}>
+                  <RectButton style={styles.button} onPress={() => _handleCadastroAluno(item._id, item.nome)}>
                     <Text style={styles.buttonText}>Cadastro</Text>
                   </RectButton>
                 </View >

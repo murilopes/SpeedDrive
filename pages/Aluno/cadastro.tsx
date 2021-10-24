@@ -32,7 +32,7 @@ interface IAluno {
   urlCarteiraHabilitacao?: string,  
 }
 
-const AlunoCadastro = () => {
+const AlunoCadastro = (props: object) => {
   const navigation = useNavigation();
 
   const _goBack = () => {
@@ -235,7 +235,7 @@ const AlunoCadastro = () => {
     try {
 
       const { id, token } = JSON.parse(await userLib.getUserAuthData())
-      const resp = await API.get('/aluno/' + id, 
+      const resp = await API.get('/aluno/' + props.route.params.idAlunoImpersonate ?? id, 
       {
         headers: 
         {
@@ -277,7 +277,7 @@ const AlunoCadastro = () => {
     >
       <Appbar.Header statusBarHeight={0} style={{height: 60, backgroundColor: '#212F3C'}}>
         <Appbar.Action icon="arrow-left-circle" size={30} onPress={_goBack} />
-        <Appbar.Content title="Cadastro" style={{alignItems:'center'}}/>
+        <Appbar.Content title={`Cadastro ${props.route.params.nomeAlunoImpersonate}`} style={{alignItems:'center'}}/>
         <Appbar.Action icon="arrow-left-circle" color='#212F3C' size={30}  />
       </Appbar.Header>
 
