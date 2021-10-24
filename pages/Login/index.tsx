@@ -153,10 +153,14 @@ const  Login = () => {
 
   const Entrar = async () => {
 
+    console.log(ConfigFile.API_SERVER_URL)
+
     var userData = {
       email, 
       senha: password 
     }; 
+
+    console.log(userData)
 
    /*  var userData = {
       email: 'pedro.dog@hotmail.com', 
@@ -164,6 +168,7 @@ const  Login = () => {
     }; */
     
     try {
+      
       const resp = await API.post('/auth/autenticar', userData)
       if(resp.status == 200)
       {
