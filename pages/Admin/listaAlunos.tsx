@@ -1,24 +1,22 @@
 import React, { useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, Text, View, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
-import { Appbar, Snackbar } from 'react-native-paper';
+import { Appbar, Avatar, Snackbar } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { RectButton } from 'react-native-gesture-handler';
 import ConfigFile from "../../config.json"
 import * as userLib from '../../lib/user'
 import * as utilLib from '../../lib/util'
 import axios from "axios";
+import { DateTimePickerResult } from '@react-native-community/datetimepicker';
 
-interface IAula {
+interface IAluno {
   _id: string,
-  horarioInicio: string,
-  horarioFim: string,
-  status: string,
-  instrutor: IInstrutor,
-}
-
-interface IInstrutor {
-  nome: string
+  nome: string,
+  sobrenome: string,
+  urlFotoPerfil: string,
+  isCadastroCompleto: boolean,
+  createAt: string,
 }
 
 const  ListaAlunos = () => {
@@ -34,30 +32,13 @@ const  ListaAlunos = () => {
 
   const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
   const [snackMensagem, setSnackMensagem] = React.useState('');
-  const [arrayAulasRealizadas, setArrayAulasRealizadas] = React.useState(Array<IAula>())
-
-  const corStatus = (status: string) => {
-    switch (status) {
-      case 'Remarcada':
-        return '#000000'
-      case 'Cancelada':
-        return '#C80000'
-      case 'Pend. Confirmação':
-        return '#F7C700'
-      case 'Confirmada':
-        return '#00AA4E'
-      case 'Realizada':
-        return '#0081DA'
-      default:
-        return '#000000'        
-    }
-  }
+  const [arrayAlunos, setArrayAlunos] = React.useState(Array<IAluno>())
 
   const API = axios.create({
     baseURL: ConfigFile.API_SERVER_URL,
   });
 
-  const getAulasRealizadas = async () => {
+  const getListaAlunos = async () => {
 
     try {            
       const { id, token } = JSON.parse(await userLib.getUserAuthData())
@@ -66,7 +47,7 @@ const  ListaAlunos = () => {
         idUsuario: id,
       };
 
-      const resp = await API.get('/agendamento/historico/' + reqData.idUsuario, 
+      const resp = await API.get('/aluno/', 
       {
         headers: 
         {
@@ -76,12 +57,14 @@ const  ListaAlunos = () => {
 
       if(resp.status == 200)
       {
-        console.log('Conseguiu carregar info realizadas')        
-        const arrayAulas:Array<IAula> = resp.data.aulas
-        return arrayAulas
+        console.log('Conseguiu carregar lista alunos')     
+        console.log(resp)   
+        const arrayAlunos:Array<IAluno> = resp.data.alunos
+        
+        return arrayAlunos
       }
     } catch (error) {
-      console.log('Não conseguiu carregar info realizadas')
+      console.log('Não conseguiu carregar lista alunos')
       console.log(error.response.data.error)
       setSnackMensagem(error.response.data.error)
       setSnackMensagemVisible(true)
@@ -89,10 +72,10 @@ const  ListaAlunos = () => {
   }
 
   useEffect(() => {
-    getAulasRealizadas().then(
-      (aulasRealizadas) => {
-        if (aulasRealizadas)
-        setArrayAulasRealizadas(aulasRealizadas)
+    getListaAlunos().then(
+      (listaAlunos) => {
+        if (listaAlunos)
+        setArrayAlunos(listaAlunos)
       }
     ) 
   }, [])
@@ -103,7 +86,7 @@ const  ListaAlunos = () => {
 
       <Appbar.Header statusBarHeight={0} style={{height: 60, backgroundColor: '#212F3C'}}>
         <Appbar.Action icon="arrow-left-circle" size={30} onPress={_goBack} />        
-        <Appbar.Content  title="Histórico de aulas" style={{alignItems:'center'}}/>
+        <Appbar.Content  title="Alunos" style={{alignItems:'center'}}/>
         <Appbar.Action icon="arrow-left-circle" color='#212F3C' size={30}  />
         
       </Appbar.Header>
@@ -112,32 +95,28 @@ const  ListaAlunos = () => {
         <View style={styles.view_items} >
           
           {
-            arrayAulasRealizadas.map((item, i) => (
+            arrayAlunos.map((item, i) => (
               <View key={item._id} style={styles.item}>
                 <View style={styles.item_status}>
-                <Icon name='circle' size={20} color={item.status ? corStatus(item.status)  : 'black'}/>
+                  <Avatar.Image 
+                    size={55} 
+                    source={{uri: item.urlFotoPerfil ? item.urlFotoPerfil : ConfigFile.URL_IMAGEM_NAO_ENCONTRADA}}
+                    style={{ borderColor: item.isCadastroCompleto ? 'green' : 'red', borderWidth: 2, overflow: 'hidden' }}
+                  />
                 </View>
+                
                 <View style={styles.item_detalhes}>
                   <Text style={styles.item_text_line}>
-                    <Text style={styles.item_text_title}>Status: </Text>
-                    <Text>{item.status ? item.status : ''}</Text>
+                    <Text style={styles.item_text_title}>{item.nome} {utilLib.retornaUltimoNome(item?.sobrenome)}</Text>
                   </Text>
                   <Text style={styles.item_text_line}>
-                    <Text style={styles.item_text_title}>Data: </Text>
-                    <Text>{ item.horarioInicio ? utilLib.formataDataParaExibicaoDataFriendly(item.horarioInicio) : ''}</Text>
+                    <Text >{`Criado há ${utilLib.retornaQtdDias(item.createAt)} dia(s)`}</Text>
                   </Text>
-                  <Text style={styles.item_text_line}>
-                    <Text style={styles.item_text_title}>Horário início: </Text>
-                    <Text>{ item.horarioInicio ? utilLib.formataDataParaExibicaoHorarioFriendly(item.horarioInicio) : ''}</Text>
-                  </Text>
-                  <Text style={styles.item_text_line}>
-                    <Text style={styles.item_text_title}>Instrutor: </Text>
-                    <Text>{(item.instrutor) ? item.instrutor.nome: ''}</Text>
-                  </Text>
+                  
                 </View>
                 <View style={styles.item_action}>
                   <RectButton style={styles.button} onPress={() => _handleAulaDetalheInstrutor(item._id)}>
-                    <Text style={styles.buttonText}>Detalhe</Text>
+                    <Text style={styles.buttonText}>Cadastro</Text>
                   </RectButton>
                 </View >
               </View>
@@ -183,16 +162,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#F1F1F1',
     width: '95%',
     marginTop: 15,
+    paddingTop: 5,
+    paddingBottom: 5,
+    paddingLeft: 5,
   },
 
   item_status:{
-    flex: 1,
+    flex: 2,
     alignItems: 'center',
     justifyContent: 'center'
   },
 
   item_detalhes:{
-    flex: 4,
+    flex: 5,
   },
 
   item_action:{
@@ -209,7 +191,8 @@ const styles = StyleSheet.create({
 
   item_text_title:{
     flex: 1,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    fontSize: 20
   },
 
   button: {
