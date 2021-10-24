@@ -150,11 +150,14 @@ const cadastroEndereco = (props: object) => {
         }}
       />
 
-      <View style={styles.buttonView}>
-        <RectButton style={styles.button} onPress={() => SalvarDados()}>
-          <Text style={styles.buttonText}>Salvar</Text>
-        </RectButton>
-      </View>
+      {/* O botao de salvar soh aparece se nao for acesso atraves de impersonate */}
+      {(props.route.params.idAlunoImpersonate == null) &&
+        <View style={styles.buttonView}>
+          <RectButton style={styles.button} onPress={() => SalvarDados()}>
+            <Text style={styles.buttonText}>Salvar</Text>
+          </RectButton>
+        </View>
+      }
 
       <Snackbar
         visible={snackMensagemVisible}

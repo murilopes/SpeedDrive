@@ -17,7 +17,7 @@ interface IAlunoDocumentos {
 }
 
 
-const cadastroDocumentosAluno = () => {
+const cadastroDocumentosAluno = (props: object) => {
   const navigation = useNavigation();
 
   const _goBack = () => {
@@ -29,7 +29,8 @@ const cadastroDocumentosAluno = () => {
     {
       nomeDocumento: 'Carteira de Habilitação', 
       metodoAPI: '/aluno/alterarFotoCarteiraHabilitacao',
-      imagemUri: objAlunoDocumentos.urlCarteiraHabilitacao
+      imagemUri: objAlunoDocumentos.urlCarteiraHabilitacao,
+      idAlunoImpersonate: props.route.params.idAlunoImpersonate
     });
   };
 
@@ -60,7 +61,7 @@ const cadastroDocumentosAluno = () => {
     try {
 
       const { id, token } = JSON.parse(await userLib.getUserAuthData())
-      const resp = await API.get('/aluno/' + id, 
+      const resp = await API.get('/aluno/' + props.route.params.idAlunoImpersonate ?? id, 
       {
         headers: 
         {

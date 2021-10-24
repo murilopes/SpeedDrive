@@ -40,15 +40,15 @@ const AlunoCadastro = (props: object) => {
   };
 
   const _handleCadastroDadosPessoais = () => {
-    navigation.navigate('CadastroDadosPessoais', {pessoa: objAluno, tipoUsuario: 'aluno'});
+    navigation.navigate('CadastroDadosPessoais', {pessoa: objAluno, tipoUsuario: 'aluno', idAlunoImpersonate: props.route.params.idAlunoImpersonate});
   };
 
   const _handleCadastroEndereco = () => {
-    navigation.navigate('CadastroEndereco', {pessoa: objAluno});
+    navigation.navigate('CadastroEndereco', {pessoa: objAluno, idAlunoImpersonate: props.route.params.idAlunoImpersonate});
   };
 
   const _handleCadastroDocumentos = () => {
-    navigation.navigate('CadastroDocumentosAluno', {pessoa: objAluno});
+    navigation.navigate('CadastroDocumentosAluno', {pessoa: objAluno, idAlunoImpersonate: props.route.params.idAlunoImpersonate});
   };
 
   let alunoVazio: IAluno = {}

@@ -23,12 +23,15 @@ export default class uploadDocumento extends React.Component {
       nomeDocumento: props.route.params.nomeDocumento,
       metodoAPI: props.route.params.metodoAPI,
       imagemUri: props.route.params.imagemUri + random,
+      idAlunoImpersonate: props.route.params.idAlunoImpersonate,
       imagemHeight: 300,
       imagemWidth:300,
       snackMensagemVisible: false,
       snackMensagem: false,     
       textButtonSalvar: 'Salvar'
     };
+
+    console.log(this.state)
 
     /* ToDo: salvar height e width pra poder definir aqui quando for abrir a imagem
     if (result.height > result.width) {      
@@ -165,24 +168,32 @@ export default class uploadDocumento extends React.Component {
           />
         </View>
 
-        <View style={styles.buttonView}>
-          <RectButton style={styles.button} onPress={pickImageFromLibrary}>
-            <Text style={styles.buttonText}>Escolher imagem do álbum</Text>
-          </RectButton>
-        </View>
+        {/* O botao de salvar soh aparece se nao for acesso atraves de impersonate */}
+        {(this.state.idAlunoImpersonate == null) &&
+          <View style={styles.buttonView}>
+            <RectButton style={styles.button} onPress={pickImageFromLibrary}>
+              <Text style={styles.buttonText}>Escolher imagem do álbum</Text>
+            </RectButton>
+          </View>
+        }
 
-        <View style={styles.buttonView}>
-          <RectButton style={styles.button} onPress={pickImageFromCamera}>
-            <Text style={styles.buttonText}>Usar câmera</Text>
-          </RectButton>
-        </View>
+        {/* O botao de salvar soh aparece se nao for acesso atraves de impersonate */}
+        {(this.state.idAlunoImpersonate == null) &&
+          <View style={styles.buttonView}>
+            <RectButton style={styles.button} onPress={pickImageFromCamera}>
+              <Text style={styles.buttonText}>Usar câmera</Text>
+            </RectButton>
+          </View>
+        }
 
-        <View style={styles.buttonView}>
-          <RectButton style={styles.button} onPress={() => SalvarFoto()}>
-            <Text style={styles.buttonTextBold}>{this.state.textButtonSalvar}</Text>
-          </RectButton>
-        </View>
-       
+        {/* O botao de salvar soh aparece se nao for acesso atraves de impersonate */}
+        {(this.state.idAlunoImpersonate == null) &&
+          <View style={styles.buttonView}>
+            <RectButton style={styles.button} onPress={() => SalvarFoto()}>
+              <Text style={styles.buttonTextBold}>{this.state.textButtonSalvar}</Text>
+            </RectButton>
+          </View>
+        }
 
         <Snackbar
           visible={this.state.snackMensagemVisible}
