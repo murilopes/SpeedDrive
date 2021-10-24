@@ -61,6 +61,11 @@ const AdminDashboard = (props: any) => {
     if (origemMenuLateral || !menuOpened)     
       navigation.navigate('ListaAlunos');
   }
+  const _handleListaInstrutores = (origemMenuLateral: boolean) => {
+    setMenuOpened(false)
+    if (origemMenuLateral || !menuOpened)     
+      navigation.navigate('ListaInstrutores');
+  }
 
   const _handleTouchMenu = async () => {
     menuOpened ? setMenuOpened(false) : setMenuOpened(true)
@@ -128,7 +133,7 @@ const AdminDashboard = (props: any) => {
 
         <SideMenuItem icon='book' text='Configurações' onAction={() => _handleConfiguracoes(true)}/>
         <SideMenuItem icon='book' text='Alunos' onAction={() => _handleListaAlunos(true)}/>
-        <SideMenuItem icon='book' text='Instrutores' onAction={() => _handleConfiguracoes(true)}/>
+        <SideMenuItem icon='book' text='Instrutores' onAction={() => _handleListaInstrutores(true)}/>
         {/*
         <SideMenuItem icon='cogs' text='Cadastro' onAction={() => _handleInstrutorCadastro(true)}/>
         <SideMenuItem icon='check-circle' text='Aulas Realizadas' onAction={() => _handleAulasRealizadas(true)}/>

@@ -8,7 +8,7 @@ import * as userLib from '../../lib/user'
 import * as utilLib from '../../lib/util'
 import axios from "axios";
 
-interface IAluno {
+interface IInstrutor {
   _id: string,
   nome: string,
   sobrenome: string,
@@ -17,7 +17,7 @@ interface IAluno {
   createAt: string,
 }
 
-const  ListaAlunos = () => {
+const  ListaInstrutores = () => {
 
   const navigation = useNavigation();
 
@@ -27,22 +27,22 @@ const  ListaAlunos = () => {
 
   const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
   const [snackMensagem, setSnackMensagem] = React.useState('');
-  const [arrayAlunos, setArrayAlunos] = React.useState(Array<IAluno>())
+  const [arrayInstrutores, setArrayInstrutores] = React.useState(Array<IInstrutor>())
 
-  const _handleCadastroAluno = (idAluno: string, nomeAluno: string) => {
-    navigation.navigate('AlunoCadastro', {idAlunoImpersonate: idAluno, nomeAlunoImpersonate: nomeAluno});
+  const _handleCadastroInstrutor = (idInstrutor: string, nomeInstrutor: string) => {
+    navigation.navigate('InstrutorCadastro', {idInstrutorImpersonate: idInstrutor, nomeInstrutorImpersonate: nomeInstrutor});
   };
 
   const API = axios.create({
     baseURL: ConfigFile.API_SERVER_URL,
   });
 
-  const getListaAlunos = async () => {
+  const getListaInstrutores = async () => {
 
     try {            
       const { id, token } = JSON.parse(await userLib.getUserAuthData())
 
-      const resp = await API.get('/aluno/', 
+      const resp = await API.get('/instrutor/', 
       {
         headers: 
         {
@@ -52,14 +52,14 @@ const  ListaAlunos = () => {
 
       if(resp.status == 200)
       {
-        console.log('Conseguiu carregar lista alunos')     
+        console.log('Conseguiu carregar lista instrutores')     
         console.log(resp)   
-        const arrayAlunos:Array<IAluno> = resp.data.alunos
+        const arrayInstrutores:Array<IInstrutor> = resp.data.instrutores
         
-        return arrayAlunos
+        return arrayInstrutores
       }
     } catch (error) {
-      console.log('Não conseguiu carregar lista alunos')
+      console.log('Não conseguiu carregar lista instrutores')
       console.log(error.response.data.error)
       setSnackMensagem(error.response.data.error)
       setSnackMensagemVisible(true)
@@ -67,10 +67,10 @@ const  ListaAlunos = () => {
   }
 
   useEffect(() => {
-    getListaAlunos().then(
-      (listaAlunos) => {
-        if (listaAlunos)
-        setArrayAlunos(listaAlunos)
+    getListaInstrutores().then(
+      (ListaInstrutores) => {
+        if (ListaInstrutores)
+        setArrayInstrutores(ListaInstrutores)
       }
     ) 
   }, [])
@@ -81,7 +81,7 @@ const  ListaAlunos = () => {
 
       <Appbar.Header statusBarHeight={0} style={{height: 60, backgroundColor: '#212F3C'}}>
         <Appbar.Action icon="arrow-left-circle" size={30} onPress={_goBack} />        
-        <Appbar.Content  title="Alunos" style={{alignItems:'center'}}/>
+        <Appbar.Content  title="Instrutores" style={{alignItems:'center'}}/>
         <Appbar.Action icon="arrow-left-circle" color='#212F3C' size={30}  />
         
       </Appbar.Header>
@@ -90,7 +90,7 @@ const  ListaAlunos = () => {
         <View style={styles.view_items} >
           
           {
-            arrayAlunos.map((item, i) => (
+            arrayInstrutores.map((item, i) => (
               <View key={item._id} style={styles.item}>
                 <View style={styles.item_status}>
                   <Avatar.Image 
@@ -110,7 +110,7 @@ const  ListaAlunos = () => {
                   
                 </View>
                 <View style={styles.item_action}>
-                  <RectButton style={styles.button} onPress={() => _handleCadastroAluno(item._id, item.nome)}>
+                  <RectButton style={styles.button} onPress={() => _handleCadastroInstrutor(item._id, item.nome)}>
                     <Text style={styles.buttonText}>Cadastro</Text>
                   </RectButton>
                 </View >
@@ -136,7 +136,7 @@ const  ListaAlunos = () => {
   );
 }
 
-export default ListaAlunos;
+export default ListaInstrutores;
 
 const styles = StyleSheet.create({
   container_principal: {
