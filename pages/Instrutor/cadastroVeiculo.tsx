@@ -1,16 +1,12 @@
 import * as React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import {
-  Picker,
   StyleSheet, View,  
 } from 'react-native';
 import { Appbar, TextInput, DefaultTheme, Text, Snackbar } from 'react-native-paper';
-import DropDown from 'react-native-paper-dropdown'
-import { TextInputMask } from 'react-native-masked-text'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { RectButton } from 'react-native-gesture-handler';
 import * as userLib from '../../lib/user'
-import * as utilLib from '../../lib/util'
 import ConfigFile from "../../config.json"
 import axios from "axios";
 
@@ -106,11 +102,14 @@ const cadastroVeiculo = (props: object) => {
       <TextInput theme={theme} label="Modelo" value={objVeiculo.modeloVeiculo} onChangeText={text => setObjVeiculo({...objVeiculo, modeloVeiculo: text})}/>
       <TextInput theme={theme} label="Ano de Fabricacao" value={objVeiculo.anoFabricacaoVeiculo} onChangeText={text => setObjVeiculo({...objVeiculo, anoFabricacaoVeiculo: text})}/>
 
-      <View style={styles.buttonView}>
-        <RectButton style={styles.button} onPress={() => SalvarDados()}>
-          <Text style={styles.buttonText}>Salvar</Text>
-        </RectButton>
-      </View>
+      {/* O botao de salvar soh aparece se nao for acesso atraves de impersonate */}
+      {(props.route.params.idAlunoImpersonate == null && props.route.params.idInstrutorImpersonate == null) &&
+        <View style={styles.buttonView}>
+          <RectButton style={styles.button} onPress={() => SalvarDados()}>
+            <Text style={styles.buttonText}>Salvar</Text>
+          </RectButton>
+        </View>
+      }
 
       <Snackbar
         visible={snackMensagemVisible}

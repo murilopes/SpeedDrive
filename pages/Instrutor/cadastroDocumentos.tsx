@@ -23,7 +23,7 @@ interface IInstrutorDocumentos {
 }
 
 
-const cadastroDocumentosInstrutor = () => {
+const cadastroDocumentosInstrutor = (props: object) => {
   const navigation = useNavigation();
 
   const _goBack = () => {
@@ -35,7 +35,8 @@ const cadastroDocumentosInstrutor = () => {
     {
       nomeDocumento,
       metodoAPI,
-      imagemUri
+      imagemUri,
+      idPessoaImpersonate: props.route.params.idInstrutorImpersonate
     });
   };
 
@@ -72,7 +73,7 @@ const cadastroDocumentosInstrutor = () => {
     try {
 
       const { id, token } = JSON.parse(await userLib.getUserAuthData())
-      const resp = await API.get('/instrutor/' + id, 
+      const resp = await API.get('/instrutor/' + props.route.params.idInstrutorImpersonate ?? id, 
       {
         headers: 
         {

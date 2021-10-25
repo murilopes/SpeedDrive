@@ -176,13 +176,13 @@ const cadastroDadosPessoais = (props: object) => {
                   label="Observações" 
                   value={objPessoa.observacoes} 
                   placeholder='Ex: preferência de aula com instrutor do mesmo gênero' 
-                  onChangeText={text => setObjPessoa({...objPessoa, observacoes: text})}/
-      >)}
+                  onChangeText={text => setObjPessoa({...objPessoa, observacoes: text})}
+      />)}
 
       {(props.route.params.tipoUsuario == 'instrutor') && (<TextInput theme={theme} label="Credencial" value={objPessoa.credencial} onChangeText={text => setObjPessoa({...objPessoa, credencial: text})}/>)}
 
       {/* O botao de salvar soh aparece se nao for acesso atraves de impersonate */}
-      {(props.route.params.idAlunoImpersonate == null) &&
+      {(props.route.params.idAlunoImpersonate == null && props.route.params.idInstrutorImpersonate == null) &&
         <View style={styles.buttonView}>
           <RectButton style={styles.button} onPress={() => SalvarDados()}>
             <Text style={styles.buttonText}>Salvar</Text>

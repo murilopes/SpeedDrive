@@ -151,7 +151,7 @@ const cadastroEndereco = (props: object) => {
       />
 
       {/* O botao de salvar soh aparece se nao for acesso atraves de impersonate */}
-      {(props.route.params.idAlunoImpersonate == null) &&
+      {(props.route.params.idPessoaImpersonate == null) &&
         <View style={styles.buttonView}>
           <RectButton style={styles.button} onPress={() => SalvarDados()}>
             <Text style={styles.buttonText}>Salvar</Text>

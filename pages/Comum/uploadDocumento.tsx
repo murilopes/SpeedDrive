@@ -23,15 +23,13 @@ export default class uploadDocumento extends React.Component {
       nomeDocumento: props.route.params.nomeDocumento,
       metodoAPI: props.route.params.metodoAPI,
       imagemUri: props.route.params.imagemUri + random,
-      idAlunoImpersonate: props.route.params.idAlunoImpersonate,
+      idPessoaImpersonate: props.route.params.idPessoaImpersonate,
       imagemHeight: 300,
       imagemWidth:300,
       snackMensagemVisible: false,
       snackMensagem: false,     
       textButtonSalvar: 'Salvar'
     };
-
-    console.log(this.state)
 
     /* ToDo: salvar height e width pra poder definir aqui quando for abrir a imagem
     if (result.height > result.width) {      
@@ -169,7 +167,7 @@ export default class uploadDocumento extends React.Component {
         </View>
 
         {/* O botao de salvar soh aparece se nao for acesso atraves de impersonate */}
-        {(this.state.idAlunoImpersonate == null) &&
+        {(this.state.idPessoaImpersonate == null) &&
           <View style={styles.buttonView}>
             <RectButton style={styles.button} onPress={pickImageFromLibrary}>
               <Text style={styles.buttonText}>Escolher imagem do álbum</Text>
@@ -178,7 +176,7 @@ export default class uploadDocumento extends React.Component {
         }
 
         {/* O botao de salvar soh aparece se nao for acesso atraves de impersonate */}
-        {(this.state.idAlunoImpersonate == null) &&
+        {(this.state.idPessoaImpersonate == null) &&
           <View style={styles.buttonView}>
             <RectButton style={styles.button} onPress={pickImageFromCamera}>
               <Text style={styles.buttonText}>Usar câmera</Text>
@@ -187,7 +185,7 @@ export default class uploadDocumento extends React.Component {
         }
 
         {/* O botao de salvar soh aparece se nao for acesso atraves de impersonate */}
-        {(this.state.idAlunoImpersonate == null) &&
+        {(this.state.idPessoaImpersonate == null) &&
           <View style={styles.buttonView}>
             <RectButton style={styles.button} onPress={() => SalvarFoto()}>
               <Text style={styles.buttonTextBold}>{this.state.textButtonSalvar}</Text>

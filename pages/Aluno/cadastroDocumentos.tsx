@@ -30,7 +30,7 @@ const cadastroDocumentosAluno = (props: object) => {
       nomeDocumento: 'Carteira de Habilitação', 
       metodoAPI: '/aluno/alterarFotoCarteiraHabilitacao',
       imagemUri: objAlunoDocumentos.urlCarteiraHabilitacao,
-      idAlunoImpersonate: props.route.params.idAlunoImpersonate
+      idPessoaImpersonate: props.route.params.idAlunoImpersonate
     });
   };
 

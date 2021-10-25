@@ -44,7 +44,8 @@ const AlunoCadastro = (props: object) => {
   };
 
   const _handleCadastroEndereco = () => {
-    navigation.navigate('CadastroEndereco', {pessoa: objAluno, idAlunoImpersonate: props.route.params.idAlunoImpersonate});
+    //O envio do parametro de impersontate é como "Pessoa" pois a tela de endereço faz parte do modulo Comum
+    navigation.navigate('CadastroEndereco', {pessoa: objAluno, idPessoaImpersonate: props.route.params.idAlunoImpersonate});
   };
 
   const _handleCadastroDocumentos = () => {
