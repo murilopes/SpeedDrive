@@ -43,13 +43,16 @@ const  InstrutorRealizadas = (props: object) => {
   const getAulasRealizadas = async () => {
 
     try {            
-      const { id, token } = JSON.parse(await userLib.getUserAuthData())
+      let { id, token } = JSON.parse(await userLib.getUserAuthData())
+
+      if(props.route.params?.idInstrutorImpersonate != undefined)
+        id = props.route.params?.idInstrutorImpersonate
 
       var reqData = {
         idUsuario: id,
       };
 
-      const resp = await API.get('/agendamento/realizadasInstrutor/' + props.route.params.idInstrutorImpersonate ?? reqData.idUsuario, 
+      const resp = await API.get('/agendamento/realizadasInstrutor/' + reqData.idUsuario, 
       {
         headers: 
         {

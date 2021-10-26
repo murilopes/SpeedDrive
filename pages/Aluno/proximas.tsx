@@ -29,7 +29,7 @@ const  AlunoProximas = (props: object) => {
     navigation.goBack()
   }
   const _handleAulaDetalheInstrutor = (idAgendamento: string) => {
-    navigation.navigate('AulaDetalheInstrutor', {idAgendamento, idAlunoImpersonate: props.route.params.idAlunoImpersonate});
+    navigation.navigate('AulaDetalheInstrutor', {idAgendamento});
   }
 
   const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
@@ -61,13 +61,16 @@ const  AlunoProximas = (props: object) => {
   const getAulasProximas = async () => {
 
     try {            
-      const { id, token } = JSON.parse(await userLib.getUserAuthData())
+      let { id, token } = JSON.parse(await userLib.getUserAuthData())
+
+      if(props.route.params?.idAlunoImpersonate != undefined)
+        id = props.route.params?.idAlunoImpersonate
 
       var reqData = {
         idUsuario: id,
       };
 
-      const resp = await API.get('/agendamento/proximas/' + props.route.params.idAlunoImpersonate ?? reqData.idUsuario, 
+      const resp = await API.get('/agendamento/proximas/' + reqData.idUsuario, 
       {
         headers: 
         {

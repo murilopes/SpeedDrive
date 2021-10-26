@@ -102,7 +102,7 @@ const  AlunoAgendar = () => {
   try { 
     const { id, token } = JSON.parse(await userLib.getUserAuthData())
 
-    const resp = await API.get('/empresa/60e517b4cfe23a0013cbd824', {headers: {Authorization: 'Bearer ' + token}})
+    const resp = await API.get('/empresa/obter/60e517b4cfe23a0013cbd824', {headers: {Authorization: 'Bearer ' + token}})
 
     if(resp.status == 200)
     {

@@ -103,13 +103,19 @@ const cadastroVeiculo = (props: object) => {
       <TextInput theme={theme} label="Ano de Fabricacao" value={objVeiculo.anoFabricacaoVeiculo} onChangeText={text => setObjVeiculo({...objVeiculo, anoFabricacaoVeiculo: text})}/>
 
       {/* O botao de salvar soh aparece se nao for acesso atraves de impersonate */}
-      {(props.route.params.idAlunoImpersonate == null && props.route.params.idInstrutorImpersonate == null) &&
+      {/*(props.route.params.idAlunoImpersonate == null && props.route.params.idInstrutorImpersonate == null) &&
         <View style={styles.buttonView}>
           <RectButton style={styles.button} onPress={() => SalvarDados()}>
             <Text style={styles.buttonText}>Salvar</Text>
           </RectButton>
         </View>
-      }
+      */}
+
+        <View style={styles.buttonView}>
+          <RectButton style={styles.button} onPress={() => SalvarDados()}>
+            <Text style={styles.buttonText}>Salvar</Text>
+          </RectButton>
+        </View>
 
       <Snackbar
         visible={snackMensagemVisible}

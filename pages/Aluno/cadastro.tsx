@@ -40,16 +40,16 @@ const AlunoCadastro = (props: object) => {
   };
 
   const _handleCadastroDadosPessoais = () => {
-    navigation.navigate('CadastroDadosPessoais', {pessoa: objAluno, tipoUsuario: 'aluno', idAlunoImpersonate: props.route.params.idAlunoImpersonate});
+    navigation.navigate('CadastroDadosPessoais', {pessoa: objAluno, tipoUsuario: 'aluno', idAlunoImpersonate: props.route.params?.idAlunoImpersonate});
   };
 
   const _handleCadastroEndereco = () => {
     //O envio do parametro de impersontate é como "Pessoa" pois a tela de endereço faz parte do modulo Comum
-    navigation.navigate('CadastroEndereco', {pessoa: objAluno, idPessoaImpersonate: props.route.params.idAlunoImpersonate});
+    navigation.navigate('CadastroEndereco', {pessoa: objAluno, idPessoaImpersonate: props.route.params?.idAlunoImpersonate});
   };
 
   const _handleCadastroDocumentos = () => {
-    navigation.navigate('CadastroDocumentosAluno', {pessoa: objAluno, idAlunoImpersonate: props.route.params.idAlunoImpersonate});
+    navigation.navigate('CadastroDocumentosAluno', {pessoa: objAluno, idAlunoImpersonate: props.route.params?.idAlunoImpersonate});
   };
 
   let alunoVazio: IAluno = {}
@@ -142,7 +142,7 @@ const AlunoCadastro = (props: object) => {
   const pickImage = async () => {
 
     //Se o acesso à essa tela tiver sido atrave de impersonate, não deve deixar trocar a foto
-    if (props.route.params.idAlunoImpersonate) {
+    if (props.route.params?.idAlunoImpersonate) {
       setSnackMensagem('Admin não pode mudar foto do aluno')
       setSnackMensagemVisible(true)
       return
@@ -242,8 +242,12 @@ const AlunoCadastro = (props: object) => {
 
     try {
 
-      const { id, token } = JSON.parse(await userLib.getUserAuthData())
-      const resp = await API.get('/aluno/' + props.route.params.idAlunoImpersonate ?? id, 
+      let { id, token } = JSON.parse(await userLib.getUserAuthData())
+
+      if(props.route.params?.idAlunoImpersonate != undefined)
+        id = props.route.params?.idAlunoImpersonate
+
+      const resp = await API.get('/aluno/' + id, 
       {
         headers: 
         {
@@ -285,7 +289,7 @@ const AlunoCadastro = (props: object) => {
     >
       <Appbar.Header statusBarHeight={0} style={{height: 60, backgroundColor: '#212F3C'}}>
         <Appbar.Action icon="arrow-left-circle" size={30} onPress={_goBack} />
-        <Appbar.Content title={`Cadastro ${props.route.params.nomeAlunoImpersonate}`} style={{alignItems:'center'}}/>
+        <Appbar.Content title={`Cadastro ${props?.route?.params?.nomeAlunoImpersonate ?? ''}`} style={{alignItems:'center'}}/>
         <Appbar.Action icon="arrow-left-circle" color='#212F3C' size={30}  />
       </Appbar.Header>
 

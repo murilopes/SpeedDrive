@@ -60,13 +60,16 @@ const  AlunoRealizadas = (props: object) => {
   const getAulasRealizadas = async () => {
 
     try {            
-      const { id, token } = JSON.parse(await userLib.getUserAuthData())
+      let { id, token } = JSON.parse(await userLib.getUserAuthData())
+
+      if(props.route.params?.idAlunoImpersonate != undefined)
+        id = props.route.params?.idAlunoImpersonate
 
       var reqData = {
         idUsuario: id,
       };
-      
-      const resp = await API.get('/agendamento/historico/' + props.route.params.idAlunoImpersonate ?? reqData.idUsuario, 
+
+      const resp = await API.get('/agendamento/historico/' + reqData.idUsuario, 
       {
         headers: 
         {

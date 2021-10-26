@@ -36,7 +36,6 @@ const cadastroDocumentosInstrutor = (props: object) => {
       nomeDocumento,
       metodoAPI,
       imagemUri,
-      idPessoaImpersonate: props.route.params.idInstrutorImpersonate
     });
   };
 
@@ -72,8 +71,12 @@ const cadastroDocumentosInstrutor = (props: object) => {
 
     try {
 
-      const { id, token } = JSON.parse(await userLib.getUserAuthData())
-      const resp = await API.get('/instrutor/' + props.route.params.idInstrutorImpersonate ?? id, 
+      let { id, token } = JSON.parse(await userLib.getUserAuthData())
+
+      if(props.route.params?.idInstrutorImpersonate != undefined)
+        id = props.route.params?.idInstrutorImpersonate
+
+      const resp = await API.get('/instrutor/' + id, 
       {
         headers: 
         {

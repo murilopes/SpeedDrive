@@ -60,8 +60,12 @@ const cadastroDocumentosAluno = (props: object) => {
 
     try {
 
-      const { id, token } = JSON.parse(await userLib.getUserAuthData())
-      const resp = await API.get('/aluno/' + props.route.params.idAlunoImpersonate ?? id, 
+      let { id, token } = JSON.parse(await userLib.getUserAuthData())
+
+      if(props.route.params?.idAlunoImpersonate != undefined)
+        id = props.route.params?.idAlunoImpersonate
+        
+      const resp = await API.get('/aluno/' + id, 
       {
         headers: 
         {

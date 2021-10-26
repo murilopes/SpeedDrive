@@ -61,13 +61,16 @@ const  InstrutorPendentes = (props: object) => {
   const getAulasPendentesInstrutor = async () => {
 
     try {            
-      const { id, token } = JSON.parse(await userLib.getUserAuthData())
+      let { id, token } = JSON.parse(await userLib.getUserAuthData())
+
+      if(props.route.params?.idInstrutorImpersonate != undefined)
+        id = props.route.params?.idInstrutorImpersonate
 
       var reqData = {
         idUsuario: id,
       };
 
-      const resp = await API.get('/agendamento/pendentesInstrutor/' + props.route.params.idInstrutorImpersonate ?? reqData.idUsuario, 
+      const resp = await API.get('/agendamento/pendentesInstrutor/' + reqData.idUsuario, 
       {
         headers: 
         {
