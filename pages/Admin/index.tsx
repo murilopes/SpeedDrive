@@ -66,6 +66,11 @@ const AdminDashboard = (props: any) => {
     if (origemMenuLateral || !menuOpened)     
       navigation.navigate('ListaInstrutores');
   }
+  const _handleAgendamentos = (origemMenuLateral: boolean) => {
+    setMenuOpened(false)
+    if (origemMenuLateral || !menuOpened)     
+      navigation.navigate('FiltrosAgendamentos');
+  }
 
   const _handleTouchMenu = async () => {
     menuOpened ? setMenuOpened(false) : setMenuOpened(true)
@@ -134,6 +139,8 @@ const AdminDashboard = (props: any) => {
         <SideMenuItem icon='book' text='Configurações' onAction={() => _handleConfiguracoes(true)}/>
         <SideMenuItem icon='book' text='Alunos' onAction={() => _handleListaAlunos(true)}/>
         <SideMenuItem icon='book' text='Instrutores' onAction={() => _handleListaInstrutores(true)}/>
+        <SideMenuItem icon='book' text='Agendamentos' onAction={() => _handleAgendamentos(true)}/>
+        <SideMenuItemSair icon='arrow-circle-left' text='Sair da conta' onAction={() => _handleSair(true)}/>
         {/*
         <SideMenuItem icon='cogs' text='Cadastro' onAction={() => _handleInstrutorCadastro(true)}/>
         <SideMenuItem icon='check-circle' text='Aulas Realizadas' onAction={() => _handleAulasRealizadas(true)}/>
@@ -142,7 +149,7 @@ const AdminDashboard = (props: any) => {
         <SideMenuItem icon='car' text='Horários' onAction={() => _handleDisponibilidades(true)}/>
         <SideMenuItem icon='envelope' text='Notificações' onAction={() => _handleNotificacoes(true)}/>
         <SideMenuItem icon='comments' text='Contato' onAction={() => {}}/>
-        <SideMenuItemSair icon='arrow-circle-left' text='Sair da conta' onAction={() => _handleSair(true)}/>
+        
       */}
 
       </TouchableOpacity>

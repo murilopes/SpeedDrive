@@ -31,6 +31,7 @@ import Notificacoes from './pages/Comum/notificacoes';
 import AdminConfiguracoes from './pages/Admin/configuracoes';
 import ListaAlunos from './pages/Admin/listaAlunos';
 import ListaInstrutores from './pages/Admin/listaInstrutores';
+import FiltrosAgendamentos from './pages/Admin/filtrosAgendamentos';
 
 const AppStack = createStackNavigator();
 
@@ -56,6 +57,7 @@ const Routes = () => {
         <AppStack.Screen name="AdminConfiguracoes" component={AdminConfiguracoes} />
         <AppStack.Screen name="ListaAlunos" component={ListaAlunos} />
         <AppStack.Screen name="ListaInstrutores" component={ListaInstrutores} />
+        <AppStack.Screen name="FiltrosAgendamentos" component={FiltrosAgendamentos} />
         <AppStack.Screen name="AlunoRealizadas" component={AlunoRealizadas} />
         <AppStack.Screen name="InstrutorRealizadas" component={InstrutorRealizadas} />
         <AppStack.Screen name="AlunoProximas" component={AlunoProximas} />
