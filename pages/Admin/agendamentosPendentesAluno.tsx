@@ -161,7 +161,7 @@ const AgendamentosPendentesAluno = (props: object) => {
         
           <View style={styles.item_todas}>
             <View style={styles.item_status}>
-              <Icon name='circle' size={30} color='#F7C700'/>
+              <Icon name='circle' size={30} color='purple'/>
             </View>
             <View style={styles.item_detalhes}>
               <Text style={styles.item_text_line}>
@@ -171,13 +171,11 @@ const AgendamentosPendentesAluno = (props: object) => {
                 <Text>{`Instrutores aptos: ${arrayAgendamentos.agendamentosAgrupados?.countInstrutoresAptos ?? 0}`}</Text>
               </Text>           
             </View>
-            {(arrayAgendamentos.agendamentosAgrupados?.countInstrutoresAptos ?? 0 > 0) &&
               <View style={styles.item_action}>
-                <RectButton style={styles.button} onPress={() => {}}>
+                <RectButton style={arrayAgendamentos.agendamentosAgrupados?.countInstrutoresAptos ?? 0 > 0 ? styles.button : styles.button_disabled} onPress={() => {}}>
                   <Text style={styles.buttonText}>Rotear</Text>
                 </RectButton>
               </View >
-            }
           </View>
 
         </View>
@@ -210,7 +208,7 @@ const AgendamentosPendentesAluno = (props: object) => {
                   </Text>
                 </View>
                 <View style={styles.item_action}>
-                  <RectButton style={styles.button} onPress={() => _handleAgendamentosRotearAula(new Array(item))}>
+                  <RectButton style={item.instrutores?.length ?? 0 > 0 ? styles.button : styles.button_disabled} onPress={() => item.instrutores?.length ?? 0 > 0 ? _handleAgendamentosRotearAula(new Array(item)) : {}}>
                     <Text style={styles.buttonText}>Rotear</Text>
                   </RectButton>
                 </View >
@@ -249,6 +247,16 @@ const styles = StyleSheet.create({
     
   button: {
     backgroundColor: '#0081DA',
+    height: 40,
+    width: '70%',
+    borderRadius: 10,
+    overflow: 'hidden',
+    alignItems: 'center',
+    marginStart: '15%',
+  },
+
+  button_disabled: {
+    backgroundColor: 'grey',
     height: 40,
     width: '70%',
     borderRadius: 10,
