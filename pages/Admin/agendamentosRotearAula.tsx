@@ -2,20 +2,29 @@ import React, { useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, Text, View, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { Appbar, Avatar, Snackbar } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/FontAwesome5';
 import { RectButton } from 'react-native-gesture-handler';
 import ConfigFile from "../../config.json"
 import * as userLib from '../../lib/user'
 import * as utilLib from '../../lib/util'
 import axios from "axios";
 
-interface IAluno {
+interface IInstrutor {
   _id: string,
-  nomeCompleto: string,
-  count: string
+  nome: string,
+  sobrenome: string,
+  urlFotoPerfil: string,
+  whatsapp: string,
 }
 
-const  AgendamentosPendentesRoteamento = () => {
+interface IAgendamentosPendentes {
+  _id: string,
+  horarioInicio: string,
+  horarioFim: string,
+  status: string,
+  instrutores?: IInstrutor[]
+}
+
+const  AgendamentoRotearAula = (props: object) => {
 
   const navigation = useNavigation();
 
@@ -25,51 +34,31 @@ const  AgendamentosPendentesRoteamento = () => {
 
   const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
   const [snackMensagem, setSnackMensagem] = React.useState('');
-  const [arrayAlunos, setArrayAlunos] = React.useState(Array<IAluno>())
+  const [arrayAgendamentos, setArrayAgendamentos] = React.useState(Array<IAgendamentosPendentes>())
 
-  const _handleAgendamentosPendentesPorAluno = (idAluno: string) => {
-    navigation.navigate('AgendamentosPendentesAluno', {idAluno});
+  const _handleCadastroInstrutor = (idInstrutor: string, nomeInstrutor: string) => {
+    navigation.navigate('InstrutorCadastro', {idInstrutorImpersonate: idInstrutor, nomeInstrutorImpersonate: nomeInstrutor});
   };
 
   const API = axios.create({
     baseURL: ConfigFile.API_SERVER_URL,
   });
 
-  const getListaAlunos = async () => {
+  const getArrayAgendamentos = async () => {
 
-    try {            
-      const { id, token } = JSON.parse(await userLib.getUserAuthData())
-
-      const resp = await API.get('/agendamento/roteamentosPendentes/', 
-      {
-        headers: 
-        {
-          Authorization: 'Bearer ' + token,
-        }
-      })
-
-      if(resp.status == 200)
-      {
-        console.log('Conseguiu carregar lista agendamentos agrupados alunos')     
-        console.log(resp)   
-        const arrayAlunos:Array<IAluno> = resp.data.agendamentosAgrupados
-        const arrayAlunosNomesNaoNulos = arrayAlunos.filter(x => x.nomeCompleto.trim().length > 0)
-        
-        return arrayAlunosNomesNaoNulos
-      }
+    try {           
+      return props.route.params.agendamentosPendentes
+      
     } catch (error) {
-      console.log('Não conseguiu carregar lista agendamentos agrupados alunos')
-      console.log(error.response.data.error)
-      setSnackMensagem(error.response.data.error)
-      setSnackMensagemVisible(true)
+      console.log('Não conseguiu preencher array agendamentos')
     } 
   }
 
   useEffect(() => {
-    getListaAlunos().then(
-      (listaAlunos) => {
-        if (listaAlunos)
-        setArrayAlunos(listaAlunos)
+    getArrayAgendamentos().then(
+      (arrayAgendamentos) => {
+        if (arrayAgendamentos)
+        setArrayAgendamentos(arrayAgendamentos)
       }
     ) 
   }, [])
@@ -80,7 +69,7 @@ const  AgendamentosPendentesRoteamento = () => {
 
       <Appbar.Header statusBarHeight={0} style={{height: 60, backgroundColor: '#212F3C'}}>
         <Appbar.Action icon="arrow-left-circle" size={30} onPress={_goBack} />        
-        <Appbar.Content  title="Pendentes roteamento" style={{alignItems:'center'}}/>
+        <Appbar.Content  title="Rotear para Instrutor" style={{alignItems:'center'}}/>
         <Appbar.Action icon="arrow-left-circle" color='#212F3C' size={30}  />
         
       </Appbar.Header>
@@ -89,24 +78,28 @@ const  AgendamentosPendentesRoteamento = () => {
         <View style={styles.view_items} >
           
           {
-            arrayAlunos.map((item, i) => (
+            arrayAgendamentos[0]?.instrutores?.map((item, i) => (
               <View key={item._id} style={styles.item}>
                 <View style={styles.item_status}>
-                  <Icon name= 'user' color = 'grey' size={30} style={{flex: 1}} />
+                  <Avatar.Image 
+                    size={55} 
+                    source={{uri: item.urlFotoPerfil ? item.urlFotoPerfil : ConfigFile.URL_IMAGEM_NAO_ENCONTRADA}}
+                  />
                 </View>
                 
                 <View style={styles.item_detalhes}>
                   <Text style={styles.item_text_line}>
-                    <Text style={styles.item_text_title}>{item.nomeCompleto}</Text>
+                    <Text style={styles.item_text_title}>{item.nome} {utilLib.retornaUltimoNome(item?.sobrenome)}</Text>
                   </Text>
                   <Text style={styles.item_text_line}>
-                    <Text >{`${item.count} aula(s) pendentes`}</Text>
+                    <Text style={styles.item_text_sub}>Whatsapp: </Text>
+                    <Text>{(item.whatsapp)}</Text>
                   </Text>
                   
                 </View>
                 <View style={styles.item_action}>
-                  <RectButton style={styles.button} onPress={() => _handleAgendamentosPendentesPorAluno(item._id)}>
-                    <Text style={styles.buttonText}>Ver</Text>
+                  <RectButton style={styles.button} onPress={() => _handleCadastroInstrutor(item._id, item.nome)}>
+                    <Text style={styles.buttonText}>Selecionar</Text>
                   </RectButton>
                 </View >
               </View>
@@ -131,7 +124,7 @@ const  AgendamentosPendentesRoteamento = () => {
   );
 }
 
-export default AgendamentosPendentesRoteamento;
+export default AgendamentoRotearAula;
 
 const styles = StyleSheet.create({
   container_principal: {
@@ -182,7 +175,12 @@ const styles = StyleSheet.create({
   item_text_title:{
     flex: 1,
     fontWeight: 'bold',
-    fontSize: 14
+    fontSize: 20
+  },
+
+  item_text_sub:{
+    flex: 1,
+    fontWeight: 'bold',
   },
 
   button: {

@@ -33,6 +33,8 @@ import ListaAlunos from './pages/Admin/listaAlunos';
 import ListaInstrutores from './pages/Admin/listaInstrutores';
 import FiltrosAgendamentos from './pages/Admin/filtrosAgendamentos';
 import AgendamentosPendentesRoteamento from './pages/Admin/agendamentosPendentesRoteamento';
+import AgendamentosPendentesAluno from './pages/Admin/agendamentosPendentesAluno';
+import AgendamentosRotearAula from './pages/Admin/agendamentosRotearAula';
 
 const AppStack = createStackNavigator();
 
@@ -60,6 +62,8 @@ const Routes = () => {
         <AppStack.Screen name="ListaInstrutores" component={ListaInstrutores} />
         <AppStack.Screen name="FiltrosAgendamentos" component={FiltrosAgendamentos} />
         <AppStack.Screen name="AgendamentosPendentesRoteamento" component={AgendamentosPendentesRoteamento} />
+        <AppStack.Screen name="AgendamentosPendentesAluno" component={AgendamentosPendentesAluno} />
+        <AppStack.Screen name="AgendamentosRotearAula" component={AgendamentosRotearAula} />
         <AppStack.Screen name="AlunoRealizadas" component={AlunoRealizadas} />
         <AppStack.Screen name="InstrutorRealizadas" component={InstrutorRealizadas} />
         <AppStack.Screen name="AlunoProximas" component={AlunoProximas} />

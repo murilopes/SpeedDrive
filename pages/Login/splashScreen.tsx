@@ -45,16 +45,20 @@ const  SplashScreen = () => {
     
     try {
       const resp = await API.post('/auth/validaToken', userData)
-      if(resp.status == 200)
-        return true        
+      if(resp.status == 200) {
+        console.log('validou token')
+        return true 
+      }               
 
     } catch (error) {
-      return false
+      console.log('nao conseguiu validar token')
+      return false 
     }
   }
 
   const usuarioEstaAutenticado = async () => {
     const rawDadosUsuario = await userLib.getUserAuthData();
+    console.log(`Dados do usuario em cache: ${rawDadosUsuario}`)
     if (rawDadosUsuario != undefined) {
       const { token, id } = JSON.parse(rawDadosUsuario)
       return await ValidaToken(token) && id != undefined && id != '' ? true : false
@@ -86,11 +90,11 @@ const  SplashScreen = () => {
   })
 
   useEffect(() => {
+
+    getBackendIpDinamically()
+
     setTimeout(async () => {
-
-      getBackendIpDinamically()
-
-      if (await usuarioEstaAutenticado()) {
+      if (await usuarioEstaAutenticado()) { 
         const {tipoUsuario} = JSON.parse(await userLib.getUserAuthData())
         if (tipoUsuario == 'aluno') handleNavigateToAlunoDashboard()
         if (tipoUsuario == 'instrutor') handleNavigateToInstrutorDashboard()
@@ -100,7 +104,7 @@ const  SplashScreen = () => {
         handleNavigateToOnboarding()
     }, 3000);
     
-  }, [count])
+  }, [count, ConfigFile.API_SERVER_URL])
 
   while (!fontsLoaded) {
     return <View />;
