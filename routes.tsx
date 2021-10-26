@@ -32,6 +32,7 @@ import AdminConfiguracoes from './pages/Admin/configuracoes';
 import ListaAlunos from './pages/Admin/listaAlunos';
 import ListaInstrutores from './pages/Admin/listaInstrutores';
 import FiltrosAgendamentos from './pages/Admin/filtrosAgendamentos';
+import AgendamentosPendentesRoteamento from './pages/Admin/agendamentosPendentesRoteamento';
 
 const AppStack = createStackNavigator();
 
@@ -58,6 +59,7 @@ const Routes = () => {
         <AppStack.Screen name="ListaAlunos" component={ListaAlunos} />
         <AppStack.Screen name="ListaInstrutores" component={ListaInstrutores} />
         <AppStack.Screen name="FiltrosAgendamentos" component={FiltrosAgendamentos} />
+        <AppStack.Screen name="AgendamentosPendentesRoteamento" component={AgendamentosPendentesRoteamento} />
         <AppStack.Screen name="AlunoRealizadas" component={AlunoRealizadas} />
         <AppStack.Screen name="InstrutorRealizadas" component={InstrutorRealizadas} />
         <AppStack.Screen name="AlunoProximas" component={AlunoProximas} />

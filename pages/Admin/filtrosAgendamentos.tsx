@@ -17,6 +17,21 @@ const filtrosAgendamentos = (props: object) => {
 
   const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
   const [snackMensagem, setSnackMensagem] = React.useState('');
+
+  const _handleAgendamentosPendentesRoteamento = () => {
+    navigation.navigate('AgendamentosPendentesRoteamento');
+  };
+  const _handleAgendamentosPorDia = () => {
+    navigation.navigate('AgendamentosAgrupadoPorAluno');
+  };
+  /*
+  const _handleAgendamentosPorAluno = () => {
+    navigation.navigate('AgendamentosAgrupadoPorAluno');
+  };
+  const _handleAgendamentosPorInstrutor = () => {
+    navigation.navigate('AgendamentosAgrupadoPorAluno');
+  };
+  */
  
   return (
     <KeyboardAwareScrollView
@@ -43,14 +58,14 @@ const filtrosAgendamentos = (props: object) => {
 
         <View style={styles.divider} />
 
-        <View style={styles.item} onTouchEnd={()=>{}}>
+        <View style={styles.item} onTouchEnd={_handleAgendamentosPendentesRoteamento}>
           <View style={styles.item_interno}>
             <View style={styles.item_status}>
               <Icon name= 'users' color = 'grey' size={30} style={{flex: 1}} />
             </View>
             <View style={styles.item_detalhes}>
               <View style={styles.item_text_superior}>
-                <Text style={styles.item_text_value}>Agrupado por aluno</Text>
+                <Text style={styles.item_text_value}>Pendentes de Roteamento</Text>
               </View>            
             </View>
             <View style={styles.item_seta}>
@@ -61,7 +76,7 @@ const filtrosAgendamentos = (props: object) => {
 
         <View style={styles.divider} />
 
-        <View style={styles.item} onTouchEnd={()=>{}}>
+        <View style={styles.item} onTouchEnd={_handleAgendamentosPorDia}>
           <View style={styles.item_interno}>
             <View style={styles.item_status}>
               <Icon name= 'calendar' color= 'grey' size={30} style={{flex: 1}} />
@@ -78,8 +93,8 @@ const filtrosAgendamentos = (props: object) => {
         </View>
 
         <View style={styles.divider} />
-
-        <View style={styles.item} onTouchEnd={()=>{}}>
+{/* 
+        <View style={styles.item} onTouchEnd={_handleAgendamentosPorAluno}>
           <View style={styles.item_interno}>
             <View style={styles.item_status}>
               <Icon name= 'user' color= 'grey' size={30} style={{flex: 1}} />
@@ -97,7 +112,7 @@ const filtrosAgendamentos = (props: object) => {
 
         <View style={styles.divider} />
 
-        <View style={styles.item} onTouchEnd={()=>{}}>
+        <View style={styles.item} onTouchEnd={_handleAgendamentosPorInstrutor}>
           <View style={styles.item_interno}>
             <View style={styles.item_status}>
               <Icon name= 'user-tie' color= 'grey' size={30} style={{flex: 1}} />
@@ -113,7 +128,7 @@ const filtrosAgendamentos = (props: object) => {
           </View>
         </View>
 
-        <View style={styles.divider} />
+        <View style={styles.divider} /> */}
 
       </View>
 
