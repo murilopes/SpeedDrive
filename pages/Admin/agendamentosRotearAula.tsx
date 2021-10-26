@@ -24,7 +24,7 @@ interface IAgendamentosPendentes {
   instrutores?: IInstrutor[]
 }
 
-const  AgendamentoRotearAula = (props: object) => {
+const AgendamentoRotearAula = (props: object) => {
 
   const navigation = useNavigation();
 
@@ -35,10 +35,6 @@ const  AgendamentoRotearAula = (props: object) => {
   const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
   const [snackMensagem, setSnackMensagem] = React.useState('');
   const [arrayAgendamentos, setArrayAgendamentos] = React.useState(Array<IAgendamentosPendentes>())
-
-  const _handleCadastroInstrutor = (idInstrutor: string, nomeInstrutor: string) => {
-    navigation.navigate('InstrutorCadastro', {idInstrutorImpersonate: idInstrutor, nomeInstrutorImpersonate: nomeInstrutor});
-  };
 
   const API = axios.create({
     baseURL: ConfigFile.API_SERVER_URL,
@@ -52,6 +48,44 @@ const  AgendamentoRotearAula = (props: object) => {
     } catch (error) {
       console.log('Não conseguiu preencher array agendamentos')
     } 
+  }
+
+  const RotearAulaParaInstrutor = async (idInstrutor: string) => {
+
+    const { token } = JSON.parse(await userLib.getUserAuthData())
+
+    let verificouErro = false
+
+    arrayAgendamentos.forEach(async element => {
+      const roteamento =  {
+        idAgendamento: element._id,
+        idInstrutor: idInstrutor,  
+      };
+  
+      try {
+        const resp = await API.put(`/agendamento/rotearAula`, 
+        roteamento, 
+        {
+         headers: 
+          {
+            Authorization: 'Bearer ' + token,
+          }
+        })
+  
+        if(resp.status == 200)
+        {
+          console.log(`Roteou aula ${element._id} com sucesso!`)
+        }  
+  
+      } catch (error) {
+        console.log(`Erro ao rotear aula ${element._id}!`)
+        verificouErro = true        
+      }
+    });
+
+    const message = !verificouErro ? 'Aula(s) roteada(s) com sucesso!' : 'Falha ao rotear aula(s)'
+    setSnackMensagem(message) 
+    setSnackMensagemVisible(true)    
   }
 
   useEffect(() => {
@@ -98,7 +132,7 @@ const  AgendamentoRotearAula = (props: object) => {
                   
                 </View>
                 <View style={styles.item_action}>
-                  <RectButton style={styles.button} onPress={() => _handleCadastroInstrutor(item._id, item.nome)}>
+                  <RectButton style={styles.button} onPress={() => RotearAulaParaInstrutor(item._id)}>
                     <Text style={styles.buttonText}>Selecionar</Text>
                   </RectButton>
                 </View >

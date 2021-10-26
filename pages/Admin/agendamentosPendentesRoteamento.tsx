@@ -23,12 +23,13 @@ const  AgendamentosPendentesRoteamento = () => {
     navigation.goBack()
   }
 
+  const [count, setCount] = React.useState(0)
   const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
   const [snackMensagem, setSnackMensagem] = React.useState('');
   const [arrayAlunos, setArrayAlunos] = React.useState(Array<IAluno>())
 
-  const _handleAgendamentosPendentesPorAluno = (idAluno: string) => {
-    navigation.navigate('AgendamentosPendentesAluno', {idAluno});
+  const _handleAgendamentosPendentesPorAluno = (idAluno: string, nomeAluno: string) => {
+    navigation.navigate('AgendamentosPendentesAluno', {idAluno, nomeAluno});
   };
 
   const API = axios.create({
@@ -65,6 +66,10 @@ const  AgendamentosPendentesRoteamento = () => {
     } 
   }
 
+  navigation.addListener('focus', () => {
+    setCount(count+1)
+  })
+
   useEffect(() => {
     getListaAlunos().then(
       (listaAlunos) => {
@@ -72,7 +77,7 @@ const  AgendamentosPendentesRoteamento = () => {
         setArrayAlunos(listaAlunos)
       }
     ) 
-  }, [])
+  }, [count])
   
   return (
     <KeyboardAvoidingView style={styles.container_principal} 
@@ -105,7 +110,7 @@ const  AgendamentosPendentesRoteamento = () => {
                   
                 </View>
                 <View style={styles.item_action}>
-                  <RectButton style={styles.button} onPress={() => _handleAgendamentosPendentesPorAluno(item._id)}>
+                  <RectButton style={styles.button} onPress={() => _handleAgendamentosPendentesPorAluno(item._id, item.nomeCompleto)}>
                     <Text style={styles.buttonText}>Ver</Text>
                   </RectButton>
                 </View >

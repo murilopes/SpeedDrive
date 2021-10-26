@@ -54,7 +54,7 @@ const AgendamentosPendentesAluno = (props: object) => {
   const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
   const [snackMensagem, setSnackMensagem] = React.useState('');
 
-  const _handleAgendamentosRotearAula = (agendamentosPendentes: IAgendamentosPendentes[]) => {
+  const _handleAgendamentosRotearAula = (agendamentosPendentes?: IAgendamentosPendentes[]) => {
     navigation.navigate('AgendamentosRotearAula', {agendamentosPendentes});
   };
 
@@ -105,6 +105,12 @@ const AgendamentosPendentesAluno = (props: object) => {
     }
   }
 
+  const exibeMensagemNaoHaInstrutoresAptos = () => {
+    console.log('entrou no exibeMensagemNaoHaInstrutoresAptos')
+    setSnackMensagem('Não há instrutores aptos')
+    setSnackMensagemVisible(true)
+  }
+
    navigation.addListener('focus', () => {
      setCount(count+1)
    })
@@ -152,8 +158,11 @@ const AgendamentosPendentesAluno = (props: object) => {
           </View>
           <View style={styles.item_detalhes}>
             <Text style={styles.item_text_line}>
-              <Text style={styles.item_text_disclaimer}>O sistema indica se há algum instrutor com disponibilidade para atender à todas as aulas solicitadas</Text>
-            </Text>                  
+              <Text style={styles.item_text_disclaimer}>O sistema indica se há algum instrutor com disponibilidade para atender à todas as aulas solicitadas.</Text>
+            </Text>
+            <Text style={styles.item_text_disclaimer_aluno}>
+              <Text style={styles.item_text_disclaimer}>{`Aluno: ${props.route.params.nomeAluno}`}</Text>
+            </Text>                 
           </View>
         </View>
 
@@ -172,7 +181,10 @@ const AgendamentosPendentesAluno = (props: object) => {
               </Text>           
             </View>
               <View style={styles.item_action}>
-                <RectButton style={arrayAgendamentos.agendamentosAgrupados?.countInstrutoresAptos ?? 0 > 0 ? styles.button : styles.button_disabled} onPress={() => {}}>
+                <RectButton style={arrayAgendamentos.agendamentosAgrupados?.countInstrutoresAptos ?? 0 > 0 ? styles.button : styles.button_disabled} 
+                            onPress={() => arrayAgendamentos.agendamentosAgrupados?.instrutores?.length ?? 0 > 0 
+                                      ? _handleAgendamentosRotearAula(arrayAgendamentos.agendamentosPendentes) 
+                                      : exibeMensagemNaoHaInstrutoresAptos()}>
                   <Text style={styles.buttonText}>Rotear</Text>
                 </RectButton>
               </View >
@@ -208,7 +220,10 @@ const AgendamentosPendentesAluno = (props: object) => {
                   </Text>
                 </View>
                 <View style={styles.item_action}>
-                  <RectButton style={item.instrutores?.length ?? 0 > 0 ? styles.button : styles.button_disabled} onPress={() => item.instrutores?.length ?? 0 > 0 ? _handleAgendamentosRotearAula(new Array(item)) : {}}>
+                  <RectButton style={item.instrutores?.length ?? 0 > 0 ? styles.button : styles.button_disabled} 
+                              onPress={() => item.instrutores?.length ?? 0 > 0 
+                                        ? _handleAgendamentosRotearAula(new Array(item)) 
+                                        : exibeMensagemNaoHaInstrutoresAptos()}>
                     <Text style={styles.buttonText}>Rotear</Text>
                   </RectButton>
                 </View >
@@ -220,16 +235,17 @@ const AgendamentosPendentesAluno = (props: object) => {
         </ScrollView>
 
       </View>
-
+      
       <Snackbar style={{marginTop: 40}}
-          visible={snackMensagemVisible}
-          onDismiss={() => setSnackMensagemVisible(false)}
-          action={{
-            label: 'OK',
-            onPress: () => {},
-          }}>
-          {snackMensagem}
-        </Snackbar>
+        visible={snackMensagemVisible}
+        onDismiss={() => setSnackMensagemVisible(false)}
+        action={{
+          label: 'OK',
+          onPress: () => {},
+        }}>
+        {snackMensagem}
+      </Snackbar>
+  
 
     </KeyboardAwareScrollView>
   );
@@ -348,6 +364,13 @@ const styles = StyleSheet.create({
   item_text_title:{
     flex: 1,
     fontWeight: 'bold'
+  },
+
+  item_text_disclaimer_aluno:{
+    flex: 1,
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginTop: 5,
   },
 
   item_action:{
