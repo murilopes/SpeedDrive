@@ -81,12 +81,11 @@ const AdminDashboard = (props: any) => {
   const [snackMensagem, setSnackMensagem] = React.useState('');
   const [count, setCount] = React.useState(0)
 
-  const [nomeCompleto, setNomeCompleto] = React.useState('');
+  const [nomeCompleto, setNomeCompleto] = React.useState('Admin');
   const [urlFotoPerfil, setUrlFotoPerfil] = React.useState();
-  const [qtdAulasRealizadas, setQtdAulasRealizadas] = useState(0)
-  const [qtdProximasAulas, setQtdProximasAulas] = useState(0)
-  const [qtdAprovacoesPendentes, setQtdAprovacoesPendentes] = useState(0)
-  const [statusCadastroOk, setStatusCadastroOk] = useState(false)
+  const [qtdAlunosCadastrados, setQtdAlunosCadastrados] = useState(0)
+  const [qtdInstrutoresCadastrados, setQtdInstrutoresCadastrados] = useState(0)
+  const [qtdPendentesRoteamento, setQtdPendentesRoteamento] = useState(0)
   const [temNotificacao, setTemNotificacao] = useState(false)
 
   const API = axios.create({
@@ -98,22 +97,18 @@ const AdminDashboard = (props: any) => {
        console.log('esta passando aqui')
       const { id, token } = JSON.parse(await userLib.getUserAuthData())
 
-      const resp = await API.get('/instrutor/infosDash/' + id, {headers: {Authorization: 'Bearer ' + token}})
+      const resp = await API.get('/empresa/infosDash/', {headers: {Authorization: 'Bearer ' + token}})
 
       if(resp.status == 200)
       {
-        console.log('Conseguiu carregar infos dash')
+        console.log('Conseguiu carregar infos dash admin')
 
-        setNomeCompleto(resp.data.response.nome + ' ' + resp.data.response.sobrenome)
-        setUrlFotoPerfil(resp.data.response.urlFotoPerfil)
-        setStatusCadastroOk(resp.data.response.isCadastroCompleto)
-        setTemNotificacao(resp.data.response.hasNotificacao)
-        setQtdAulasRealizadas(resp.data.response.qtdAulasRealizadas)
-        setQtdProximasAulas(resp.data.response.qtdProximasAulas)
-        setQtdAprovacoesPendentes(resp.data.response.qtdPendentesAprovacao)
+        setQtdAlunosCadastrados(resp.data.response.qtdAlunosCadastrados)
+        setQtdInstrutoresCadastrados(resp.data.response.qtdInstrutoresCadastrados)
+        setQtdPendentesRoteamento(resp.data.response.qtdPendentesRoteamento)
       }
     } catch (error) {
-      console.log('Não conseguiu carregar infos dash')
+      console.log('Não conseguiu carregar infos dash admin')
       console.log(error.response.data.error)
       setSnackMensagem(error.response.data.error)
       setSnackMensagemVisible(true)
@@ -136,10 +131,10 @@ const AdminDashboard = (props: any) => {
           <Text style={styles.menu_text_voltar}>Fechar Menu</Text>
         </View>
 
-        <SideMenuItem icon='book' text='Configurações' onAction={() => _handleConfiguracoes(true)}/>
-        <SideMenuItem icon='book' text='Alunos' onAction={() => _handleListaAlunos(true)}/>
-        <SideMenuItem icon='book' text='Instrutores' onAction={() => _handleListaInstrutores(true)}/>
-        <SideMenuItem icon='book' text='Agendamentos' onAction={() => _handleAgendamentos(true)}/>
+        <SideMenuItem icon='cog' text='Configurações' onAction={() => _handleConfiguracoes(true)}/>
+        <SideMenuItem icon='user' text='Alunos' onAction={() => _handleListaAlunos(true)}/>
+        <SideMenuItem icon='car' text='Instrutores' onAction={() => _handleListaInstrutores(true)}/>
+        <SideMenuItem icon='calendar' text='Agendamentos' onAction={() => _handleAgendamentos(true)}/>
         <SideMenuItemSair icon='arrow-circle-left' text='Sair da conta' onAction={() => _handleSair(true)}/>
         {/*
         <SideMenuItem icon='cogs' text='Cadastro' onAction={() => _handleInstrutorCadastro(true)}/>
@@ -185,53 +180,53 @@ const AdminDashboard = (props: any) => {
         <View style={styles.dash}>
           <View style={styles.dash_column}>
             <View style={styles.item_dash_exterior}>
-              <View style={styles.item_dash_interior_1} onTouchEnd={() => _handleAulasPendentesAprovacao(false)}>
+              <View style={styles.item_dash_interior_1} onTouchEnd={() => _handleListaAlunos(false)}>
                 <View style={styles.item_dash_view_texto}>
-                  <Text style={styles.item_dash_texto_1}>Aprovações</Text>
+                  <Text style={styles.item_dash_texto_1}>Alunos</Text>
                 </View>
                 <View style={styles.item_dash_view_texto}>
-                  <Text style={styles.item_dash_texto_2}>Pendentes</Text>
+                  <Text style={styles.item_dash_texto_2}>Cadastrados</Text>
                 </View>
                 <View style={styles.item_dash_view_numero}>
-                  <Text style={styles.item_dash_texto_3}>{qtdAprovacoesPendentes}</Text>
+                  <Text style={styles.item_dash_texto_3}>{qtdAlunosCadastrados}</Text>
                 </View>
               </View>
             </View>
             <View style={styles.item_dash_exterior}>
-              <View style={styles.item_dash_interior_2} onTouchEnd={() => _handleInstrutorCadastro(false)}>
+              <View style={styles.item_dash_interior_2} onTouchEnd={() => _handleAgendamentos(false)}>
                 <View style={styles.item_dash_view_texto}>
-                  <Text style={styles.item_dash_texto_1}>Cadastro</Text>
+                  <Text style={styles.item_dash_texto_1}>Aulas Pendentes</Text>
                 </View>
                 <View style={styles.item_dash_view_texto}>
-                  <Text style={styles.item_dash_texto_2}>{statusCadastroOk ? 'Ok' : 'Pendente'}</Text>
+                  <Text style={styles.item_dash_texto_2}>Roteamento</Text>
                 </View>
                 <View style={styles.item_dash_view_numero}>
-                  {statusCadastroOk ? <Icon name= 'check-circle' color= 'green' size={90} /> : <Icon name= 'times-circle' color= 'red' size={90} />}
+                  <Text style={styles.item_dash_texto_3}>{qtdPendentesRoteamento}</Text>
                 </View>
               </View>
             </View>
           </View>
           <View style={styles.dash_column}>
             <View style={styles.item_dash_exterior}>
-              <View style={styles.item_dash_interior_3} onTouchEnd={() => _handleProximasAulas(false)}>
+              <View style={styles.item_dash_interior_3} onTouchEnd={() => _handleListaInstrutores(false)}>
                 <View style={styles.item_dash_view_texto}>
-                  <Text style={styles.item_dash_texto_1}>Próximas</Text>
+                  <Text style={styles.item_dash_texto_1}>Instrutores</Text>
                 </View>
                 <View style={styles.item_dash_view_texto}>
-                  <Text style={styles.item_dash_texto_2}>Aulas</Text>
+                  <Text style={styles.item_dash_texto_2}>Cadastrados</Text>
                 </View>
                 <View style={styles.item_dash_view_numero}>
-                  <Text style={styles.item_dash_texto_3}>{qtdProximasAulas}</Text>
+                  <Text style={styles.item_dash_texto_3}>{qtdInstrutoresCadastrados}</Text>
                 </View>
               </View>
             </View>
             <View style={styles.item_dash_exterior}>
-              <View style={styles.item_dash_interior_4} onTouchEnd={() => {_handleDisponibilidades(false)}}>
+              <View style={styles.item_dash_interior_4} onTouchEnd={() => {_handleConfiguracoes(false)}}>
                 <View style={styles.item_dash_view_agendar}>
-                  <Text style={styles.item_dash_texto_agendar}>Horários</Text>
+                  <Text style={styles.item_dash_texto_agendar}>Configurações</Text>
                 </View>
                 <View style={styles.item_dash_view_numero}>
-                  <Icon name= 'plus' color= 'purple' size={90} />
+                  <Icon name= 'cog' color= 'purple' size={90} />
                 </View>
               </View>
             </View>
@@ -339,7 +334,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   item_dash_texto_agendar:{
-    fontSize: 35,
+    fontSize: 25,
     fontWeight: 'bold'
   },
 

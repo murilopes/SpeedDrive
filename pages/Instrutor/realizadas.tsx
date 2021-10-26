@@ -21,7 +21,7 @@ interface IAluno {
   nome: string
 }
 
-const  InstrutorRealizadas = () => {
+const  InstrutorRealizadas = (props: object) => {
 
   const navigation = useNavigation();
 
@@ -49,7 +49,7 @@ const  InstrutorRealizadas = () => {
         idUsuario: id,
       };
 
-      const resp = await API.get('/agendamento/realizadasInstrutor/' + reqData.idUsuario, 
+      const resp = await API.get('/agendamento/realizadasInstrutor/' + props.route.params.idInstrutorImpersonate ?? reqData.idUsuario, 
       {
         headers: 
         {

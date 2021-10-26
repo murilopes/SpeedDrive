@@ -29,8 +29,14 @@ const  AgendamentosPorInstrutorLista = () => {
   const [snackMensagem, setSnackMensagem] = React.useState('');
   const [arrayInstrutores, setArrayInstrutores] = React.useState(Array<IInstrutor>())
 
-  const _handleCadastroInstrutor = (idInstrutor: string, nomeInstrutor: string) => {
-    navigation.navigate('InstrutorCadastro', {idInstrutorImpersonate: idInstrutor, nomeInstrutorImpersonate: nomeInstrutor});
+  const _handleInstrutorRealizadas = (idInstrutor: string) => {
+    navigation.navigate('InstrutorRealizadas', {idInstrutorImpersonate: idInstrutor});
+  };
+  const _handleInstrutorProximas = (idInstrutor: string) => {
+    navigation.navigate('InstrutorProximas', {idInstrutorImpersonate: idInstrutor});
+  };
+  const _handleInstrutorPendentes = (idInstrutor: string) => {
+    navigation.navigate('InstrutorPendentes', {idInstrutorImpersonate: idInstrutor});
   };
 
   const API = axios.create({
@@ -81,7 +87,7 @@ const  AgendamentosPorInstrutorLista = () => {
 
       <Appbar.Header statusBarHeight={0} style={{height: 60, backgroundColor: '#212F3C'}}>
         <Appbar.Action icon="arrow-left-circle" size={30} onPress={_goBack} />        
-        <Appbar.Content  title="Instrutores" style={{alignItems:'center'}}/>
+        <Appbar.Content  title="Agendamentos instrutores" style={{alignItems:'center'}}/>
         <Appbar.Action icon="arrow-left-circle" color='#212F3C' size={30}  />
         
       </Appbar.Header>
@@ -110,8 +116,14 @@ const  AgendamentosPorInstrutorLista = () => {
                   
                 </View>
                 <View style={styles.item_action}>
-                  <RectButton style={styles.button} onPress={() => _handleCadastroInstrutor(item._id, item.nome)}>
-                    <Text style={styles.buttonText}>Cadastro</Text>
+                  <RectButton style={styles.button} onPress={() => _handleInstrutorRealizadas(item._id)}>
+                    <Text style={styles.buttonText}>Histórico</Text>
+                  </RectButton>
+                  <RectButton style={styles.button} onPress={() => _handleInstrutorProximas(item._id)}>
+                    <Text style={styles.buttonText}>Próximas</Text>
+                  </RectButton>
+                  <RectButton style={styles.button} onPress={() => _handleInstrutorPendentes(item._id)}>
+                    <Text style={styles.buttonText}>Pendentes</Text>
                   </RectButton>
                 </View >
               </View>
@@ -157,7 +169,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#F1F1F1',
     width: '95%',
     marginTop: 15,
-    paddingTop: 5,
     paddingBottom: 5,
     paddingLeft: 5,
   },
@@ -170,6 +181,7 @@ const styles = StyleSheet.create({
 
   item_detalhes:{
     flex: 5,
+    marginTop: 15,
   },
 
   item_action:{
@@ -198,6 +210,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     alignItems: 'center',
     marginStart: '15%',
+    marginTop: 5,
   },
 
   buttonText: {

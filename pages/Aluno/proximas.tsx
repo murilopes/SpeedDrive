@@ -29,7 +29,7 @@ const  AlunoProximas = (props: object) => {
     navigation.goBack()
   }
   const _handleAulaDetalheInstrutor = (idAgendamento: string) => {
-    navigation.navigate('AulaDetalheInstrutor', {idAgendamento});
+    navigation.navigate('AulaDetalheInstrutor', {idAgendamento, idAlunoImpersonate: props.route.params.idAlunoImpersonate});
   }
 
   const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);

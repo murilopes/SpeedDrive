@@ -148,7 +148,7 @@ const AgendamentoRotearAula = (props: object) => {
         onDismiss={() => setSnackMensagemVisible(false)}
         action={{
           label: 'OK',
-          onPress: () => {},
+          onPress: _goBack,
         }}>
         {snackMensagem}
       </Snackbar>

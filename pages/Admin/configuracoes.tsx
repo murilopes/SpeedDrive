@@ -78,7 +78,7 @@ const adminConfiguracoes = (props: object) => {
     try {
 
       const { id, token } = JSON.parse(await userLib.getUserAuthData())
-      const resp = await API.get('/empresa/60e517b4cfe23a0013cbd824', 
+      const resp = await API.get('/empresa/obter/60e517b4cfe23a0013cbd824', 
       {
         headers: 
         {

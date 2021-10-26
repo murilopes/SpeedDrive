@@ -271,7 +271,7 @@ const AulaDetalhe = (props: object) => {
 
         </View>
 
-        {(objAulaDetalhe.status == 'Pend. Confirmação' || objAulaDetalhe.status == 'Confirmada') && (
+        {((objAulaDetalhe.status == 'Pend. Confirmação' || objAulaDetalhe.status == 'Confirmada') && props.route.params.idAlunoImpersonate == undefined) && (
           <View style={styles.item_action}>
             <RectButton style={styles.button} onPress={() => verificaSePodecancelarAula()}>
               <Text style={styles.buttonText}>Cancelar Aula</Text>

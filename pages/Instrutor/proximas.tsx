@@ -21,7 +21,7 @@ interface IAluno {
   nome: string
 }
 
-const  InstrutorProximas = () => {
+const  InstrutorProximas = (props: object) => {
 
   const navigation = useNavigation();
 
@@ -29,7 +29,7 @@ const  InstrutorProximas = () => {
     navigation.goBack()
   }
   const _handleAulaDetalheAluno = (idAgendamento: string) => {
-    navigation.navigate('AulaDetalheAluno', {idAgendamento});
+    navigation.navigate('AulaDetalheAluno', {idAgendamento, idInstrutorImpersonate: props.route.params.idInstrutorImpersonate});
   }
 
   const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
@@ -67,7 +67,7 @@ const  InstrutorProximas = () => {
         idUsuario: id,
       };
 
-      const resp = await API.get('/agendamento/proximasInstrutor/' + reqData.idUsuario, 
+      const resp = await API.get('/agendamento/proximasInstrutor/' + props.route.params.idInstrutorImpersonate ?? reqData.idUsuario, 
       {
         headers: 
         {

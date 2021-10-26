@@ -75,7 +75,7 @@ const filtrosAgendamentos = (props: object) => {
 
         <View style={styles.divider} />
 
-        <View style={styles.item} onTouchEnd={_handleAgendamentosPorDia}>
+        {/* <View style={styles.item} onTouchEnd={_handleAgendamentosPorDia}>
           <View style={styles.item_interno}>
             <View style={styles.item_status}>
               <Icon name= 'calendar' color= 'grey' size={30} style={{flex: 1}} />
@@ -91,7 +91,7 @@ const filtrosAgendamentos = (props: object) => {
           </View>
         </View>
 
-        <View style={styles.divider} />
+        <View style={styles.divider} /> */}
 
         <View style={styles.item} onTouchEnd={_handleAgendamentosPorAluno}>
           <View style={styles.item_interno}>
