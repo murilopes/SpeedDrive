@@ -3,120 +3,39 @@ import { useNavigation } from '@react-navigation/native';
 import {
   Dimensions, StyleSheet, View, Text
 } from 'react-native';
-import { Appbar, Chip, Snackbar } from 'react-native-paper';
-import useStateWithCallback from 'use-state-with-callback';
+import { Appbar, Snackbar } from 'react-native-paper';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import IconEntypo from 'react-native-vector-icons/Entypo';
-import * as userLib from '../../lib/user'
-import ConfigFile from "../../config.json"
-import axios from "axios";
 
-interface IAlunoDocumentos {
-  urlCarteiraHabilitacao?: string,  
-}
-
-
-const cadastroDocumentosAluno = (props: object) => {
+const filtrosAgendamentos = (props: object) => {
   const navigation = useNavigation();
 
   const _goBack = () => {
     navigation.goBack();
   };
 
-  const _handleUploadDocumento = () => {
-    navigation.navigate('UploadDocumento', 
-    {
-      nomeDocumento: 'Carteira de Habilitação', 
-      metodoAPI: '/aluno/alterarFotoCarteiraHabilitacao',
-      imagemUri: objAlunoDocumentos.urlCarteiraHabilitacao,
-      idPessoaImpersonate: props.route.params.idAlunoImpersonate
-    });
-  };
-
-  let alunoDocumentosVazio: IAlunoDocumentos = {}
-
-  const [count, setCount] = React.useState(0)
   const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
   const [snackMensagem, setSnackMensagem] = React.useState('');
-  const [qtdDoctosOk, setQtdDoctosOk] = React.useState(0)
-  const [objAlunoDocumentos, setObjAlunoDocumentos] = useStateWithCallback(alunoDocumentosVazio, 
-    () => {
-      setQtdDoctosOk(calculaQtdDoctosOK());
-    }
-  )
-
-  const calculaQtdDoctosOK = () : number => {
-    let contagemTotalPreenchido = 0
-    if (objAlunoDocumentos.urlCarteiraHabilitacao != undefined && objAlunoDocumentos.urlCarteiraHabilitacao != '') contagemTotalPreenchido++
-    return contagemTotalPreenchido
-  }
-
-  const API = axios.create({
-    baseURL: ConfigFile.API_SERVER_URL,
-  });
-
-  const getAluno = async () => {
-
-    try {
-
-      const { id, token } = JSON.parse(await userLib.getUserAuthData())
-      const resp = await API.get('/aluno/' + props.route.params.idAlunoImpersonate ?? id, 
-      {
-        headers: 
-        {
-          Authorization: 'Bearer ' + token,
-        }
-      })
-
-      if(resp.status == 200)
-      {
-        console.log('Conseguiu carregar aluno')
-        return  resp.data.aluno
-      }
-    } catch (error) {
-      console.log('Não conseguiu carregar aluno')
-      console.log('erro:' , error.response.data.error)
-      setSnackMensagem(error.response.data.error)
-      setSnackMensagemVisible(true)
-    } 
-  }
-
-  navigation.addListener('focus', () => {
-    setCount(count+1)
-  })
-
-  React.useEffect(() => {
-    getAluno().then(
-      (aluno) => {
-        if (aluno)
-        setObjAlunoDocumentos(aluno)
-      }
-    )
-    
-  }, [count])
-
+ 
   return (
     <KeyboardAwareScrollView
       style={styles.container_principal}
     >
       <Appbar.Header statusBarHeight={0} style={{ height: 60, backgroundColor: '#212F3C' }}>
         <Appbar.Action icon="arrow-left-circle" size={30} onPress={_goBack} />
-        <Appbar.Content title="Documentos" style={{alignItems:'center'}}/>
+        <Appbar.Content title="Agendamentos" style={{alignItems:'center'}}/>
         <Appbar.Action icon="arrow-left-circle" color='#212F3C' size={30}  />
       </Appbar.Header>
 
       <View style={styles.view_infos}>
         <View style={styles.item_icon}>
-          <Icon name='clipboard' size={30} color='white'/>
+          <Icon name='filter' size={30} color='green'/>
         </View>
         <View style={styles.item_detalhes}>
           <Text style={styles.item_text_line}>
-            <Text style={styles.item_text_suave}>Faça upload dos documentos solicitados abaixo </Text>
-          </Text>    
-          <Text style={styles.item_text_line}>
-            <Text style={styles.item_text_bold}>Documentos enviados: {qtdDoctosOk} de 1 </Text>
-          </Text>       
+            <Text style={styles.item_text_suave}>Utilize os filtros abaixo para acessar os agendamentos</Text>
+          </Text>     
         </View>
       </View>
 
@@ -124,14 +43,14 @@ const cadastroDocumentosAluno = (props: object) => {
 
         <View style={styles.divider} />
 
-        <View style={styles.item} onTouchEnd={_handleUploadDocumento}>
+        <View style={styles.item} onTouchEnd={()=>{}}>
           <View style={styles.item_interno}>
             <View style={styles.item_status}>
-              <Icon name= 'check-circle' color= {objAlunoDocumentos.urlCarteiraHabilitacao ? 'green' : 'grey'} size={30} style={{flex: 1}} />
+              <Icon name= 'users' color = 'grey' size={30} style={{flex: 1}} />
             </View>
             <View style={styles.item_detalhes}>
               <View style={styles.item_text_superior}>
-                <Text style={styles.item_text_value}>Carteira de Habilitação</Text>
+                <Text style={styles.item_text_value}>Agrupado por aluno</Text>
               </View>            
             </View>
             <View style={styles.item_seta}>
@@ -141,6 +60,59 @@ const cadastroDocumentosAluno = (props: object) => {
         </View>
 
         <View style={styles.divider} />
+
+        <View style={styles.item} onTouchEnd={()=>{}}>
+          <View style={styles.item_interno}>
+            <View style={styles.item_status}>
+              <Icon name= 'calendar' color= 'grey' size={30} style={{flex: 1}} />
+            </View>
+            <View style={styles.item_detalhes}>
+              <View style={styles.item_text_superior}>
+                <Text style={styles.item_text_value}>Por dia</Text>
+              </View>            
+            </View>
+            <View style={styles.item_seta}>
+              <IconEntypo name="chevron-thin-right" color='#A79898' size={30} style={{flex: 1}} />
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.divider} />
+
+        <View style={styles.item} onTouchEnd={()=>{}}>
+          <View style={styles.item_interno}>
+            <View style={styles.item_status}>
+              <Icon name= 'user' color= 'grey' size={30} style={{flex: 1}} />
+            </View>
+            <View style={styles.item_detalhes}>
+              <View style={styles.item_text_superior}>
+                <Text style={styles.item_text_value}>Por aluno</Text>
+              </View>            
+            </View>
+            <View style={styles.item_seta}>
+              <IconEntypo name="chevron-thin-right" color='#A79898' size={30} style={{flex: 1}} />
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.divider} />
+
+        <View style={styles.item} onTouchEnd={()=>{}}>
+          <View style={styles.item_interno}>
+            <View style={styles.item_status}>
+              <Icon name= 'user-tie' color= 'grey' size={30} style={{flex: 1}} />
+            </View>
+            <View style={styles.item_detalhes}>
+              <View style={styles.item_text_superior}>
+                <Text style={styles.item_text_value}>Por instrutor</Text>
+              </View>            
+            </View>
+            <View style={styles.item_seta}>
+              <IconEntypo name="chevron-thin-right" color='#A79898' size={30} style={{flex: 1}} />
+            </View>
+          </View>
+        </View>
+
         <View style={styles.divider} />
 
       </View>
@@ -159,7 +131,7 @@ const cadastroDocumentosAluno = (props: object) => {
   );
 };
 
-export default cadastroDocumentosAluno;
+export default filtrosAgendamentos;
 
 const styles = StyleSheet.create({
   container_principal: {
@@ -243,7 +215,7 @@ const styles = StyleSheet.create({
   },
 
   item: {
-    height: 53,
+    height: 60,
     flexDirection: 'row',
     alignItems: 'center',
   },
