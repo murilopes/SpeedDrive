@@ -1,73 +1,48 @@
 import React, { useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, Text, View, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
-import { Appbar, Snackbar } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { Appbar, Avatar, Snackbar } from 'react-native-paper';
 import { RectButton } from 'react-native-gesture-handler';
 import ConfigFile from "../../config.json"
 import * as userLib from '../../lib/user'
 import * as utilLib from '../../lib/util'
 import axios from "axios";
 
-interface IAula {
-  _id: string,
-  horarioInicio: string,
-  horarioFim: string,
-  status: string,
-  instrutor: IInstrutor,
-}
-
 interface IInstrutor {
-  nome: string
+  _id: string,
+  nome: string,
+  sobrenome: string,
+  urlFotoPerfil: string,
+  isCadastroCompleto: boolean,
+  createAt: string,
 }
 
-const  AlunoProximas = (props: object) => {
+const  AgendamentosPorInstrutorLista = () => {
 
   const navigation = useNavigation();
 
   const _goBack = () => {
     navigation.goBack()
   }
-  const _handleAulaDetalheInstrutor = (idAgendamento: string) => {
-    navigation.navigate('AulaDetalheInstrutor', {idAgendamento});
-  }
 
   const [snackMensagemVisible, setSnackMensagemVisible] = React.useState(false);
   const [snackMensagem, setSnackMensagem] = React.useState('');
-  const [arrayAulasProximas, setArrayAulasProximas] = React.useState(Array<IAula>())
-  const [count, setCount] = React.useState(0)
+  const [arrayInstrutores, setArrayInstrutores] = React.useState(Array<IInstrutor>())
 
-  const corStatus = (status: string) => {
-    switch (status) {
-      case 'Remarcada':
-        return '#000000'
-      case 'Cancelada':
-        return '#C80000'
-      case 'Pend. Confirmação':
-        return '#F7C700'
-      case 'Confirmada':
-        return '#00AA4E'
-      case 'Realizada':
-        return '#0081DA'
-      default:
-        return '#000000'        
-    }
-  }
+  const _handleCadastroInstrutor = (idInstrutor: string, nomeInstrutor: string) => {
+    navigation.navigate('InstrutorCadastro', {idInstrutorImpersonate: idInstrutor, nomeInstrutorImpersonate: nomeInstrutor});
+  };
 
   const API = axios.create({
     baseURL: ConfigFile.API_SERVER_URL,
   });
 
-  const getAulasProximas = async () => {
+  const getListaInstrutores = async () => {
 
     try {            
       const { id, token } = JSON.parse(await userLib.getUserAuthData())
 
-      var reqData = {
-        idUsuario: id,
-      };
-
-      const resp = await API.get('/agendamento/proximas/' + props.route.params.idAlunoImpersonate ?? reqData.idUsuario, 
+      const resp = await API.get('/instrutor/', 
       {
         headers: 
         {
@@ -77,71 +52,66 @@ const  AlunoProximas = (props: object) => {
 
       if(resp.status == 200)
       {
-        console.log('Conseguiu carregar info proximas')        
-        const arrayAulas:Array<IAula> = resp.data.aulas
-        return arrayAulas
+        console.log('Conseguiu carregar lista instrutores')     
+        console.log(resp)   
+        const arrayInstrutores:Array<IInstrutor> = resp.data.instrutores
+        
+        return arrayInstrutores
       }
     } catch (error) {
-      console.log('Não conseguiu carregar info proximas')
+      console.log('Não conseguiu carregar lista instrutores')
       console.log(error.response.data.error)
       setSnackMensagem(error.response.data.error)
       setSnackMensagemVisible(true)
     } 
   }
 
-  navigation.addListener('focus', () => {
-    setCount(count+1)
-  })
-
   useEffect(() => {
-    getAulasProximas().then(
-      (aulasProximas) => {
-        if (aulasProximas)
-        setArrayAulasProximas(aulasProximas)
+    getListaInstrutores().then(
+      (ListaInstrutores) => {
+        if (ListaInstrutores)
+        setArrayInstrutores(ListaInstrutores)
       }
     ) 
-  }, [count])
+  }, [])
   
   return (
     <KeyboardAvoidingView style={styles.container_principal} 
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
 
       <Appbar.Header statusBarHeight={0} style={{height: 60, backgroundColor: '#212F3C'}}>
-        <Appbar.Action icon="arrow-left-circle" size={30} onPress={_goBack}/>
-        <Appbar.Content title="Próximas Aulas" style={{alignItems:'center'}}/>
-        <Appbar.Action icon="arrow-left-circle" color='#212F3C' size={30}/>        
+        <Appbar.Action icon="arrow-left-circle" size={30} onPress={_goBack} />        
+        <Appbar.Content  title="Instrutores" style={{alignItems:'center'}}/>
+        <Appbar.Action icon="arrow-left-circle" color='#212F3C' size={30}  />
+        
       </Appbar.Header>
 
       <ScrollView>        
         <View style={styles.view_items} >
           
           {
-            arrayAulasProximas.map((item, i) => (
+            arrayInstrutores.map((item, i) => (
               <View key={item._id} style={styles.item}>
                 <View style={styles.item_status}>
-                  <Icon name='circle' size={20} color={item.status ? corStatus(item.status)  : 'black'}/>
+                  <Avatar.Image 
+                    size={55} 
+                    source={{uri: item.urlFotoPerfil ? item.urlFotoPerfil : ConfigFile.URL_IMAGEM_NAO_ENCONTRADA}}
+                    style={{ borderColor: item.isCadastroCompleto ? 'green' : 'red', borderWidth: 2, overflow: 'hidden' }}
+                  />
                 </View>
+                
                 <View style={styles.item_detalhes}>
                   <Text style={styles.item_text_line}>
-                    <Text style={styles.item_text_title}>Status: </Text>
-                    <Text>{item.status ? item.status : ''}</Text>
+                    <Text style={styles.item_text_title}>{item.nome} {utilLib.retornaUltimoNome(item?.sobrenome)}</Text>
                   </Text>
                   <Text style={styles.item_text_line}>
-                    <Text style={styles.item_text_title}>Data: </Text>
-                    <Text>{ item.horarioInicio ? utilLib.formataDataParaExibicaoDataFriendly(item.horarioInicio) : ''}</Text>
+                    <Text >{`Criado há ${utilLib.retornaQtdDias(item.createAt)} dia(s)`}</Text>
                   </Text>
-                  <Text style={styles.item_text_line}>
-                    <Text style={styles.item_text_title}>Horário início: </Text>
-                    <Text>{ item.horarioInicio ? utilLib.formataDataParaExibicaoHorarioFriendly(item.horarioInicio) : ''}</Text>
-                  </Text>
-                  <Text style={styles.item_text_line}>
-                    <Text style={styles.item_text_title}>Instrutor: </Text>
-                    <Text>{(item.instrutor) ? item.instrutor.nome: 'Não definido'}</Text>
-                  </Text>
+                  
                 </View>
                 <View style={styles.item_action}>
-                  <RectButton style={styles.button} onPress={() => _handleAulaDetalheInstrutor(item._id)}>
-                    <Text style={styles.buttonText}>Detalhe</Text>
+                  <RectButton style={styles.button} onPress={() => _handleCadastroInstrutor(item._id, item.nome)}>
+                    <Text style={styles.buttonText}>Cadastro</Text>
                   </RectButton>
                 </View >
               </View>
@@ -166,7 +136,7 @@ const  AlunoProximas = (props: object) => {
   );
 }
 
-export default AlunoProximas;
+export default AgendamentosPorInstrutorLista;
 
 const styles = StyleSheet.create({
   container_principal: {
@@ -187,16 +157,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#F1F1F1',
     width: '95%',
     marginTop: 15,
+    paddingTop: 5,
+    paddingBottom: 5,
+    paddingLeft: 5,
   },
 
   item_status:{
-    flex: 1,
+    flex: 2,
     alignItems: 'center',
     justifyContent: 'center'
   },
 
   item_detalhes:{
-    flex: 4,
+    flex: 5,
   },
 
   item_action:{
@@ -213,7 +186,8 @@ const styles = StyleSheet.create({
 
   item_text_title:{
     flex: 1,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    fontSize: 20
   },
 
   button: {

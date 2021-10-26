@@ -23,15 +23,14 @@ const filtrosAgendamentos = (props: object) => {
   };
   const _handleAgendamentosPorDia = () => {
     navigation.navigate('AgendamentosAgrupadoPorAluno');
-  };
-  /*
+  };  
   const _handleAgendamentosPorAluno = () => {
-    navigation.navigate('AgendamentosAgrupadoPorAluno');
+    navigation.navigate('AgendamentosPorAlunoLista');
   };
   const _handleAgendamentosPorInstrutor = () => {
-    navigation.navigate('AgendamentosAgrupadoPorAluno');
+    navigation.navigate('AgendamentosPorInstrutorLista');
   };
-  */
+  
  
   return (
     <KeyboardAwareScrollView
@@ -93,7 +92,7 @@ const filtrosAgendamentos = (props: object) => {
         </View>
 
         <View style={styles.divider} />
-{/* 
+
         <View style={styles.item} onTouchEnd={_handleAgendamentosPorAluno}>
           <View style={styles.item_interno}>
             <View style={styles.item_status}>
@@ -128,7 +127,7 @@ const filtrosAgendamentos = (props: object) => {
           </View>
         </View>
 
-        <View style={styles.divider} /> */}
+        <View style={styles.divider} />
 
       </View>
 

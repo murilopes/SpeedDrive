@@ -21,7 +21,7 @@ interface IInstrutor {
   nome: string
 }
 
-const  AlunoRealizadas = () => {
+const  AlunoRealizadas = (props: object) => {
 
   const navigation = useNavigation();
 
@@ -65,8 +65,8 @@ const  AlunoRealizadas = () => {
       var reqData = {
         idUsuario: id,
       };
-
-      const resp = await API.get('/agendamento/historico/' + reqData.idUsuario, 
+      
+      const resp = await API.get('/agendamento/historico/' + props.route.params.idAlunoImpersonate ?? reqData.idUsuario, 
       {
         headers: 
         {
