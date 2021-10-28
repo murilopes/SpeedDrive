@@ -8,7 +8,7 @@ import Onboarding from './pages/Onboarding';
 import Login from './pages/Login';
 import AlunoDashboard from './pages/Aluno';
 import InstrutorDashboard from './pages/Instrutor';
-import AdminDashboard from './pages/Admin';
+import AdminDashboard from './pages/Admin/index2';
 import AlunoRealizadas from './pages/Aluno/realizadas';
 import InstrutorRealizadas from './pages/Instrutor/realizadas';
 import AlunoProximas from './pages/Aluno/proximas';

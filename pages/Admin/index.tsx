@@ -9,6 +9,13 @@ import SideMenuItemSair from '../../components/SideMenuItemSair';
 import ConfigFile from "../../config.json"
 import * as userLib from '../../lib/user.ts'
 import axios from "axios";
+import { TapGestureHandler } from 'react-native-gesture-handler'
+import {
+  TouchableNativeFeedback,
+  TouchableHighlight,
+  TouchableOpacity as TouchableOpacity2,
+  TouchableWithoutFeedback,
+} from 'react-native-gesture-handler';
 
 const AdminDashboard = (props: any) => {
   
@@ -21,26 +28,6 @@ const AdminDashboard = (props: any) => {
       navigation.navigate('Login');
     }      
   }
-  const _handleAulasRealizadas = (origemMenuLateral: boolean) => {
-    setMenuOpened(false)    
-    if (origemMenuLateral || !menuOpened)     
-      navigation.navigate('InstrutorRealizadas');
-  }
-  const _handleProximasAulas = (origemMenuLateral: boolean) => {
-    setMenuOpened(false)
-    if (origemMenuLateral || !menuOpened)     
-      navigation.navigate('InstrutorProximas');
-  }
-  const _handleAulasPendentesAprovacao = (origemMenuLateral: boolean) => {
-    setMenuOpened(false)
-    if (origemMenuLateral || !menuOpened)     
-      navigation.navigate('InstrutorPendentes');
-  }  
-  const _handleDisponibilidades = (origemMenuLateral: boolean) => {
-    setMenuOpened(false)
-    if (origemMenuLateral || !menuOpened)     
-      navigation.navigate('InstrutorDisponibilidades');
-  }  
   const _handleInstrutorCadastro = (origemMenuLateral: boolean) => {
     setMenuOpened(false)
     if (origemMenuLateral || !menuOpened)     
@@ -71,7 +58,6 @@ const AdminDashboard = (props: any) => {
     if (origemMenuLateral || !menuOpened)     
       navigation.navigate('FiltrosAgendamentos');
   }
-
   const _handleTouchMenu = async () => {
     menuOpened ? setMenuOpened(false) : setMenuOpened(true)
   };
@@ -94,7 +80,6 @@ const AdminDashboard = (props: any) => {
 
   const PreencheInfosDashboard = async () => {
      try { 
-       console.log('esta passando aqui')
       const { id, token } = JSON.parse(await userLib.getUserAuthData())
 
       const resp = await API.get('/empresa/infosDash/', {headers: {Authorization: 'Bearer ' + token}})
@@ -125,29 +110,33 @@ const AdminDashboard = (props: any) => {
   }, [count])
 
   const drawerContent = () => {
-    return (
-      <TouchableOpacity style={styles.animatedMenuBox}>
-        <View onTouchEnd={() => setMenuOpened(false)} style={{height: 100, flexDirection: 'row', alignItems: 'center'}}>
-          <Text style={styles.menu_text_voltar}>Fechar Menu</Text>
-        </View>
+    return (    
 
-        <SideMenuItem icon='cog' text='Configurações' onAction={() => _handleConfiguracoes(true)}/>
-        <SideMenuItem icon='user' text='Alunos' onAction={() => _handleListaAlunos(true)}/>
-        <SideMenuItem icon='car' text='Instrutores' onAction={() => _handleListaInstrutores(true)}/>
-        <SideMenuItem icon='calendar' text='Agendamentos' onAction={() => _handleAgendamentos(true)}/>
-        <SideMenuItemSair icon='arrow-circle-left' text='Sair da conta' onAction={() => _handleSair(true)}/>
-        {/*
-        <SideMenuItem icon='cogs' text='Cadastro' onAction={() => _handleInstrutorCadastro(true)}/>
-        <SideMenuItem icon='check-circle' text='Aulas Realizadas' onAction={() => _handleAulasRealizadas(true)}/>
-        <SideMenuItem icon='exclamation-circle' text='Próximas Aulas' onAction={() => _handleProximasAulas(true)}/>
-        <SideMenuItem icon='list' text='Aprovações Pendentes' onAction={() => _handleAulasPendentesAprovacao(true)}/>
-        <SideMenuItem icon='car' text='Horários' onAction={() => _handleDisponibilidades(true)}/>
-        <SideMenuItem icon='envelope' text='Notificações' onAction={() => _handleNotificacoes(true)}/>
-        <SideMenuItem icon='comments' text='Contato' onAction={() => {}}/>
-        
-      */}
+      <TouchableOpacity style={styles.animatedMenuBox}>
+        <TouchableOpacity2 onPress={() => setMenuOpened(false)}>
+          <View style={{height: 100, flexDirection: 'row', alignItems: 'center'}}>
+            <Text style={styles.menu_text_voltar}>Fechar Menu</Text>
+          </View>
+        </TouchableOpacity2>
+
+        <TouchableOpacity2 onPress={() => _handleConfiguracoes(true)}>
+          <SideMenuItem icon='cog' text='Configurações'/>
+        </TouchableOpacity2>
+        <TouchableOpacity2 onPress={() => _handleListaAlunos(true)}>
+          <SideMenuItem icon='user' text='Alunos'/>
+        </TouchableOpacity2>
+        <TouchableOpacity2 onPress={() => _handleListaInstrutores(true)}>
+          <SideMenuItem icon='car' text='Instrutores'/>
+        </TouchableOpacity2>
+        <TouchableOpacity2 onPress={() => _handleAgendamentos(true)}>
+          <SideMenuItem icon='calendar' text='Agendamentos'/>
+        </TouchableOpacity2>
+        <TouchableOpacity2 onPress={() => _handleSair(true)}>
+          <SideMenuItemSair icon='arrow-circle-left' text='Sair da conta'/>
+        </TouchableOpacity2>
 
       </TouchableOpacity>
+      
     );
   };
 
@@ -165,10 +154,17 @@ const AdminDashboard = (props: any) => {
       >
 
         <Appbar.Header statusBarHeight={45} style={{height: 60, backgroundColor: '#212F3C'}}>
-          <Appbar.Action icon="menu" size={30} onPress={ _handleTouchMenu} />
-          <Appbar.Content onTouchEnd={() => setMenuOpened(false)} title={nomeCompleto} />
-          <Appbar.Action icon="bell" size={30} onPress={() => _handleNotificacoes(false)} />
+          <TouchableOpacity2 onPress={() => _handleTouchMenu()}>
+            <Appbar.Action icon="menu" color='white' size={30}/>
+          </TouchableOpacity2>
+          {/* ToDo: implementar comportamento de click para o texto do Content abaixo */}
+          <Appbar.Content onTouchEnd={() => setMenuOpened(false)} title={nomeCompleto} style={{alignItems: 'center'}}/>
+          <TouchableOpacity2 onPress={() => _handleNotificacoes(false)} >
+            <Appbar.Action icon="bell" color='white' size={30} />
+          </TouchableOpacity2>
         </Appbar.Header>
+
+
         <View style={{alignItems: 'center'}} onTouchEnd={() => setMenuOpened(false)}>
           <Avatar.Image 
             size={170}
@@ -179,57 +175,72 @@ const AdminDashboard = (props: any) => {
         
         <View style={styles.dash}>
           <View style={styles.dash_column}>
-            <View style={styles.item_dash_exterior}>
-              <View style={styles.item_dash_interior_1} onTouchEnd={() => _handleListaAlunos(false)}>
-                <View style={styles.item_dash_view_texto}>
-                  <Text style={styles.item_dash_texto_1}>Alunos</Text>
-                </View>
-                <View style={styles.item_dash_view_texto}>
-                  <Text style={styles.item_dash_texto_2}>Cadastrados</Text>
-                </View>
-                <View style={styles.item_dash_view_numero}>
-                  <Text style={styles.item_dash_texto_3}>{qtdAlunosCadastrados}</Text>
-                </View>
-              </View>
-            </View>
-            <View style={styles.item_dash_exterior}>
-              <View style={styles.item_dash_interior_2} onTouchEnd={() => _handleAgendamentos(false)}>
-                <View style={styles.item_dash_view_texto}>
-                  <Text style={styles.item_dash_texto_1}>Aulas Pendentes</Text>
-                </View>
-                <View style={styles.item_dash_view_texto}>
-                  <Text style={styles.item_dash_texto_2}>Roteamento</Text>
-                </View>
-                <View style={styles.item_dash_view_numero}>
-                  <Text style={styles.item_dash_texto_3}>{qtdPendentesRoteamento}</Text>
+
+            <TapGestureHandler onHandlerStateChange={() => _handleListaAlunos(false)}>
+              <View style={styles.item_dash_exterior}>
+                <View style={styles.item_dash_interior_1}>
+                  <View style={styles.item_dash_view_texto}>
+                    <Text style={styles.item_dash_texto_1}>Alunos</Text>
+                  </View>
+                  <View style={styles.item_dash_view_texto}>
+                    <Text style={styles.item_dash_texto_2}>Cadastrados</Text>
+                  </View>
+                  <View style={styles.item_dash_view_numero}>
+                    <Text style={styles.item_dash_texto_3}>{qtdAlunosCadastrados}</Text>
+                  </View>
                 </View>
               </View>
-            </View>
+            </TapGestureHandler>
+
+            <TapGestureHandler onHandlerStateChange={() => _handleAgendamentos(false)}>
+              <View style={styles.item_dash_exterior}>
+                <View style={styles.item_dash_interior_2}>
+                  <View style={styles.item_dash_view_texto}>
+                    <Text style={styles.item_dash_texto_1}>Aulas Pendentes</Text>
+                  </View>
+                  <View style={styles.item_dash_view_texto}>
+                    <Text style={styles.item_dash_texto_2}>Roteamento</Text>
+                  </View>
+                  <View style={styles.item_dash_view_numero}>
+                    <Text style={styles.item_dash_texto_3}>{qtdPendentesRoteamento}</Text>
+                  </View>
+                </View>
+              </View>
+            </TapGestureHandler>
+
           </View>
-          <View style={styles.dash_column}>
-            <View style={styles.item_dash_exterior}>
-              <View style={styles.item_dash_interior_3} onTouchEnd={() => _handleListaInstrutores(false)}>
-                <View style={styles.item_dash_view_texto}>
-                  <Text style={styles.item_dash_texto_1}>Instrutores</Text>
-                </View>
-                <View style={styles.item_dash_view_texto}>
-                  <Text style={styles.item_dash_texto_2}>Cadastrados</Text>
-                </View>
-                <View style={styles.item_dash_view_numero}>
-                  <Text style={styles.item_dash_texto_3}>{qtdInstrutoresCadastrados}</Text>
-                </View>
-              </View>
-            </View>
-            <View style={styles.item_dash_exterior}>
-              <View style={styles.item_dash_interior_4} onTouchEnd={() => {_handleConfiguracoes(false)}}>
-                <View style={styles.item_dash_view_agendar}>
-                  <Text style={styles.item_dash_texto_agendar}>Configurações</Text>
-                </View>
-                <View style={styles.item_dash_view_numero}>
-                  <Icon name= 'cog' color= 'purple' size={90} />
+
+          <View style={styles.dash_column}>            
+
+            <TapGestureHandler onHandlerStateChange={() => _handleListaInstrutores(false)}>
+              <View style={styles.item_dash_exterior}>
+                <View style={styles.item_dash_interior_3} >
+                  <View style={styles.item_dash_view_texto}>
+                    <Text style={styles.item_dash_texto_1}>Instrutores</Text>
+                  </View>
+                  <View style={styles.item_dash_view_texto}>
+                    <Text style={styles.item_dash_texto_2}>Cadastrados</Text>
+                  </View>
+                  <View style={styles.item_dash_view_numero}>
+                    <Text style={styles.item_dash_texto_3}>{qtdInstrutoresCadastrados}</Text>
+                  </View>
                 </View>
               </View>
-            </View>
+            </TapGestureHandler>
+
+            <TapGestureHandler onHandlerStateChange={() => _handleConfiguracoes(false)}>
+              <View style={styles.item_dash_exterior}>
+                <View style={styles.item_dash_interior_4}>
+                  <View style={styles.item_dash_view_agendar}>
+                    <Text style={styles.item_dash_texto_agendar}>Configurações</Text>
+                  </View>
+                  <View style={styles.item_dash_view_numero}>
+                    <Icon name= 'cog' color= 'purple' size={90} />
+                  </View>
+                </View>
+              </View>
+            </TapGestureHandler>
+            
           </View>
         </View>
 
