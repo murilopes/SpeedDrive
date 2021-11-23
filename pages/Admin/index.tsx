@@ -7,7 +7,7 @@ import MenuDrawer from 'react-native-side-drawer'
 import SideMenuItem from '../../components/SideMenuItem';
 import SideMenuItemSair from '../../components/SideMenuItemSair';
 import ConfigFile from "../../config.json"
-import * as userLib from '../../lib/user.ts'
+import * as userLib from '../../lib/user'
 import axios from "axios";
 import { TapGestureHandler } from 'react-native-gesture-handler'
 import {
