@@ -7,7 +7,7 @@
       "android",
       "web"
     ],
-    "version": "1.0.16",
+    "version": "1.0.17",
     "orientation": "portrait",
     "icon": "./assets/icon4.png",
     "updates": {
@@ -19,11 +19,11 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.muurilopes.speedDriveMobile",
-      "buildNumber": "1.0.16"
+      "buildNumber": "1.0.17"
     },
     "android": {
       "package": "com.muurilopes.speedDriveMobile",
-      "versionCode": 16,
+      "versionCode": 17,
       "permissions": [
         "CAMERA",
         "NOTIFICATIONS",
